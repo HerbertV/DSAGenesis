@@ -1,0 +1,3 @@
+[submodule "src/jhv"]
+	path = src/jhv
+	url = git@github.com:HerbertV/jhv.git

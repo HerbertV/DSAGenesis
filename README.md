@@ -4,6 +4,11 @@
 
 *An un-offical Character Creation and Managing Tool for the German "Das Schwarze Auge" Pen & Paper RPG.*
 
+-----------------------------------
+
+![DSA Genesis Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/DSAGenesisLogo.png)
+
+![DSA Fan Project Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/FanProjectLogo.png)
 
 
 ## Licenses:
