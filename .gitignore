@@ -1,0 +1,10 @@
+# DSAGenesis gitignore
+
+.project
+.classpath
+.metadata
+.settings/
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
