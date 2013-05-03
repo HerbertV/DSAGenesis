@@ -11,6 +11,18 @@
 ![DSA Fan Project Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/FanProjectLogo.png)
 
 
+## About:
+
+[Ulisses Spiele](http://www.ulisses-spiele.de/)
+
+[Wiki Aventurica](http://www.wiki-aventurica.de/)
+
+[DSA Genesis Wiki](https://github.com/HerbertV/DSAGenesis/wiki)
+
+[DSA Genesis Issues](https://github.com/HerbertV/DSAGenesis/issues)
+
+
+
 ## Licenses:
 
 [DSA Genesis is Licensed under MIT License](http://opensource.org/licenses/MIT)
