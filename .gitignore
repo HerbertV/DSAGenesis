@@ -1,5 +1,6 @@
 # DSAGenesis gitignore
 
+# Eclipse Related
 .project
 .classpath
 .metadata
@@ -8,3 +9,15 @@ bin/**
 tmp/**
 tmp/**/*
 *.tmp
+*.MF
+.externalToolBuilders/
+
+# Gesesis Releated
+
+ant/build.properties
+ant/buildproject.num
+
+config/
+logs/
+
+
