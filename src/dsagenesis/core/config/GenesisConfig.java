@@ -115,15 +115,28 @@ public class GenesisConfig
 	@Override
 	protected void setSystemDefaults() 
 	{
+		// Global defaults
 		this.setSystemProperty(KEY_APPICON, "images/icons/appIcon64.png");
 		this.setSystemProperty(KEY_APPTITLE, "DSA Genesis");
 		this.setSystemProperty(KEY_DEBUG_LEVEL, "0");
 		this.setSystemProperty(KEY_IS_LOGGER_ENABLED, "false");
 		this.setSystemProperty(KEY_LANGUAGE, "de");
 		
+		// Core Editor defaults
+		this.setSystemProperty(KEY_WIN_BASE+"."+KEY_SIZE, "800,600");
+		this.setSystemProperty(KEY_WIN_BASE+"."+KEY_ISFULLSCREEN, "false");
+		this.setSystemProperty(KEY_WIN_BASE+"."+KEY_POSITION, "0,0");
 		
-		// TODO Auto-generated method stub
-
+		// Meta Editor defaults
+		this.setSystemProperty(KEY_WIN_META+"."+KEY_SIZE, "800,600");
+		this.setSystemProperty(KEY_WIN_META+"."+KEY_ISFULLSCREEN, "false");
+		this.setSystemProperty(KEY_WIN_META+"."+KEY_POSITION, "0,0");
+				
+		// Meta Editor defaults
+		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_SIZE, "800,600");
+		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_ISFULLSCREEN, "false");
+		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_POSITION, "0,0");
+		
 	}
 
 	@Override

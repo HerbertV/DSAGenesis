@@ -31,23 +31,19 @@ public interface IGenesisConfigKeys
 	public static final String KEY_WIN = "win";
 	public static final String KEY_SIZE = "size";
 	public static final String KEY_ISFULLSCREEN = "isFullScreen";
+	public static final String KEY_POSITION = "pos";
 	
 	/**
 	 * for storing the base editor window states
 	 */
-	public static final String KEY_WIN_BASE_SIZE = "win.base.size";
-	public static final String KEY_WIN_BASE_ISFULLSCREEN = "win.base.isFullscreen";
-
+	public static final String KEY_WIN_BASE = "win.base";
 	/**
 	 * for storing the meta editor window states
 	 */
-	public static final String KEY_WIN_META_SIZE = "win.meta.size";
-	public static final String KEY_WIN_META_ISFULLSCREEN = "win.meta.isFullscreen";
-
+	public static final String KEY_WIN_META = "win.meta";
 	/**
 	 * for storing the hero editor window states
 	 */
-	public static final String KEY_WIN_HERO_SIZE = "win.hero.size";
-	public static final String KEY_WIN_HERO_ISFULLSCREEN = "win.hero.isFullscreen";
+	public static final String KEY_WIN_HERO = "win.hero";
 
 }

@@ -27,10 +27,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import dsagenesis.core.config.GenesisConfig;
+import dsagenesis.core.view.AbstractGenesisFrame;
+import dsagenesis.editor.coredata.view.CoreEditorFrame;
 
 import jhv.swing.launcher.AbstractLauncher;
 import jhv.util.debug.logger.ApplicationLogger;
@@ -64,13 +67,20 @@ public class GenesisLauncher
 		
 	private static final long serialVersionUID = 1L;
 	
+	public static AbstractGenesisFrame openFrame;
 	
 	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
 		
-	
+	/**
+	 * Constructor.
+	 * 
+	 * @param title
+	 * @param iconfile
+	 * @param bgfile
+	 */
 	public GenesisLauncher(
 			String title, 
 			String iconfile, 
@@ -230,34 +240,76 @@ public class GenesisLauncher
 		btn.addActionListener(this);
 		btn.setBounds(x, y, width, height);
 		btn.setVisible(true);
+		btn.setOpaque(false);
 		
 		// to avoid z fighting
 		imgPanel.add(btn);
 	}
 	
 	
-
+	/**
+	 * actionPerformed.
+	 * handler for the launcher buttons.
+	 * 
+	 * @param ae
+	 */
 	@Override
 	public void actionPerformed(ActionEvent ae) 
 	{
 		if( ae.getActionCommand().equals(ACMD_EXIT))
 		{
-			ApplicationLogger.logInfo("Application exited by user.");
-			System.exit(0);
-		
+			boolean doClose = true;
+			
+			if( openFrame != null )
+			{
+				doClose = false;
+				
+				if( openFrame.isSaved() )
+				{
+					openFrame.close(null);
+					doClose = true;
+					
+				} else {
+					int result = JOptionPane.showConfirmDialog(
+							openFrame,
+							openFrame.getTitle() 
+								+ " enth‰lt ungesicherte Daten.\nWillst du wirklich schlieﬂen?",
+							"Schlieﬂen best‰tigen",
+							JOptionPane.YES_NO_OPTION
+						);
+					
+					if( result == JOptionPane.YES_OPTION )
+					{
+						openFrame.close(null);
+						doClose = true;
+					}
+				}
+			}
+			
+			if( doClose )
+			{
+				ApplicationLogger.logInfo("Application exited by user.");
+				System.exit(0);
+			}
+			
 		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_CORE)) {
-			// TODO
+			if( openFrame != null )
+				return;
+			
+			openFrame = new CoreEditorFrame();
+			openFrame.setVisible(true);
 			
 		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_META)) {
-			// TODO
+			if( openFrame != null )
+				return;
 			
 		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_HERO)) {
-			// TODO
+			if( openFrame != null )
+				return;
 			
 		} else if( ae.getActionCommand().equals(ACMD_SETUP)) {
-			
-			// TODO
+			if( openFrame != null )
+				return;
 		}
-		
 	}
 }
