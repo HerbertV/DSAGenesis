@@ -34,6 +34,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.view.AbstractGenesisFrame;
 import dsagenesis.editor.coredata.view.CoreEditorFrame;
+import dsagenesis.editor.hero.view.HeroEditorFrame;
+import dsagenesis.editor.metadata.view.MetaEditorFrame;
 
 import jhv.swing.launcher.AbstractLauncher;
 import jhv.util.debug.logger.ApplicationLogger;
@@ -195,18 +197,21 @@ public class GenesisLauncher
 		imgPanel.add(lblD);
 		
 		String[][] btnList = {
-				{"Setup", ACMD_SETUP}, 
-				{"Core Data Editor", ACMD_LAUNCH_CORE },
-				{"Meta Data Editor", ACMD_LAUNCH_META },
-				{"Hero Editor", ACMD_LAUNCH_HERO },
-				{"Schlieﬂen", ACMD_EXIT }
+				{ "Setup", ACMD_SETUP, "0" }, 
+				{ "Core Data Editor", ACMD_LAUNCH_CORE, "10" },
+				{ "Meta Data Editor", ACMD_LAUNCH_META, "0" },
+				{ "Hero Editor", ACMD_LAUNCH_HERO, "0" },
+				{ "Schlieﬂen", ACMD_EXIT, "10" }
 			};
 		
+		int additionalY = 0;
 		for( int i=0; i< btnList.length; i++ )
 		{
+			additionalY += Integer.parseInt(btnList[i][2]);
+			
 			this.addButton(
 					margin,	//x
-					90 + (i*(btnHeight +btnPadding)),	//y 
+					90 + (i*(btnHeight +btnPadding)) + additionalY, //y 
 					defaultWidth - 2*margin, 			//width
 					btnHeight, 							//height
 					btnList[i][0], 						//label text
@@ -303,13 +308,21 @@ public class GenesisLauncher
 			if( openFrame != null )
 				return;
 			
+			openFrame = new MetaEditorFrame();
+			openFrame.setVisible(true);
+			
 		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_HERO)) {
 			if( openFrame != null )
 				return;
 			
+			openFrame = new HeroEditorFrame();
+			openFrame.setVisible(true);
+			
 		} else if( ae.getActionCommand().equals(ACMD_SETUP)) {
 			if( openFrame != null )
 				return;
+			
+			// TODO
 		}
 	}
 }

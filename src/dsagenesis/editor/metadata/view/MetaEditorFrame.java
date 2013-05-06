@@ -20,10 +20,45 @@
  */
 package dsagenesis.editor.metadata.view;
 
+import dsagenesis.core.config.GenesisConfig;
+import dsagenesis.core.config.IGenesisConfigKeys;
 import dsagenesis.core.view.AbstractGenesisFrame;
 
 public class MetaEditorFrame 
 		extends AbstractGenesisFrame 
 {
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+			
+	private static final long serialVersionUID = 1L;
 
+	// ============================================================================
+	//  Constructors
+	// ============================================================================
+		
+	/**
+	 * Constructor.
+	 */
+	public MetaEditorFrame()
+	{
+		super(
+				GenesisConfig.getInstance().getAppTitle() + " - Meta Data Editor",
+				GenesisConfig.APP_ICON,
+				IGenesisConfigKeys.KEY_WIN_META		
+			);
+	}
+
+	
+
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+		
+	@Override
+	public boolean isSaved() 
+	{
+		// TODO
+		return true;
+	}
 }

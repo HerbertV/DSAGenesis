@@ -20,11 +20,49 @@
  */
 package dsagenesis.editor.hero.view;
 
+import dsagenesis.core.config.GenesisConfig;
+import dsagenesis.core.config.IGenesisConfigKeys;
 import dsagenesis.core.view.AbstractGenesisFrame;
 
-
+/**
+ * JFrame for the Hero Editor
+ */
 public class HeroEditorFrame 
 		extends AbstractGenesisFrame 
 {
 
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+			
+	private static final long serialVersionUID = 1L;
+
+	// ============================================================================
+	//  Constructors
+	// ============================================================================
+		
+	/**
+	 * Constructor.
+	 */
+	public HeroEditorFrame()
+	{
+		super(
+				GenesisConfig.getInstance().getAppTitle() + " - Hero Editor",
+				GenesisConfig.APP_ICON,
+				IGenesisConfigKeys.KEY_WIN_HERO			
+			);
+	}
+
+	
+
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+		
+	@Override
+	public boolean isSaved() 
+	{
+		// TODO
+		return true;
+	}
 }
