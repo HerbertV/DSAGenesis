@@ -2,20 +2,17 @@
 
 -----------------------------------
 
-*An un-offical Character Creation and Managing Tool for the German "Das Schwarze Auge" Pen & Paper RPG.*
+*An un-offical Character Creation and Managing Tool for the German "Das Schwarze Auge" Pen&Paper RPG.*
 
 -----------------------------------
 
 ![DSA Genesis Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/DSAGenesisLogo.png)
 
-![DSA Fan Project Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/FanProjectLogo.png)
-
-
 ## About:
 
-[Ulisses Spiele](http://www.ulisses-spiele.de/)
+[Ulisses Spiele - offical DSA Website](http://www.ulisses-spiele.de/)
 
-[Wiki Aventurica](http://www.wiki-aventurica.de/)
+[Wiki Aventurica - Fan Wiki](http://www.wiki-aventurica.de/)
 
 [DSA Genesis Wiki](https://github.com/HerbertV/DSAGenesis/wiki)
 
@@ -32,6 +29,9 @@
 [Ant-Contrib is Licensed under Apache License](http://ant-contrib.sourceforge.net/)
 
 
+
 ## Disclaimer:
+
+![DSA Fan Project Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/FanProjectLogo.png)
 
 *„DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA und RIESLAND sind eingetragene Marken der Significant Fantasy Medienrechte GbR. Ohne vorherige schriftliche Genehmigung der Ulisses Medien und Spiel Distribution GmbH ist eine Verwendung der genannten Markenzeichen nicht gestattet.“*

@@ -53,6 +53,13 @@ public class GenesisConfig
 	//  Functions
 	// ============================================================================
 	
+	/**
+	 * getInstance
+	 * 
+	 * Access the instance.
+	 * 
+	 * @return
+	 */
 	public static GenesisConfig getInstance()
 	{
 		if( GenesisConfig.instance == null )
@@ -61,9 +68,60 @@ public class GenesisConfig
 		return (GenesisConfig)GenesisConfig.instance;
 	}
 	
+	/**
+	 * getAppTitle
+	 * 
+	 * @return
+	 */
+	public String getAppTitle()
+	{
+		return this.getString(KEY_APPTITLE);
+	}
+	
+	/**
+	 * getAppIcon
+	 * 
+	 * @return
+	 */
+	public String getAppIcon()
+	{
+		return this.getString(KEY_APPICON);
+	}
+	
+	/**
+	 * getDebugLevel
+	 * 
+	 * @return
+	 */
+	public int getDebugLevel()
+	{
+		return this.getInt(KEY_DEBUG_LEVEL);
+	}
+	
+	/**
+	 * isLoggerEnabled
+	 * 
+	 * @return
+	 */
+	public boolean isLoggerEnabled()
+	{
+		return this.getBoolean(KEY_IS_LOGGER_ENABLED);
+	}
+	
+	
+	/**
+	 * for the first launch the system defaults are created.
+	 */
 	@Override
 	protected void setSystemDefaults() 
 	{
+		this.setSystemProperty(KEY_APPICON, "images/icons/appIcon64.png");
+		this.setSystemProperty(KEY_APPTITLE, "DSA Genesis");
+		this.setSystemProperty(KEY_DEBUG_LEVEL, "0");
+		this.setSystemProperty(KEY_IS_LOGGER_ENABLED, "false");
+		this.setSystemProperty(KEY_LANGUAGE, "de");
+		
+		
 		// TODO Auto-generated method stub
 
 	}

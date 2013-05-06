@@ -33,6 +33,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import dsagenesis.core.config.GenesisConfig;
 
 import jhv.swing.launcher.AbstractLauncher;
+import jhv.util.debug.logger.ApplicationLogger;
 
 /**
  * Launcher for DSA Genesis
@@ -77,7 +78,6 @@ public class GenesisLauncher
 		)
 	{
 		super(title, iconfile, bgfile);
-		// TODO Auto-generated constructor stub
 	}
 	
 	
@@ -96,26 +96,39 @@ public class GenesisLauncher
 		try {
 			// Set System L&F
 	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
-	    } catch (UnsupportedLookAndFeelException e) {
+	    } catch( UnsupportedLookAndFeelException e ) {
 	       e.printStackTrace();
-	    } catch (ClassNotFoundException e) {
+	    } catch( ClassNotFoundException e ) {
 	    	e.printStackTrace();
-	    } catch (InstantiationException e) {
+	    } catch( InstantiationException e ) {
 	    	e.printStackTrace();
-	    } catch (IllegalAccessException e) {
+	    } catch( IllegalAccessException e ) {
 	    	e.printStackTrace();
 	    }
 		
-		// TODO init logger
-		//TODO load config
-		//TODO set app icon
-				
-		new GenesisLauncher(
-				"DSA Genesis", 
-				"images/icons/appIcon64.png", 
+		long time = System.currentTimeMillis();
+		
+		// init config
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		// init logger
+		if( conf.isLoggerEnabled() )
+		{
+			ApplicationLogger.getInstance(
+					conf.getAppTitle(), 
+					time, 
+					conf.getDebugLevel()
+				);
+			
+			ApplicationLogger.logInfo("DSA Genesis started.");
+		}
+		GenesisLauncher me = new GenesisLauncher(
+				conf.getAppTitle(), 
+				conf.getAppIcon(), 
 				"images/launcher.png"
 			);
-		
+		// set the app icon image for later use
+		GenesisConfig.APP_ICON = me.getIconImage();
 		GenesisLauncher.open();
 	}
 	
@@ -139,18 +152,38 @@ public class GenesisLauncher
 		
 		super.setupLayout(title, icon, background);
 		
-		JLabel lbl = new JLabel();
-		lbl.setForeground(Color.LIGHT_GRAY);
-		lbl.setFont(lbl.getFont().deriveFont(9.0f));
-		lbl.setText(this.getTitle() + " v." + GenesisConfig.APP_VERSION);
-		lbl.setBounds(margin, 60, defaultWidth-2*margin, 25);
+		// version label
+		JLabel lblV = new JLabel();
+		lblV.setHorizontalAlignment(JLabel.CENTER);
+		lblV.setForeground(Color.LIGHT_GRAY);
+		lblV.setFont(lblV.getFont().deriveFont(9.0f));
+		lblV.setText(
+				"<html><center>" 
+					+ this.getTitle() 
+					+ " v." 
+					+ GenesisConfig.APP_VERSION
+					+ "</center></html>"
+				);
+		lblV.setBounds(margin, 60, defaultWidth-2*margin, 25);
 		
-		// TODO add disclaimer label
+		// disclaimer label
+		JLabel lblD = new JLabel();
+		lblD.setHorizontalAlignment(JLabel.CENTER);
+		lblD.setForeground(Color.LIGHT_GRAY);
+		lblD.setFont(lblD.getFont().deriveFont(8.0f));
+		lblD.setText(
+				"<html><center>„DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA und RIESLAND " 
+					+ "sind eingetragene Marken<br>" 
+					+ "der Significant Fantasy Medienrechte GbR.<br>" 
+					+ "Ohne vorherige schriftliche Genehmigung der Ulisses Medien und Spiel Distribution GmbH " 
+					+ "ist eine Verwendung der genannten Markenzeichen nicht gestattet.“</center></html>"
+			);
+		lblD.setBounds(margin, 325, defaultWidth-2*margin, 70);
 		
 		// to avoid z fighting
-		imgPanel.add(lbl);
+		imgPanel.add(lblV);
+		imgPanel.add(lblD);
 		
-		//TODO put this content in a properties file
 		String[][] btnList = {
 				{"Setup", ACMD_SETUP}, 
 				{"Core Data Editor", ACMD_LAUNCH_CORE },
@@ -209,6 +242,7 @@ public class GenesisLauncher
 	{
 		if( ae.getActionCommand().equals(ACMD_EXIT))
 		{
+			ApplicationLogger.logInfo("Application exited by user.");
 			System.exit(0);
 		
 		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_CORE)) {
