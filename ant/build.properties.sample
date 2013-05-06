@@ -1,0 +1,16 @@
+copyright.startyear=2013
+
+author.name=Your name
+author.email=Your Email
+
+project.name.short=DSAGenesis
+project.name.long=DSA Genesis
+project.version.num=0.1.0
+
+
+#setup your workspace and sub dirs.
+dir.workspace=absolute path to your eclipse workspace
+dir.src=${dir.workspace}DSAGenesis/
+dir.build=${dir.workspace}DSAGenesis_Release/
+
+dir.lib=libs
