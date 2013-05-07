@@ -21,6 +21,7 @@
 package dsagenesis.core.view;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -122,7 +123,18 @@ public abstract class AbstractGenesisFrame
 		arr = conf.getIntArray(
 				this.configKey + "."+ GenesisConfig.KEY_POSITION 
 			);
-		this.setLocation(arr[0], arr[1]);
+		
+		// check if window position is inside the visible area
+		Rectangle[] rect = GenesisConfig.getDisplayResolutions();
+		this.setLocation(0, 0);
+		for( int i=0; i < rect.length; i++ )
+		{
+			if( rect[i].contains(arr[0], arr[1] ) )
+			{
+				this.setLocation(arr[0], arr[1]);
+				break;
+			}
+		}
 		
 		boolean fullScreen = conf.getBoolean(
 				this.configKey + "."+ GenesisConfig.KEY_ISFULLSCREEN 
@@ -161,6 +173,7 @@ public abstract class AbstractGenesisFrame
 					"false"
 				);
 		}
+		conf.saveSystem();
 	}
 	
 	/**

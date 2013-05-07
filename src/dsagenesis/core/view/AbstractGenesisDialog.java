@@ -20,20 +20,45 @@
  */
 package dsagenesis.core.view;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JWindow;
 
 /**
- * Abstract base for all Genesis JWindows
+ * Abstract base for all Genesis JDialogs
  */
-public abstract class AbstractGenesisWindow 
-		extends JWindow 
+public abstract class AbstractGenesisDialog 
+		extends JDialog 
 {
+
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-			
-	private static final long serialVersionUID = 1L;
-		
-
 	
+	private static final long serialVersionUID = 1L;
+	
+	
+	// ============================================================================
+	//  Constructors
+	// ============================================================================
+		
+	/**
+	 * Constructor 1 with frame.
+	 * 
+	 * @param f
+	 */
+	public AbstractGenesisDialog(JFrame f) 
+	{
+		super(f);
+	}
+	
+	/**
+	 * Constructor 2 with window.
+	 * 
+	 * @param w
+	 */
+	public AbstractGenesisDialog(JWindow w) 
+	{
+		super(w);
+	}
 }

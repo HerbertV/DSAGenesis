@@ -22,6 +22,7 @@ package dsagenesis.core;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -38,6 +39,7 @@ import dsagenesis.editor.hero.view.HeroEditorFrame;
 import dsagenesis.editor.metadata.view.MetaEditorFrame;
 
 import jhv.swing.launcher.AbstractLauncher;
+import jhv.util.debug.DebugLevel;
 import jhv.util.debug.logger.ApplicationLogger;
 
 /**
@@ -122,6 +124,7 @@ public class GenesisLauncher
 		
 		// init config
 		GenesisConfig conf = GenesisConfig.getInstance();
+		GenesisConfig.APP_START_TIME = time;
 		
 		// init logger
 		if( conf.isLoggerEnabled() )
@@ -129,10 +132,39 @@ public class GenesisLauncher
 			ApplicationLogger.getInstance(
 					conf.getAppTitle(), 
 					time, 
-					conf.getDebugLevel()
+					DebugLevel.INFO
 				);
 			
-			ApplicationLogger.logInfo("DSA Genesis started.");
+			// log some infos about the system
+			ApplicationLogger.separator();
+			ApplicationLogger.logInfo(
+					"DSA Genesis v" + GenesisConfig.APP_VERSION + " started."
+				);
+			ApplicationLogger.separator();
+			
+			int jbit = 32;
+			if( System.getProperty("sun.arch.data.model").contains("64") )
+				jbit = 64;
+			
+			String systemInfo = "JRE: " + System.getProperty("java.runtime.version")
+					+ " " + jbit + "-bit\n"
+					+ "Vendor: " +	System.getProperty("java.vendor") + "\n"
+					+ "Platform: " + System.getProperty("os.name") + " " 
+					+ System.getProperty("os.version") + "\n\n"
+					+ "Display(s):\n";
+			
+			Rectangle[] resolutions = GenesisConfig.getDisplayResolutions();
+			for( int i=0; i< resolutions.length ; i++ )
+				systemInfo += "["+ (i+1) + "]: "
+						+ resolutions[i].width + "x" 
+						+ resolutions[i].height + "\n";
+			
+			ApplicationLogger.logInfo(systemInfo);
+			ApplicationLogger.separator();
+				
+			
+			
+			ApplicationLogger.setLevel(conf.getDebugLevel());
 		}
 		GenesisLauncher me = new GenesisLauncher(
 				conf.getAppTitle(), 

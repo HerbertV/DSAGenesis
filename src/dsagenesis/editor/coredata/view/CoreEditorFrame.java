@@ -26,7 +26,6 @@ import dsagenesis.core.view.AbstractGenesisFrame;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 
-import javax.swing.ImageIcon;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -68,10 +67,7 @@ public class CoreEditorFrame
 			);
 		
 		initBars();
-		
-		
 	}
-
 	
 
 	// ============================================================================
@@ -86,9 +82,15 @@ public class CoreEditorFrame
 		// icons
 		ImageResource irCopy = new ImageResource("images/icons/copy.gif",this);
 		ImageResource irPaste = new ImageResource("images/icons/paste.gif",this);
-		ImageResource irAddRow = new ImageResource("images/icons/addRow.gif",this);
-		ImageResource irDeleteRow = new ImageResource("images/icons/removeRow.gif",this);
-				
+		ImageResource irAddRow = new ImageResource("images/icons/dbAddRow.gif",this);
+		ImageResource irDeleteRow = new ImageResource("images/icons/dbRemoveRow.gif",this);
+		
+		ImageResource irExport = new ImageResource("images/icons/dbExport.gif",this);
+		ImageResource irImport = new ImageResource("images/icons/dbImport.gif",this);
+		ImageResource irBackup = new ImageResource("images/icons/dbBackup.gif",this);
+		ImageResource irInfo = new ImageResource("images/icons/info.gif",this);
+		ImageResource irHelp = new ImageResource("images/icons/help.gif",this);
+		
 		// toolbar
 		{
 			JToolBar toolBar = new JToolBar();
@@ -97,12 +99,12 @@ public class CoreEditorFrame
 			
 			JButton btnCopy = new JButton("");
 			btnCopy.setToolTipText("Kopieren");
-			btnCopy.setIcon(new ImageIcon(irCopy.getImage()));
+			btnCopy.setIcon(irCopy.getImageIcon());
 			toolBar.add(btnCopy);
 			
 			JButton btnPaste = new JButton("");
 			btnPaste.setToolTipText("Einf\u00FCgen");
-			btnPaste.setIcon(new ImageIcon(irPaste.getImage()));
+			btnPaste.setIcon(irPaste.getImageIcon());
 			toolBar.add(btnPaste);
 			
 			JSeparator separator = new JSeparator();
@@ -113,12 +115,12 @@ public class CoreEditorFrame
 			
 			JButton btnAddRow = new JButton("");
 			btnAddRow.setToolTipText("Zeile Einf\u00FCgen");
-			btnAddRow.setIcon(new ImageIcon(irAddRow.getImage()));
+			btnAddRow.setIcon(irAddRow.getImageIcon());
 			toolBar.add(btnAddRow);
 			
 			JButton btnDeleteRow = new JButton("");
 			btnDeleteRow.setToolTipText("Zeile L\u00F6schen");
-			btnDeleteRow.setIcon(new ImageIcon(irDeleteRow.getImage()));
+			btnDeleteRow.setIcon(irDeleteRow.getImageIcon());
 			toolBar.add(btnDeleteRow);
 		}
 		
@@ -131,15 +133,18 @@ public class CoreEditorFrame
 			menuBar.add(mnFile);
 			
 			JMenuItem mntmBackup = new JMenuItem("Backup");
+			mntmBackup.setIcon(irBackup.getImageIcon());
 			mnFile.add(mntmBackup);
 			
 			JSeparator separator = new JSeparator();
 			mnFile.add(separator);
 			
 			JMenuItem mntmImport = new JMenuItem("Import");
+			mntmImport.setIcon(irImport.getImageIcon());
 			mnFile.add(mntmImport);
 			
 			JMenuItem mntmExport = new JMenuItem("Export");
+			mntmExport.setIcon(irExport.getImageIcon());
 			mnFile.add(mntmExport);
 			
 			JMenu mnEdit = new JMenu("Bearbeiten");
@@ -147,12 +152,12 @@ public class CoreEditorFrame
 			
 			JMenuItem mntmCopy = new JMenuItem("Kopieren");
 			mntmCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
-			mntmCopy.setIcon(new ImageIcon(irCopy.getImage()));
+			mntmCopy.setIcon(irCopy.getImageIcon());
 			mnEdit.add(mntmCopy);
 			
 			JMenuItem mntmPaste = new JMenuItem("Einf\u00FCgen");
 			mntmPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
-			mntmPaste.setIcon(new ImageIcon(irPaste.getImage()));
+			mntmPaste.setIcon(irPaste.getImageIcon());
 			mnEdit.add(mntmPaste);
 			
 			JSeparator separator_1 = new JSeparator();
@@ -160,21 +165,23 @@ public class CoreEditorFrame
 			
 			JMenuItem mntmAddRow = new JMenuItem("Zeile Einf\u00FCgen");
 			mntmAddRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK));
-			mntmAddRow.setIcon(new ImageIcon(irAddRow.getImage()));
+			mntmAddRow.setIcon(irAddRow.getImageIcon());
 			mnEdit.add(mntmAddRow);
 			
 			JMenuItem mntmDeleteRow = new JMenuItem("Zeile L\u00F6schen");
 			mntmDeleteRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
-			mntmDeleteRow.setIcon(new ImageIcon(irDeleteRow.getImage()));
+			mntmDeleteRow.setIcon(irDeleteRow.getImageIcon());
 			mnEdit.add(mntmDeleteRow);
 			
 			JMenu mnHelp = new JMenu("Hilfe");
 			menuBar.add(mnHelp);
 			
 			JMenuItem mntmInfo = new JMenuItem("Info");
+			mntmInfo.setIcon(irInfo.getImageIcon());
 			mnHelp.add(mntmInfo);
 			
 			JMenuItem mntmHelp = new JMenuItem("Hilfe");
+			mntmHelp.setIcon(irHelp.getImageIcon());
 			mntmHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 			mnHelp.add(mntmHelp);
 		}

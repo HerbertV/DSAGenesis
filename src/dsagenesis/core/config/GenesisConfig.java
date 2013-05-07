@@ -136,7 +136,6 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_SIZE, "800,600");
 		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_ISFULLSCREEN, "false");
 		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_POSITION, "0,0");
-		
 	}
 
 	@Override
