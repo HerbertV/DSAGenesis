@@ -44,7 +44,6 @@ public class MetaEditorFrame
 	{
 		super(
 				GenesisConfig.getInstance().getAppTitle() + " - Meta Data Editor",
-				GenesisConfig.APP_ICON,
 				IGenesisConfigKeys.KEY_WIN_META		
 			);
 	}

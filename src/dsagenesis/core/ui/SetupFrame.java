@@ -18,50 +18,50 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.editor.hero;
+package dsagenesis.core.ui;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
-import dsagenesis.core.ui.AbstractGenesisFrame;
 
 /**
- * JFrame for the Hero Editor
+ * SetupFrame for configuring the users presets. 
  */
-public class HeroEditorFrame 
+public class SetupFrame
 		extends AbstractGenesisFrame 
 {
-
+	
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-			
+		
 	private static final long serialVersionUID = 1L;
 
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-		
+	
 	/**
 	 * Constructor.
+	 * 
 	 */
-	public HeroEditorFrame()
+	public SetupFrame()
 	{
 		super(
-				GenesisConfig.getInstance().getAppTitle() + " - Hero Editor",
-				IGenesisConfigKeys.KEY_WIN_HERO			
+				GenesisConfig.getInstance().getAppTitle() + " - Setup",
+				IGenesisConfigKeys.KEY_WIN_SETUP
 			);
+		// TODO Auto-generated constructor stub
 	}
 
 	
-
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-		
+	
 	@Override
-	public boolean isSaved() 
-	{
-		// TODO
-		return true;
+	public boolean isSaved() {
+		// TODO Auto-generated method stub
+		return false;
 	}
+
 }

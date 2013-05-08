@@ -34,6 +34,11 @@ public interface IGenesisConfigKeys
 	public static final String KEY_POSITION = "pos";
 	
 	/**
+	 * for storing the setup window states
+	 */
+	public static final String KEY_WIN_SETUP = "win.setup";
+	
+	/**
 	 * for storing the base editor window states
 	 */
 	public static final String KEY_WIN_BASE = "win.base";

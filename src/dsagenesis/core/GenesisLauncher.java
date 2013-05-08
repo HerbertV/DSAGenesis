@@ -34,6 +34,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.ui.AbstractGenesisFrame;
+import dsagenesis.core.ui.SetupFrame;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.hero.HeroEditorFrame;
 import dsagenesis.editor.metadata.MetaEditorFrame;
@@ -355,7 +356,8 @@ public class GenesisLauncher
 			if( openFrame != null )
 				return;
 			
-			// TODO
+			openFrame = new SetupFrame();
+			openFrame.setVisible(true);
 		}
 	}
 }

@@ -20,7 +20,6 @@
  */
 package dsagenesis.core.ui;
 
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -62,19 +61,17 @@ public abstract class AbstractGenesisFrame
 	 * Constructor.
 	 * 
 	 * @param title
-	 * @param icon
 	 * @param configkey
 	 */
 	public AbstractGenesisFrame(
 			String title, 
-			Image icon, 
 			String configkey
 		) 
 	{
 		super();
 		
 		this.setTitle(title);
-		this.setIconImage(icon);
+		this.setIconImage(GenesisConfig.APP_ICON);
 		this.configKey = configkey;
 		
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

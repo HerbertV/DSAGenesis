@@ -22,6 +22,7 @@ package dsagenesis.core.ui;
 
 import javax.swing.JWindow;
 
+
 /**
  * Abstract base for all Genesis JWindows
  */
@@ -34,6 +35,5 @@ public abstract class AbstractGenesisWindow
 			
 	private static final long serialVersionUID = 1L;
 		
-
 	
 }

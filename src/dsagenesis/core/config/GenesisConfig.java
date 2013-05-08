@@ -120,7 +120,7 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_APPTITLE, "DSA Genesis");
 		this.setSystemProperty(KEY_DEBUG_LEVEL, "0");
 		this.setSystemProperty(KEY_IS_LOGGER_ENABLED, "false");
-		this.setSystemProperty(KEY_LANGUAGE, "de");
+		this.setSystemProperty(KEY_LANGUAGE, "de_DE");
 		
 		// Core Editor defaults
 		this.setSystemProperty(KEY_WIN_BASE+"."+KEY_SIZE, "800,600");

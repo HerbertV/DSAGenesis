@@ -66,7 +66,6 @@ public class CoreEditorFrame
 	{
 		super(
 				GenesisConfig.getInstance().getAppTitle() + " - Core Editor",
-				GenesisConfig.APP_ICON,
 				IGenesisConfigKeys.KEY_WIN_BASE				
 			);
 		
