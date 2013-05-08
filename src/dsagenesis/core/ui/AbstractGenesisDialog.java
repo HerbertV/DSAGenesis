@@ -18,51 +18,53 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.editor.hero.view;
+package dsagenesis.core.ui;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JWindow;
 
 import dsagenesis.core.config.GenesisConfig;
-import dsagenesis.core.config.IGenesisConfigKeys;
-import dsagenesis.core.view.AbstractGenesisFrame;
 
 /**
- * JFrame for the Hero Editor
+ * Abstract base for all Genesis JDialogs
  */
-public class HeroEditorFrame 
-		extends AbstractGenesisFrame 
+public abstract class AbstractGenesisDialog 
+		extends JDialog 
 {
 
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-			
+	
 	private static final long serialVersionUID = 1L;
-
+	
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
 		
 	/**
-	 * Constructor.
+	 * Constructor 1 with frame.
+	 * 
+	 * @param f
 	 */
-	public HeroEditorFrame()
+	public AbstractGenesisDialog(JFrame f) 
 	{
-		super(
-				GenesisConfig.getInstance().getAppTitle() + " - Hero Editor",
-				GenesisConfig.APP_ICON,
-				IGenesisConfigKeys.KEY_WIN_HERO			
-			);
-	}
-
-	
-
-	// ============================================================================
-	//  Functions
-	// ============================================================================
+		super(f);
 		
-	@Override
-	public boolean isSaved() 
+		this.setIconImage(GenesisConfig.APP_ICON);
+	}
+	
+	/**
+	 * Constructor 2 with window.
+	 * 
+	 * @param w
+	 */
+	public AbstractGenesisDialog(JWindow w) 
 	{
-		// TODO
-		return true;
+		super(w);
+		
+		this.setIconImage(GenesisConfig.APP_ICON);
 	}
 }

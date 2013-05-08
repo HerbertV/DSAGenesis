@@ -33,10 +33,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import dsagenesis.core.config.GenesisConfig;
-import dsagenesis.core.view.AbstractGenesisFrame;
-import dsagenesis.editor.coredata.view.CoreEditorFrame;
-import dsagenesis.editor.hero.view.HeroEditorFrame;
-import dsagenesis.editor.metadata.view.MetaEditorFrame;
+import dsagenesis.core.ui.AbstractGenesisFrame;
+import dsagenesis.editor.coredata.CoreEditorFrame;
+import dsagenesis.editor.hero.HeroEditorFrame;
+import dsagenesis.editor.metadata.MetaEditorFrame;
 
 import jhv.swing.launcher.AbstractLauncher;
 import jhv.util.debug.DebugLevel;
@@ -278,6 +278,7 @@ public class GenesisLauncher
 		btn.setBounds(x, y, width, height);
 		btn.setVisible(true);
 		btn.setOpaque(false);
+		btn.setFocusPainted(false);
 		
 		// to avoid z fighting
 		imgPanel.add(btn);

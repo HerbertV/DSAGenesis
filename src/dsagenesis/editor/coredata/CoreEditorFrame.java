@@ -18,11 +18,13 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.editor.coredata.view;
+package dsagenesis.editor.coredata;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
-import dsagenesis.core.view.AbstractGenesisFrame;
+import dsagenesis.core.ui.AbstractGenesisFrame;
+import dsagenesis.core.ui.InfoDialog;
+
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 
@@ -37,6 +39,8 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
 import jhv.image.ImageResource;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * JFrame for the Core Data Editor.
@@ -177,6 +181,12 @@ public class CoreEditorFrame
 			menuBar.add(mnHelp);
 			
 			JMenuItem mntmInfo = new JMenuItem("Info");
+			mntmInfo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					InfoDialog d = new InfoDialog(CoreEditorFrame.this);
+					d.setVisible(true);
+				}
+			});
 			mntmInfo.setIcon(irInfo.getImageIcon());
 			mnHelp.add(mntmInfo);
 			

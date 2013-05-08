@@ -18,11 +18,11 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.editor.metadata.view;
+package dsagenesis.editor.metadata;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
-import dsagenesis.core.view.AbstractGenesisFrame;
+import dsagenesis.core.ui.AbstractGenesisFrame;
 
 public class MetaEditorFrame 
 		extends AbstractGenesisFrame 

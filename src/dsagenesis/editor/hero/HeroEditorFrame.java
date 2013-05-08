@@ -18,63 +18,51 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.core.view;
+package dsagenesis.editor.hero;
 
-import javax.swing.JFrame;
-import javax.swing.JWindow;
+import dsagenesis.core.config.GenesisConfig;
+import dsagenesis.core.config.IGenesisConfigKeys;
+import dsagenesis.core.ui.AbstractGenesisFrame;
 
-/** 
- * Default info/about dialog used by all DSAGenesis Editors. 
+/**
+ * JFrame for the Hero Editor
  */
-public class InfoDialog 
-		extends AbstractGenesisDialog 
+public class HeroEditorFrame 
+		extends AbstractGenesisFrame 
 {
 
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-		
+			
 	private static final long serialVersionUID = 1L;
 
-	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-	
+		
 	/**
-	 * Constructor with frame.
-	 * 
-	 * @param f
+	 * Constructor.
 	 */
-	public InfoDialog(JFrame f)
+	public HeroEditorFrame()
 	{
-		super(f);
-		initUI();
+		super(
+				GenesisConfig.getInstance().getAppTitle() + " - Hero Editor",
+				GenesisConfig.APP_ICON,
+				IGenesisConfigKeys.KEY_WIN_HERO			
+			);
 	}
+
 	
-	/**
-	 * Constructor with window.
-	 * 
-	 * @param w
-	 */
-	public InfoDialog(JWindow w)
-	{
-		super(w);
-		initUI();
-	}
-	
-	
+
 	// ============================================================================
 	//  Functions
 	// ============================================================================
 		
-	private void initUI()
+	@Override
+	public boolean isSaved() 
 	{
-		this.setTitle("Info");
-	
-		// TODO add ok button and labels 
-		
-		// TODO add links: with java.awt.Desktop
-		
+		// TODO
+		return true;
 	}
 }

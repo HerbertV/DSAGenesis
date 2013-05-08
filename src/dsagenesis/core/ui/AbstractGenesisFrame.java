@@ -18,7 +18,7 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.core.view;
+package dsagenesis.core.ui;
 
 import java.awt.Image;
 import java.awt.Rectangle;
