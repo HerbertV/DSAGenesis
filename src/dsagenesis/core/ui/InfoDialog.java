@@ -141,11 +141,17 @@ public class InfoDialog
  			);
 		lblG.setBounds(margin, 170, w-(2*margin + 30), 30);
  		bgPanel.add(lblG);
+ 		
+ 		WebLinkButton btnMIT = new WebLinkButton("opensource.org/licenses/MIT");
+ 		btnMIT.setLocation(w-margin-btnMIT.getWidth(), 170);
+ 		btnMIT.setOpaque(false);
+		bgPanel.add(btnMIT);
+		
 		
  		JLabel lblGithub = new JLabel();
  		lblGithub.setForeground(Color.LIGHT_GRAY);
  		lblGithub.setFont(lblD.getFont().deriveFont(9.0f));
- 		lblGithub.setText("DSA Genesis Github:");
+ 		lblGithub.setText("Quelldaten DSA Genesis @ Github:");
  		lblGithub.setBounds(margin, 210, w-(2*margin + 30), 12);
  		lblGithub.setHorizontalAlignment(JLabel.RIGHT);
 		bgPanel.add(lblGithub);
