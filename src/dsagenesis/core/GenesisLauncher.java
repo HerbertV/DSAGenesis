@@ -26,6 +26,8 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -39,6 +41,7 @@ import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.hero.HeroEditorFrame;
 import dsagenesis.editor.metadata.MetaEditorFrame;
 
+import jhv.image.ImageResource;
 import jhv.swing.launcher.AbstractLauncher;
 import jhv.util.debug.DebugLevel;
 import jhv.util.debug.logger.ApplicationLogger;
@@ -65,6 +68,8 @@ public class GenesisLauncher
 	public static final String ACMD_SETUP = "setup";
 	
 	public static final String ACMD_EXIT = "exit";
+	
+	public static final String ACMD_MINIMIZE = "minimize";
 	
 	// ============================================================================
 	//  Variables
@@ -197,6 +202,27 @@ public class GenesisLauncher
 		
 		super.setupLayout(title, icon, background);
 		
+		// TODO
+		// win minimize
+		this.addImageButton(
+				defaultWidth-51,
+				3, 
+				24, 
+				24, 
+				(new ImageResource("images/icons/winMinimize.gif",this)).getImageIcon(), 
+				ACMD_MINIMIZE
+			);
+		
+		// win close 
+		this.addImageButton(
+				defaultWidth-28,
+				3, 
+				24, 
+				24, 
+				(new ImageResource("images/icons/winClose.gif",this)).getImageIcon(), 
+				ACMD_EXIT
+			);
+		
 		// version label
 		JLabel lblV = new JLabel();
 		lblV.setHorizontalAlignment(JLabel.CENTER);
@@ -234,7 +260,6 @@ public class GenesisLauncher
 				{ "Core Data Editor", ACMD_LAUNCH_CORE, "10" },
 				{ "Meta Data Editor", ACMD_LAUNCH_META, "0" },
 				{ "Hero Editor", ACMD_LAUNCH_HERO, "0" },
-				{ "Schlieﬂen", ACMD_EXIT, "10" }
 			};
 		
 		int additionalY = 0;
@@ -242,7 +267,7 @@ public class GenesisLauncher
 		{
 			additionalY += Integer.parseInt(btnList[i][2]);
 			
-			this.addButton(
+			this.addTextButton(
 					margin,	//x
 					90 + (i*(btnHeight +btnPadding)) + additionalY, //y 
 					defaultWidth - 2*margin, 			//width
@@ -254,7 +279,7 @@ public class GenesisLauncher
 	}
 	
 	/**
-	 * addButton
+	 * addTextButton
 	 *  
 	 * @param x
 	 * @param y
@@ -263,7 +288,7 @@ public class GenesisLauncher
 	 * @param label
 	 * @param cmd
 	 */
-	protected void addButton(
+	protected void addTextButton(
 			int x, 
 			int y, 
 			int width, 
@@ -285,6 +310,46 @@ public class GenesisLauncher
 		imgPanel.add(btn);
 	}
 	
+	/**
+	 * addImageButton
+	 *  
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param icon
+	 * @param cmd
+	 */
+	protected void addImageButton(
+			int x, 
+			int y, 
+			int width, 
+			int height, 
+			Icon icon, 
+			String cmd 
+		)
+	{
+		JButton btn = new JButton();
+		btn.setIcon(icon);
+		btn.setActionCommand(cmd);
+		btn.addActionListener(this);
+		btn.setBounds(x, y, width, height);
+		btn.setVisible(true);
+		btn.setOpaque(false);
+		btn.setFocusPainted(false);
+		btn.setBorder(BorderFactory.createEmptyBorder());
+		// to avoid z fighting
+		imgPanel.add(btn);
+	}
+	
+	/**
+	 * Overridden to de-iconfy the window. 
+	 */
+	public static void bringToFront()
+	{
+		AbstractLauncher.bringToFront();
+		GenesisLauncher.openLauncher.setExtendedState(NORMAL);
+	}
 	
 	/**
 	 * actionPerformed.
@@ -295,7 +360,7 @@ public class GenesisLauncher
 	@Override
 	public void actionPerformed(ActionEvent ae) 
 	{
-		if( ae.getActionCommand().equals(ACMD_EXIT))
+		if( ae.getActionCommand().equals(ACMD_EXIT) )
 		{
 			boolean doClose = true;
 			
@@ -328,31 +393,36 @@ public class GenesisLauncher
 			if( doClose )
 			{
 				ApplicationLogger.logInfo("Application exited by user.");
+				this.dispose();
 				System.exit(0);
 			}
 			
-		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_CORE)) {
+		} else if( ae.getActionCommand().equals(ACMD_MINIMIZE) ) {
+			this.setExtendedState(ICONIFIED);
+			
+		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_CORE) ) {
+		
 			if( openFrame != null )
 				return;
 			
 			openFrame = new CoreEditorFrame();
 			openFrame.setVisible(true);
 			
-		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_META)) {
+		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_META) ) {
 			if( openFrame != null )
 				return;
 			
 			openFrame = new MetaEditorFrame();
 			openFrame.setVisible(true);
 			
-		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_HERO)) {
+		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_HERO) ) {
 			if( openFrame != null )
 				return;
 			
 			openFrame = new HeroEditorFrame();
 			openFrame.setVisible(true);
 			
-		} else if( ae.getActionCommand().equals(ACMD_SETUP)) {
+		} else if( ae.getActionCommand().equals(ACMD_SETUP) ) {
 			if( openFrame != null )
 				return;
 			
