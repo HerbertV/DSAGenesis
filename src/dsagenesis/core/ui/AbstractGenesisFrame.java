@@ -100,6 +100,7 @@ public abstract class AbstractGenesisFrame
 		this.saveConfig();
 		
 		GenesisLauncher.openFrame = null;
+		GenesisLauncher.bringToFront();
 		
 		this.setVisible(false);
 		this.dispose();

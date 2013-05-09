@@ -45,7 +45,17 @@ public abstract class AbstractGenesisDialog
 	// ============================================================================
 		
 	/**
-	 * Constructor 1 with frame.
+	 * Constructor without owner.
+	 */
+	public AbstractGenesisDialog() 
+	{
+		super();
+		
+		this.setIconImage(GenesisConfig.APP_ICON);
+	}
+	
+	/**
+	 * Constructor with frame.
 	 * 
 	 * @param f
 	 */
@@ -57,7 +67,7 @@ public abstract class AbstractGenesisDialog
 	}
 	
 	/**
-	 * Constructor 2 with window.
+	 * Constructor with window.
 	 * 
 	 * @param w
 	 */

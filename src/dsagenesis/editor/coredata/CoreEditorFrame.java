@@ -23,6 +23,7 @@ package dsagenesis.editor.coredata;
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
 import dsagenesis.core.ui.AbstractGenesisFrame;
+import dsagenesis.core.ui.HelpDialog;
 import dsagenesis.core.ui.InfoDialog;
 
 import javax.swing.JToolBar;
@@ -41,6 +42,8 @@ import javax.swing.SwingConstants;
 import jhv.image.ImageResource;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.net.MalformedURLException;
 
 /**
  * JFrame for the Core Data Editor.
@@ -192,6 +195,19 @@ public class CoreEditorFrame
 			JMenuItem mntmHelp = new JMenuItem("Hilfe");
 			mntmHelp.setIcon(irHelp.getImageIcon());
 			mntmHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+			mntmHelp.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					File page = new File("./help/coreDataEditor.html");
+					try {
+						HelpDialog d = HelpDialog.getInstance();
+						d.openURL(page.toURI().toURL().toExternalForm());
+						d.setVisible(true);
+					} catch (MalformedURLException e) {
+						// nothing to do
+					}
+					
+				}
+			});
 			mnHelp.add(mntmHelp);
 		}
 		

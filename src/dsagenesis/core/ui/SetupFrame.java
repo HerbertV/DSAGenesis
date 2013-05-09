@@ -59,9 +59,21 @@ public class SetupFrame
 	// ============================================================================
 	
 	@Override
-	public boolean isSaved() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isSaved()
+	{
+		return true;
 	}
 
+	@Override
+	public void applyConfig()
+	{
+		// we dont need the default handling
+	}
+	
+	@Override
+	public void saveConfig()
+	{
+		// we dont need the default handling
+	}
+	
 }

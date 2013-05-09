@@ -57,7 +57,7 @@ public class InfoDialog
 	public InfoDialog(JFrame f)
 	{
 		super(f);
-		initUI();
+		setupLayout();
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class InfoDialog
 	public InfoDialog(JWindow w)
 	{
 		super(w);
-		initUI();
+		setupLayout();
 	}
 	
 	
@@ -79,7 +79,7 @@ public class InfoDialog
 	/**
 	 * 
 	 */
-	private void initUI()
+	private void setupLayout()
 	{
 		int margin = 10;
 		int w = 400;
