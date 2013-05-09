@@ -158,6 +158,8 @@
 				<filename name="images/**/*.jpg"/>
 				</or>
 			</fileset>
+			<!-- includes the javaFX classes otherwise they are not found -->
+			<zipfileset excludes="META-INF/*.SF" src="${dir.javafx}"/>
 		</jar>
 		
 	</target>
