@@ -13,5 +13,6 @@ dir.workspace=absolute path to your eclipse workspace
 dir.src=${dir.workspace}DSAGenesis/
 dir.build=${dir.workspace}DSAGenesis_Release/
 dir.javafx=C:/Program Files (x86)/Java/jre7/lib/jfxrt.jar
+dir.javafx.ant=C\:/Program Files (x86)/Java/jdk1.7.0_21/lib
 
 dir.lib=libs

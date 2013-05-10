@@ -2,7 +2,7 @@
 <!-- 
 	ANT BUILDER
  -->
-<project default="process" name="DSA Genesis build file">
+<project default="process" name="DSA Genesis build file" xmlns:fx="javafx:com.sun.javafx.tools.ant">
     <description>
     	Master build file for releasing DSA Genesis
     </description>
@@ -34,6 +34,12 @@
 		</classpath>
 	</taskdef>
 	
+	<taskdef 
+			resource="com/sun/javafx/tools/ant/antlib.xml"      
+	    	uri="javafx:com.sun.javafx.tools.ant"
+	    	classpath="${dir.javafx.ant}/ant-javafx.jar"
+	    />      
+	
 	<property name="project.jar" value="${project.name.short}.jar"/>
 		
 	
@@ -58,57 +64,6 @@
 	<!-- increment build -->
 	<buildnumber file="${dir.src}/ant/buildproject.num" />
 		
-	
-
-<!-- 
-	===========================================================================
-		Target create_manifest
-	===========================================================================
- -->	
-	<target name="create_manifest" 
-			description="Creates manifest for our jar">
-		<delete file="${dir.src}MANIFEST.MF"/>
-			
-		<pathconvert property="manifest.classpath" pathsep=" ">
-			<path refid="path.jarlib" />
-			<mapper>
-				<chainedmapper>
-					<flattenmapper />
-					<globmapper from="*.jar" to="${dir.lib}/*.jar" />
-				</chainedmapper>
-			</mapper>
-		</pathconvert>
-					
-		<echo message="Ant Build: ${project.name.long} ${project.version.num}-build${build.number}"/>
-			
-		<manifest file="${dir.src}MANIFEST.MF">
-			<!-- java attributes -->
-			<attribute name="Class-Path" 
-	       			value="${manifest.classpath}"/>
-			<attribute name="Main-Class"
-					value="dsagenesis.core.GenesisLauncher"/>
-						
-			<!-- info attributes -->
-			<attribute name="Implementation-Title" 
-					value="${project.name.long}"/>
-			<attribute name="Implementation-Version" 
-					value="${project.version.num}-b${build.number}"/>
-		    
-			<attribute name="Build-by" 
-	    			value="${author.name} &lt;${author.email}&gt;"/>
-			<attribute name="Build-Date" 
-				   	value="${tsNow}"/>
-			
-			<attribute name="Copyright" 
-					value="(c) ${copyright.startyear}-${tsYear} ${author.name} - Licensed under MIT License."/>
-			
-			<!-- launcher attributes -->
-			<attribute name="Short-Version" 
-					value="${project.version.num}"/>
-		    
-		</manifest>
-	</target>
-
 		
 <!-- 
 	===========================================================================
@@ -130,7 +85,7 @@
 		DEFAULT Target BUILD
 	===========================================================================
  -->	
-	<target name="process" depends="create_manifest, copy_libs">
+	<target name="process" depends="copy_libs">
 		<echo message="DSA Genesis building ... "/>
 		<echo message="${ant.version}"/>
 		<echo message="${tsNow}"/>
@@ -141,26 +96,81 @@
 		<echo>
 		</echo>
 		
+		<!-- classpath for manifest -->
+		<pathconvert property="manifest.classpath" pathsep=" ">
+			<path refid="path.jarlib" />
+			<mapper>
+				<chainedmapper>
+					<flattenmapper />
+					<globmapper from="*.jar" to="${dir.lib}/*.jar" />
+				</chainedmapper>
+			</mapper>
+		</pathconvert>
+					
+		<echo message="Ant Build: ${project.name.long} ${project.version.num}-build${build.number}"/>
+		
 		<!-- create batch file --> 
 		<echo file="${dir.build}START_ME.BAT" append="false">java -jar ${project.jar}</echo>
 		
+		<!-- Mark application as a Swing app -->
+		<fx:application id="DSAGenesis" 
+				mainClass="dsagenesis.core.GenesisLauncher"
+				toolkit="swing"
+			/>
+
+		
 		<!-- create jar -->
 		<delete file="${dir.build}${project.jar}"/>
-		<jar destfile="${dir.build}${project.jar}" 
-				manifest="${dir.src}MANIFEST.MF">
+				
+		<fx:jar destfile="${dir.build}${project.jar}">
+			<manifest>
+				<!-- java attributes -->
+				<attribute name="Class-Path" 
+		       			value="${manifest.classpath}"/>
+				<attribute name="Main-Class"
+						value="dsagenesis.core.GenesisLauncher"/>
+							
+				<!-- info attributes -->
+				<attribute name="Implementation-Title" 
+						value="${project.name.long}"/>
+				<attribute name="Implementation-Version" 
+						value="${project.version.num}-b${build.number}"/>
+			    
+				<attribute name="Build-by" 
+		    			value="${author.name} &lt;${author.email}&gt;"/>
+				<attribute name="Build-Date" 
+					   	value="${tsNow}"/>
+				
+				<attribute name="Copyright" 
+						value="(c) ${copyright.startyear}-${tsYear} ${author.name} - Licensed under MIT License."/>
+				
+				<!-- launcher attributes -->
+				<attribute name="Short-Version" 
+						value="${project.version.num}"/>
+			    
+			</manifest>
+		    <fx:application refid="DSAGenesis"/>
 			<fileset dir="${dir.src}bin/">
 				<filename name="**/*.class"/>
 			</fileset>	
 			<fileset dir="${dir.src}">
 				<or>
-				<filename name="images/**/*.png"/>
-				<filename name="images/**/*.gif"/>
-				<filename name="images/**/*.jpg"/>
+					<filename name="images/**/*.png"/>
+					<filename name="images/**/*.gif"/>
+					<filename name="images/**/*.jpg"/>
 				</or>
 			</fileset>
-			<!-- includes the javaFX classes otherwise they are not found -->
-			<zipfileset excludes="META-INF/*.SF" src="${dir.javafx}"/>
-		</jar>
+		</fx:jar>
+		 
+		<fx:deploy width="800" height="600" outdir="${dir.build}" 
+		        outfile="DSAGenesis">
+		    <fx:info title="DSA Genesis"/>
+			<fx:application refid="DSAGenesis"/>
+		    <fx:resources>
+		        <fx:fileset dir="${dir.build}" includes="${dir.build}${project.jar}"/>
+		    </fx:resources>
+		</fx:deploy> 
+	
 		
 	</target>
 
