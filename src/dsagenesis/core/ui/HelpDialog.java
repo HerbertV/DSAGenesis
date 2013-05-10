@@ -80,6 +80,7 @@ public class HelpDialog
 		this.setLocationRelativeTo(null);
 		
 		JToolBar toolBar = new JToolBar();
+		toolBar.setRollover(true);
 		toolBar.setFloatable(false);
 		getContentPane().add(toolBar, BorderLayout.NORTH);
 		
@@ -123,6 +124,8 @@ public class HelpDialog
 		toolBar.add(btnWiki);
 		
 		webView = new JFXWebView();
+		webView.setupWindowTitle(this, "Hilfe | ");
+		webView.createJavaFX();
 		this.getContentPane().add(webView);		
 	}
 	
