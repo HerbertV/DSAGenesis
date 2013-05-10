@@ -25,6 +25,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -42,6 +43,7 @@ import dsagenesis.editor.hero.HeroEditorFrame;
 import dsagenesis.editor.metadata.MetaEditorFrame;
 
 import jhv.image.ImageResource;
+import jhv.io.PathCreator;
 import jhv.swing.launcher.AbstractLauncher;
 import jhv.util.debug.DebugLevel;
 import jhv.util.debug.logger.ApplicationLogger;
@@ -133,7 +135,8 @@ public class GenesisLauncher
 		GenesisConfig.APP_START_TIME = time;
 		
 		// init logger
-		if( conf.isLoggerEnabled() )
+		if( conf.isLoggerEnabled() 
+				|| conf.isFirstLaunch() )
 		{
 			ApplicationLogger.getInstance(
 					conf.getAppTitle(), 
@@ -173,11 +176,12 @@ public class GenesisLauncher
 			ApplicationLogger.logInfo(systemInfo);
 			ApplicationLogger.separator();
 			ApplicationLogger.newLine();
-			
-			// set now the correct level
-			ApplicationLogger.setLevel(conf.getDebugLevel());
 		}
 		
+		firstLaunch();
+		
+		// set now the correct level
+		ApplicationLogger.setLevel(conf.getDebugLevel());
 		
 		GenesisLauncher me = new GenesisLauncher(
 				conf.getAppTitle(), 
@@ -189,6 +193,37 @@ public class GenesisLauncher
 		GenesisLauncher.open();
 	}
 	
+	/**
+	 * firstLaunch
+	 * 
+	 * executed if the application starts for the very first time.
+	 */
+	private static void firstLaunch()
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		if( !conf.isFirstLaunch() )
+			return;
+		
+		ApplicationLogger.logInfo("doing first launch ...");
+		
+		String[] arr = {
+				conf.getPathArchtype(),
+				conf.getPathCulture(),
+				conf.getPathHero(),
+				conf.getPathProfession(),
+				conf.getPathRace(),
+				conf.getPathTemplate()
+			};
+		
+		try {
+			PathCreator.createPathes(arr);
+		} catch( IOException e ) {
+			ApplicationLogger.logError(e);
+		}
+		
+		conf.setFirstLaunchDone();	
+	}
 	
 	/**
 	 * 
@@ -209,7 +244,6 @@ public class GenesisLauncher
 		
 		super.setupLayout(title, icon, background);
 		
-		// TODO
 		// win minimize
 		this.addImageButton(
 				defaultWidth-51,

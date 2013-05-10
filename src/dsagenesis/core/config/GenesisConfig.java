@@ -21,12 +21,11 @@
 package dsagenesis.core.config;
 
 import jhv.util.config.AbstractConfig;
-import jhv.util.config.IDefaultConfigKeys;
 
 
 public class GenesisConfig 
 		extends AbstractConfig 
-		implements IDefaultConfigKeys, IGenesisConfigKeys
+		implements IGenesisConfigKeys
 {
 
 	// ============================================================================
@@ -69,43 +68,86 @@ public class GenesisConfig
 	}
 	
 	/**
-	 * getAppTitle
+	 * located in installation dir.
 	 * 
 	 * @return
 	 */
-	public String getAppTitle()
+	public String getPathData()
 	{
-		return this.getString(KEY_APPTITLE);
+		return  System.getProperty("user.dir") 
+				+ System.getProperty("file.separator")
+				+ getString(GenesisConfig.KEY_PATH_DATA) 
+				+ System.getProperty("file.separator");
 	}
 	
 	/**
-	 * getAppIcon
+	 * located in users home dir.
 	 * 
 	 * @return
 	 */
-	public String getAppIcon()
+	public String getPathUserHome()
 	{
-		return this.getString(KEY_APPICON);
+		return  System.getProperty("user.home") 
+				+ System.getProperty("file.separator")
+				+ getString(GenesisConfig.KEY_PATH_USER_HOME) 
+				+ System.getProperty("file.separator");
 	}
 	
-	/**
-	 * getDebugLevel
-	 * 
-	 * @return
-	 */
-	public int getDebugLevel()
+	public String getPathTemplate()
 	{
-		return this.getInt(KEY_DEBUG_LEVEL);
+		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_TEMPLATE) 
+				+ System.getProperty("file.separator");
 	}
 	
-	/**
-	 * isLoggerEnabled
-	 * 
-	 * @return
-	 */
-	public boolean isLoggerEnabled()
+	public String getPathTemplateHome()
 	{
-		return this.getBoolean(KEY_IS_LOGGER_ENABLED);
+		return  getPathUserHome() 
+				+ getString(GenesisConfig.KEY_PATH_TEMPLATE) 
+				+ System.getProperty("file.separator");
+	}
+	
+	public String getPathHero()
+	{
+		return  getPathUserHome() 
+				+ getString(GenesisConfig.KEY_PATH_HERO) 
+				+ System.getProperty("file.separator");
+	}
+	
+	public String getPathArchtype()
+	{
+		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_ARCHTYPE) 
+				+ System.getProperty("file.separator");
+	}
+	
+	public String getPathRace()
+	{
+		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_RACE) 
+				+ System.getProperty("file.separator");
+	}
+	
+	public String getPathCulture()
+	{
+		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_CULTURE) 
+				+ System.getProperty("file.separator");
+	}
+	
+	public String getPathProfession()
+	{
+		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_PROFESSION) 
+				+ System.getProperty("file.separator");
+	}
+	
+	
+	public String getPathRandomNameGenerator()
+	{
+		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_NAME) 
+				+ System.getProperty("file.separator");
 	}
 	
 	
@@ -121,6 +163,7 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_DEBUG_LEVEL, "0");
 		this.setSystemProperty(KEY_IS_LOGGER_ENABLED, "false");
 		this.setSystemProperty(KEY_LANGUAGE, "de_DE");
+		this.setSystemProperty(KEY_IS_FIRST_LAUNCH,"true");
 		
 		// Core Editor defaults
 		this.setSystemProperty(KEY_WIN_BASE+"."+KEY_SIZE, "800,600");
@@ -138,6 +181,7 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_POSITION, "0,0");
 		
 		// path defaults
+		this.setSystemProperty(KEY_PATH_USER_HOME, "DSAGenesis");
 		this.setSystemProperty(KEY_PATH_DATA, "data");
 		this.setSystemProperty(KEY_PATH_TEMPLATE, "templates");
 		this.setSystemProperty(KEY_PATH_HERO, "helden");
