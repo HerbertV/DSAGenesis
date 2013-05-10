@@ -51,4 +51,39 @@ public interface IGenesisConfigKeys
 	 */
 	public static final String KEY_WIN_HERO = "win.hero";
 
+	/**
+	 * path keys
+	 */
+	public static final String KEY_PATH_DATA = "path.data";
+	public static final String KEY_PATH_TEMPLATE = "path.template";
+	public static final String KEY_PATH_HERO = "path.hero";
+	public static final String KEY_PATH_ARCHTYPE = "path.archtype";
+	public static final String KEY_PATH_RACE = "path.race";
+	public static final String KEY_PATH_CULTURE = "path.culture";
+	public static final String KEY_PATH_PROFESSION = "path.profession";
+	public static final String KEY_PATH_NAME = "path.name";
+	
+	/**
+	 * database keys
+	 */
+	public static final String KEY_DB_FILE = "database.file";
+
+	/**
+	 * default start generation points
+	 */
+	public static final String KEY_DEFAULT_START_GP = "default.startGP";
+	/**
+	 * default maximum disadvantage generation points
+	 */
+	public static final String KEY_DEFAULT_MAX_DISADVANTAGE_GP = "default.maxDisadvantageGP";
+	/**
+	 * default maximum attribute generation points
+	 */
+	public static final String KEY_DEFAULT_MAX_ATTRIBUTE_GP = "default.maxAttributeGP";
+	/**
+	 * default maximum bad attributes generation points
+	 */
+	public static final String KEY_DEFAULT_MAX_BADATTRIBUTE_GP = "default.maxBadAttributeGP";
+	
+	
 }

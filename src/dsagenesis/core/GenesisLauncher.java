@@ -165,13 +165,20 @@ public class GenesisLauncher
 						+ resolutions[i].width + "x" 
 						+ resolutions[i].height + "\n";
 			
+			systemInfo += "\nuser.dir: " 
+					+ System.getProperty("user.dir") + "\n"
+					+ "user.home: " 
+					+ System.getProperty("user.home");
+			
 			ApplicationLogger.logInfo(systemInfo);
 			ApplicationLogger.separator();
-				
+			ApplicationLogger.newLine();
 			
-			
+			// set now the correct level
 			ApplicationLogger.setLevel(conf.getDebugLevel());
 		}
+		
+		
 		GenesisLauncher me = new GenesisLauncher(
 				conf.getAppTitle(), 
 				conf.getAppIcon(), 

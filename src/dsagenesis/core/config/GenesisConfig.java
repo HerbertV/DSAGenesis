@@ -136,6 +136,24 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_SIZE, "800,600");
 		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_ISFULLSCREEN, "false");
 		this.setSystemProperty(KEY_WIN_HERO+"."+KEY_POSITION, "0,0");
+		
+		// path defaults
+		this.setSystemProperty(KEY_PATH_DATA, "data");
+		this.setSystemProperty(KEY_PATH_TEMPLATE, "templates");
+		this.setSystemProperty(KEY_PATH_HERO, "helden");
+		this.setSystemProperty(KEY_PATH_ARCHTYPE, "archetypen");
+		this.setSystemProperty(KEY_PATH_RACE, "rassen");
+		this.setSystemProperty(KEY_PATH_CULTURE, "kulturen");
+		this.setSystemProperty(KEY_PATH_PROFESSION, "professionen");
+		this.setSystemProperty(KEY_PATH_NAME, "namen");
+		//TODO
+		this.setSystemProperty(KEY_DB_FILE, "TODO");
+		
+		// default settings hero editor
+		this.setSystemProperty(KEY_DEFAULT_START_GP, "110");
+		this.setSystemProperty(KEY_DEFAULT_MAX_DISADVANTAGE_GP, "50");
+		this.setSystemProperty(KEY_DEFAULT_MAX_ATTRIBUTE_GP, "100");
+		this.setSystemProperty(KEY_DEFAULT_MAX_BADATTRIBUTE_GP, "30");
 	}
 
 	@Override

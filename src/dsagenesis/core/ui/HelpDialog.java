@@ -24,6 +24,8 @@ import java.awt.BorderLayout;
 
 import jhv.image.ImageResource;
 import jhv.swing.webView.JFXWebView;
+import jhv.util.debug.logger.ApplicationLogger;
+
 import javax.swing.JToolBar;
 import javax.swing.JButton;
 import java.awt.Component;
@@ -166,7 +168,7 @@ public class HelpDialog
 			try {
 				webView.openURL(page.toURI().toURL().toExternalForm());
 			} catch (MalformedURLException e) {
-				// nothing to do
+				ApplicationLogger.logError(e);
 			}
 		
 		} else if( ae.getActionCommand().equals(ACMD_FORWARD) ) {
