@@ -59,7 +59,31 @@ public abstract class AbstractGenesisFrame
 	// ============================================================================
 	
 	/**
-	 * Constructor.
+	 * Constructor 1.
+	 * 
+	 * @param configkey
+	 */
+	public AbstractGenesisFrame(
+			String configkey
+		) 
+	{
+		super();
+		
+		this.setIconImage(GenesisConfig.APP_ICON);
+		this.configKey = configkey;
+		
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                close(e);
+            }
+        });
+		
+		this.applyConfig();
+	}
+	
+	/**
+	 * Constructor 2.
 	 * 
 	 * @param title
 	 * @param configkey
