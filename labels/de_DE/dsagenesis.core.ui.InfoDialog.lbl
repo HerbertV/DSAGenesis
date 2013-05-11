@@ -1,0 +1,13 @@
+title=Info
+
+lblDisclaimer=<html><center>"DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA und RIESLAND sind eingetragene Marken<br>der Significant Fantasy Medienrechte GbR.<br>Ohne vorherige schriftliche Genehmigung der Ulisses Medien und Spiel Distribution GmbH ist eine Verwendung der genannten Markenzeichen nicht gestattet."</center></html>
+btnUlisses=www.ulisses-spiele.de
+
+lblCopyright=<html>DSA Genesis ist ein inoffizelles Open Source Projekt.<br>(c)2013 by Herbert Veitengruber. Lizensiert über die MIT-License.</html>
+btnMIT=opensource.org/licenses/MIT
+
+lblGithub=Quelldaten DSA Genesis @ Github:
+btnGithub=github.com/HerbertV/DSAGenesis
+
+lblWiki=DSA Genesis Wiki:
+btnWiki=github.com/HerbertV/DSAGenesis/wiki

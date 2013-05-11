@@ -28,6 +28,7 @@ import javax.swing.JWindow;
 
 import dsagenesis.core.config.GenesisConfig;
 
+import jhv.component.LabelResource;
 import jhv.image.ImageResource;
 import jhv.swing.JImagePanel;
 
@@ -39,10 +40,17 @@ public class InfoDialog
 {
 
 	// ============================================================================
-	//  Variables
+	//  Constants
 	// ============================================================================
 		
 	private static final long serialVersionUID = 1L;
+	
+	
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+	
+	private LabelResource labelResource;
 	
 	
 	// ============================================================================
@@ -85,7 +93,9 @@ public class InfoDialog
 		int w = 400;
 		int h = 300;
 		
-		this.setTitle("Info");
+		this.loadLabels();
+		
+		this.setTitle(labelResource.getProperty("title", "title"));
 		
 		this.setSize(w,h);
 		this.setResizable(false);
@@ -118,31 +128,30 @@ public class InfoDialog
  		lblD.setForeground(Color.LIGHT_GRAY);
  		lblD.setFont(lblD.getFont().deriveFont(9.0f));
  		lblD.setText(
- 				"<html>„DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA und RIESLAND " 
- 					+ "sind eingetragene Marken der Significant Fantasy Medienrechte GbR.<br>" 
- 					+ "Ohne vorherige schriftliche Genehmigung der Ulisses Medien und Spiel Distribution GmbH " 
- 					+ "ist eine Verwendung der genannten Markenzeichen nicht gestattet.“</html>"
+ 				labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
  			);
  		lblD.setBounds(margin, 100, w-(2*margin + 30), 60);
  		bgPanel.add(lblD);
  		
- 		WebLinkButton btnUlisses = new WebLinkButton("www.ulisses-spiele.de");
+ 		WebLinkButton btnUlisses = new WebLinkButton(
+ 				labelResource.getProperty("btnUlisses", "btnUlisses")
+ 			);
  		btnUlisses.setLocation(w-margin-btnUlisses.getWidth(), 100);
  		btnUlisses.setOpaque(false);
 		bgPanel.add(btnUlisses);
 		
-		JLabel lblG = new JLabel();
-		lblG.setForeground(Color.LIGHT_GRAY);
-		lblG.setFont(lblD.getFont().deriveFont(9.0f));
-		lblG.setText(
- 				"<html>DSA Genesis ist ein inoffizelles Open Source Projekt.<br>"
- 					+ "(c)2013 by Herbert Veitengruber. Lizensiert über die MIT-License."
- 					+"</html>"
+		JLabel lblCopyright = new JLabel();
+		lblCopyright.setForeground(Color.LIGHT_GRAY);
+		lblCopyright.setFont(lblCopyright.getFont().deriveFont(9.0f));
+		lblCopyright.setText(
+				labelResource.getProperty("lblCopyright", "lblCopyright")
  			);
-		lblG.setBounds(margin, 170, w-(2*margin + 30), 30);
- 		bgPanel.add(lblG);
+		lblCopyright.setBounds(margin, 170, w-(2*margin + 30), 30);
+ 		bgPanel.add(lblCopyright);
  		
- 		WebLinkButton btnMIT = new WebLinkButton("opensource.org/licenses/MIT");
+ 		WebLinkButton btnMIT = new WebLinkButton(
+ 				labelResource.getProperty("btnMIT", "btnMIT")
+ 			);
  		btnMIT.setLocation(w-margin-btnMIT.getWidth(), 170);
  		btnMIT.setOpaque(false);
 		bgPanel.add(btnMIT);
@@ -151,12 +160,16 @@ public class InfoDialog
  		JLabel lblGithub = new JLabel();
  		lblGithub.setForeground(Color.LIGHT_GRAY);
  		lblGithub.setFont(lblD.getFont().deriveFont(9.0f));
- 		lblGithub.setText("Quelldaten DSA Genesis @ Github:");
+ 		lblGithub.setText(
+ 				labelResource.getProperty("lblGithub", "lblGithub")
+ 			);
  		lblGithub.setBounds(margin, 210, w-(2*margin + 30), 12);
  		lblGithub.setHorizontalAlignment(JLabel.RIGHT);
 		bgPanel.add(lblGithub);
 		
- 		WebLinkButton btnGithub = new WebLinkButton("github.com/HerbertV/DSAGenesis");
+ 		WebLinkButton btnGithub = new WebLinkButton(
+ 				labelResource.getProperty("btnGithub", "btnGithub")
+ 			);
  		btnGithub.setLocation(w-margin-btnGithub.getWidth(), 200);
  		btnGithub.setOpaque(false);
 		bgPanel.add(btnGithub);
@@ -164,15 +177,31 @@ public class InfoDialog
  		JLabel lblWiki = new JLabel();
  		lblWiki.setForeground(Color.LIGHT_GRAY);
  		lblWiki.setFont(lblD.getFont().deriveFont(9.0f));
- 		lblWiki.setText("DSA Genesis Wiki:");
+ 		lblWiki.setText(
+ 				labelResource.getProperty("lblWiki", "lblWiki")
+ 			);
  		lblWiki.setBounds(margin, 240, w-(2*margin + 30), 12);
  		lblWiki.setHorizontalAlignment(JLabel.RIGHT);
 		bgPanel.add(lblWiki);
 		
- 		WebLinkButton btnWiki = new WebLinkButton("github.com/HerbertV/DSAGenesis/wiki");
+ 		WebLinkButton btnWiki = new WebLinkButton(
+ 				labelResource.getProperty("btnWiki", "btnWiki")
+ 			);
  		btnWiki.setLocation(w-margin-btnWiki.getWidth(), 230);
  		btnWiki.setOpaque(false);
 		bgPanel.add(btnWiki);
+	}
+
+	@Override
+	public void loadLabels() 
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		labelResource = new LabelResource(
+				this,
+				conf.getLanguage(), 
+				"labels"
+			);
 	}
 
 }

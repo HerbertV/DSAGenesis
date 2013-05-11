@@ -24,13 +24,16 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JWindow;
 
+import jhv.component.ILabeledComponent;
+
 import dsagenesis.core.config.GenesisConfig;
 
 /**
  * Abstract base for all Genesis JDialogs
  */
 public abstract class AbstractGenesisDialog 
-		extends JDialog 
+		extends JDialog
+		implements ILabeledComponent
 {
 
 	// ============================================================================

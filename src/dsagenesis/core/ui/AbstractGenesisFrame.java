@@ -31,13 +31,14 @@ import dsagenesis.core.GenesisLauncher;
 import dsagenesis.core.config.GenesisConfig;
 
 import jhv.component.IConfigurableComponent;
+import jhv.component.ILabeledComponent;
 
 /**
  * Abstract base for all Genesis JFrames
  */
 public abstract class AbstractGenesisFrame 
 		extends JFrame 
-		implements IConfigurableComponent
+		implements IConfigurableComponent, ILabeledComponent
 		
 {
 	

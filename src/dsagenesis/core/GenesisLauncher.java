@@ -293,7 +293,6 @@ public class GenesisLauncher
 		lblD.setForeground(Color.LIGHT_GRAY);
 		lblD.setFont(lblD.getFont().deriveFont(8.0f));
 		
-		System.out.println(labelResource.getProperty("lblDisclaimer", "lblDisclaimer"));
 		lblD.setText(
 				labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
 			);
