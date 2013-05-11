@@ -1,5 +1,5 @@
 /*
-	TableIndex
+	CoreDataTableIndex
 	contains an entry for each table.
 	
 		ti_name: internal name of the table 
@@ -13,7 +13,7 @@
 		ti_editable: to flag a table read only used for internal tables
 			that only contain cross references.
 */
-CREATE TABLE [TableIndex] (
+CREATE TABLE [CoreDataTableIndex] (
 	[ID] INTEGER  PRIMARY KEY NOT NULL,
 	[ti_name] VARCHAR(20)  NOT NULL,
 	[ti_prefix] VARCHAR(3)  NOT NULL,
