@@ -1,0 +1,18 @@
+title=Core Data Editor
+
+copy=Kopieren
+paste=Einfügen
+
+addRow=Zeile Hinzufügen
+deleteRow=Zeile Löschen
+
+mnFile=Datei
+mntmBackup=Datenbank Backup
+mntmImport=Import
+mntmExport=Export
+
+mnEdit=Berarbeiten
+
+mnHelp=Hilfe
+mntmInfo=Info
+mntmHelp=Hilfe

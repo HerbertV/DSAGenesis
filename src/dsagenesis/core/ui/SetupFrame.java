@@ -51,6 +51,7 @@ public class SetupFrame
 	 */
 	public SetupFrame()
 	{
+		// TODO use other constructor and implement labels
 		super(
 				GenesisConfig.getInstance().getAppTitle() + " - Setup",
 				IGenesisConfigKeys.KEY_WIN_SETUP
@@ -82,7 +83,6 @@ public class SetupFrame
 		
 		JButton btnSave = new JButton("Speichern");
 		panButtons.add(btnSave);
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -106,6 +106,14 @@ public class SetupFrame
 	public void saveConfig()
 	{
 		// we dont need the default handling
+	}
+
+
+	@Override
+	public void loadLabels() 
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

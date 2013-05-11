@@ -39,6 +39,7 @@ import java.awt.event.InputEvent;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
+import jhv.component.LabelResource;
 import jhv.image.ImageResource;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -53,11 +54,18 @@ public class CoreEditorFrame
 {
 
 	// ============================================================================
-	//  Variables
+	//  Constants
 	// ============================================================================
 			
 	private static final long serialVersionUID = 1L;
 
+	
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+		
+	private LabelResource labelResource;
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -67,9 +75,13 @@ public class CoreEditorFrame
 	 */
 	public CoreEditorFrame()
 	{
-		super(
-				GenesisConfig.getInstance().getAppTitle() + " - Core Editor",
-				IGenesisConfigKeys.KEY_WIN_BASE				
+		super(IGenesisConfigKeys.KEY_WIN_BASE);
+		
+		this.loadLabels();
+		this.setTitle(
+				GenesisConfig.getInstance().getAppTitle()
+					+ " - "
+					+ labelResource.getProperty("title", "title")
 			);
 		
 		initBars();
@@ -104,12 +116,12 @@ public class CoreEditorFrame
 			getContentPane().add(toolBar, BorderLayout.NORTH);
 			
 			JButton btnCopy = new JButton("");
-			btnCopy.setToolTipText("Kopieren");
+			btnCopy.setToolTipText(labelResource.getProperty("copy", "copy"));
 			btnCopy.setIcon(irCopy.getImageIcon());
 			toolBar.add(btnCopy);
 			
 			JButton btnPaste = new JButton("");
-			btnPaste.setToolTipText("Einf\u00FCgen");
+			btnPaste.setToolTipText(labelResource.getProperty("paste", "paste"));
 			btnPaste.setIcon(irPaste.getImageIcon());
 			toolBar.add(btnPaste);
 			
@@ -120,12 +132,12 @@ public class CoreEditorFrame
 			toolBar.add(separator);
 			
 			JButton btnAddRow = new JButton("");
-			btnAddRow.setToolTipText("Zeile Einf\u00FCgen");
+			btnAddRow.setToolTipText(labelResource.getProperty("addRow", "addRow"));
 			btnAddRow.setIcon(irAddRow.getImageIcon());
 			toolBar.add(btnAddRow);
 			
 			JButton btnDeleteRow = new JButton("");
-			btnDeleteRow.setToolTipText("Zeile L\u00F6schen");
+			btnDeleteRow.setToolTipText(labelResource.getProperty("deleteRow", "deleteRow"));
 			btnDeleteRow.setIcon(irDeleteRow.getImageIcon());
 			toolBar.add(btnDeleteRow);
 		}
@@ -135,33 +147,33 @@ public class CoreEditorFrame
 			JMenuBar menuBar = new JMenuBar();
 			setJMenuBar(menuBar);
 			
-			JMenu mnFile = new JMenu("Datei");
+			JMenu mnFile = new JMenu(labelResource.getProperty("mnFile", "mnFile"));
 			menuBar.add(mnFile);
 			
-			JMenuItem mntmBackup = new JMenuItem("Backup");
+			JMenuItem mntmBackup = new JMenuItem(labelResource.getProperty("mntmBackup", "mntmBackup"));
 			mntmBackup.setIcon(irBackup.getImageIcon());
 			mnFile.add(mntmBackup);
 			
 			JSeparator separator = new JSeparator();
 			mnFile.add(separator);
 			
-			JMenuItem mntmImport = new JMenuItem("Import");
+			JMenuItem mntmImport = new JMenuItem(labelResource.getProperty("mntmImport", "mntmImport"));
 			mntmImport.setIcon(irImport.getImageIcon());
 			mnFile.add(mntmImport);
 			
-			JMenuItem mntmExport = new JMenuItem("Export");
+			JMenuItem mntmExport = new JMenuItem(labelResource.getProperty("mntmExport", "mntmExport"));
 			mntmExport.setIcon(irExport.getImageIcon());
 			mnFile.add(mntmExport);
 			
-			JMenu mnEdit = new JMenu("Bearbeiten");
+			JMenu mnEdit = new JMenu(labelResource.getProperty("mnEdit", "mnEdit"));
 			menuBar.add(mnEdit);
 			
-			JMenuItem mntmCopy = new JMenuItem("Kopieren");
+			JMenuItem mntmCopy = new JMenuItem(labelResource.getProperty("copy", "copy"));
 			mntmCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
 			mntmCopy.setIcon(irCopy.getImageIcon());
 			mnEdit.add(mntmCopy);
 			
-			JMenuItem mntmPaste = new JMenuItem("Einf\u00FCgen");
+			JMenuItem mntmPaste = new JMenuItem(labelResource.getProperty("paste", "paste"));
 			mntmPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
 			mntmPaste.setIcon(irPaste.getImageIcon());
 			mnEdit.add(mntmPaste);
@@ -169,45 +181,44 @@ public class CoreEditorFrame
 			JSeparator separator_1 = new JSeparator();
 			mnEdit.add(separator_1);
 			
-			JMenuItem mntmAddRow = new JMenuItem("Zeile Einf\u00FCgen");
+			JMenuItem mntmAddRow = new JMenuItem(labelResource.getProperty("addRow", "addRow"));
 			mntmAddRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK));
 			mntmAddRow.setIcon(irAddRow.getImageIcon());
 			mnEdit.add(mntmAddRow);
 			
-			JMenuItem mntmDeleteRow = new JMenuItem("Zeile L\u00F6schen");
+			JMenuItem mntmDeleteRow = new JMenuItem(labelResource.getProperty("deleteRow", "deleteRow"));
 			mntmDeleteRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
 			mntmDeleteRow.setIcon(irDeleteRow.getImageIcon());
 			mnEdit.add(mntmDeleteRow);
 			
-			JMenu mnHelp = new JMenu("Hilfe");
+			JMenu mnHelp = new JMenu(labelResource.getProperty("mnHelp", "mnHelp"));
 			menuBar.add(mnHelp);
 			
-			JMenuItem mntmInfo = new JMenuItem("Info");
+			JMenuItem mntmInfo = new JMenuItem(labelResource.getProperty("mntmInfo", "mntmInfo"));
 			mntmInfo.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					InfoDialog d = new InfoDialog(CoreEditorFrame.this);
-					d.setVisible(true);
-				}
-			});
+					public void actionPerformed(ActionEvent arg0) {
+						InfoDialog d = new InfoDialog(CoreEditorFrame.this);
+						d.setVisible(true);
+					}
+				});
 			mntmInfo.setIcon(irInfo.getImageIcon());
 			mnHelp.add(mntmInfo);
 			
-			JMenuItem mntmHelp = new JMenuItem("Hilfe");
+			JMenuItem mntmHelp = new JMenuItem(labelResource.getProperty("mntmHelp", "mntmHelp"));
 			mntmHelp.setIcon(irHelp.getImageIcon());
 			mntmHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 			mntmHelp.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					File page = new File("./help/coreDataEditor.html");
-					try {
-						HelpDialog d = HelpDialog.getInstance();
-						d.openURL(page.toURI().toURL().toExternalForm());
-						d.setVisible(true);
-					} catch (MalformedURLException e) {
-						// nothing to do
+					public void actionPerformed(ActionEvent arg0) {
+						File page = new File("./help/coreDataEditor.html");
+						try {
+							HelpDialog d = HelpDialog.getInstance();
+							d.openURL(page.toURI().toURL().toExternalForm());
+							d.setVisible(true);
+						} catch (MalformedURLException e) {
+							// nothing to do
+						}
 					}
-					
-				}
-			});
+				});
 			mnHelp.add(mntmHelp);
 		}
 		
@@ -221,5 +232,18 @@ public class CoreEditorFrame
 	public boolean isSaved() 
 	{
 		return true;
+	}
+
+
+	@Override
+	public void loadLabels()
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		labelResource = new LabelResource(
+				this,
+				conf.getLanguage(), 
+				"labels"
+			);
 	}
 }
