@@ -44,8 +44,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+[SQLite is Public Domain](http://www.sqlite.org/copyright.html)
 
-[Sqlite JDBC is Licensed under Apache License version 2.0](https://bitbucket.org/xerial/sqlite-jdbc/overview)
+[SQLite JDBC is Licensed under Apache License version 2.0](https://bitbucket.org/xerial/sqlite-jdbc/overview)
 
 [Ant-Contrib is Licensed under Apache License](http://ant-contrib.sourceforge.net/)
 
