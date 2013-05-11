@@ -22,6 +22,7 @@ package dsagenesis.core.ui;
 
 import java.awt.BorderLayout;
 
+import jhv.component.LabelResource;
 import jhv.image.ImageResource;
 import jhv.swing.webView.JFXWebView;
 import jhv.util.debug.logger.ApplicationLogger;
@@ -35,6 +36,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 import javax.swing.Box;
+
+import dsagenesis.core.config.GenesisConfig;
 
 /**
  * Genesis Help Dialog with access to online Wiki.
@@ -63,6 +66,7 @@ public class HelpDialog
 	
 	private JFXWebView webView;
 	
+	private LabelResource labelResource;
 	
 	// ============================================================================
 	//  Constructors
@@ -77,7 +81,9 @@ public class HelpDialog
 		
 		this.getContentPane().setLayout( new BorderLayout());
 		
-		this.setTitle("Hilfe");
+		this.loadLabels();
+		
+		this.setTitle(labelResource.getProperty("title", "title"));
 		this.setSize(800, 600);
 		this.setLocationRelativeTo(null);
 		
@@ -92,7 +98,7 @@ public class HelpDialog
 		ImageResource irWiki = new ImageResource("images/icons/wiki.gif",this);
 				
 		JButton btnHome = new JButton("");
-		btnHome.setToolTipText("Zum Hilfe Index");
+		btnHome.setToolTipText(labelResource.getProperty("btnHome", "btnHome"));
 		btnHome.setIcon(irHome.getImageIcon());
 		btnHome.setActionCommand(ACMD_HOME);
 		btnHome.addActionListener(this);
@@ -102,14 +108,14 @@ public class HelpDialog
 		toolBar.add(horizontalStrut);
 		
 		JButton btnBack = new JButton("");
-		btnBack.setToolTipText("Seite Zur\u00FCck");
+		btnBack.setToolTipText(labelResource.getProperty("btnBack", "btnBack"));
 		btnBack.setIcon(irBack.getImageIcon());
 		btnBack.setActionCommand(ACMD_BACK);
 		btnBack.addActionListener(this);
 		toolBar.add(btnBack);
 		
 		JButton btnForward = new JButton("");
-		btnForward.setToolTipText("Seite Vor");
+		btnForward.setToolTipText(labelResource.getProperty("btnForward", "btnForward"));
 		btnForward.setIcon(irForward.getImageIcon());
 		btnForward.setActionCommand(ACMD_FORWARD);
 		btnForward.addActionListener(this);
@@ -119,14 +125,17 @@ public class HelpDialog
 		toolBar.add(horizontalStrut_1);
 		
 		JButton btnWiki = new JButton("");
-		btnWiki.setToolTipText("DSA Genesis Wiki (online)");
+		btnWiki.setToolTipText(labelResource.getProperty("btnWiki", "btnWiki"));
 		btnWiki.setIcon(irWiki.getImageIcon());
 		btnWiki.setActionCommand(ACMD_WIKI);
 		btnWiki.addActionListener(this);
 		toolBar.add(btnWiki);
 		
 		webView = new JFXWebView();
-		webView.setupWindowTitle(this, "Hilfe | ");
+		webView.setupWindowTitle(
+				this, 
+				labelResource.getProperty("title", "title") +" | "
+			);
 		webView.createJavaFX();
 		this.getContentPane().add(webView);		
 	}
@@ -180,6 +189,21 @@ public class HelpDialog
 		} else if( ae.getActionCommand().equals(ACMD_WIKI) ) {
 			webView.openURL("https://github.com/HerbertV/DSAGenesis/wiki");
 		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public void loadLabels()
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		labelResource = new LabelResource(
+				this,
+				conf.getLanguage(), 
+				"labels"
+			);
 	}
 	
 
