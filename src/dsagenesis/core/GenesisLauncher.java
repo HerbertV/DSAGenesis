@@ -42,6 +42,8 @@ import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.hero.HeroEditorFrame;
 import dsagenesis.editor.metadata.MetaEditorFrame;
 
+import jhv.component.ILabeledComponent;
+import jhv.component.LabelResource;
 import jhv.image.ImageResource;
 import jhv.io.PathCreator;
 import jhv.swing.launcher.AbstractLauncher;
@@ -54,7 +56,7 @@ import jhv.util.debug.logger.ApplicationLogger;
  */
 public class GenesisLauncher 
 		extends AbstractLauncher 
-		implements ActionListener
+		implements ActionListener, ILabeledComponent
 {
 	
 	// ============================================================================
@@ -73,13 +75,16 @@ public class GenesisLauncher
 	
 	public static final String ACMD_MINIMIZE = "minimize";
 	
+	private static final long serialVersionUID = 1L;
+	
+	
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-		
-	private static final long serialVersionUID = 1L;
 	
 	public static AbstractGenesisFrame openFrame;
+	
+	private LabelResource labelResource;
 	
 	
 	// ============================================================================
@@ -244,6 +249,8 @@ public class GenesisLauncher
 		
 		super.setupLayout(title, icon, background);
 		
+		this.loadLabels();
+		
 		// win minimize
 		this.addImageButton(
 				defaultWidth-51,
@@ -251,7 +258,8 @@ public class GenesisLauncher
 				24, 
 				24, 
 				(new ImageResource("images/icons/winMinimize.gif",this)).getImageIcon(), 
-				ACMD_MINIMIZE
+				ACMD_MINIMIZE,
+				labelResource.getProperty("btnMinimize", "btnMinimize")
 			);
 		
 		// win close 
@@ -261,7 +269,8 @@ public class GenesisLauncher
 				24, 
 				24, 
 				(new ImageResource("images/icons/winClose.gif",this)).getImageIcon(), 
-				ACMD_EXIT
+				ACMD_EXIT,
+				labelResource.getProperty("btnClose", "btnClose")
 			);
 		
 		// version label
@@ -283,12 +292,10 @@ public class GenesisLauncher
 		lblD.setHorizontalAlignment(JLabel.CENTER);
 		lblD.setForeground(Color.LIGHT_GRAY);
 		lblD.setFont(lblD.getFont().deriveFont(8.0f));
+		
+		System.out.println(labelResource.getProperty("lblDisclaimer", "lblDisclaimer"));
 		lblD.setText(
-				"<html><center>„DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA und RIESLAND " 
-					+ "sind eingetragene Marken<br>" 
-					+ "der Significant Fantasy Medienrechte GbR.<br>" 
-					+ "Ohne vorherige schriftliche Genehmigung der Ulisses Medien und Spiel Distribution GmbH " 
-					+ "ist eine Verwendung der genannten Markenzeichen nicht gestattet.“</center></html>"
+				labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
 			);
 		lblD.setBounds(margin, 325, defaultWidth-2*margin, 70);
 		
@@ -297,10 +304,22 @@ public class GenesisLauncher
 		imgPanel.add(lblD);
 		
 		String[][] btnList = {
-				{ "Setup", ACMD_SETUP, "0" }, 
-				{ "Core Data Editor", ACMD_LAUNCH_CORE, "10" },
-				{ "Meta Data Editor", ACMD_LAUNCH_META, "0" },
-				{ "Hero Editor", ACMD_LAUNCH_HERO, "0" },
+				{ labelResource.getProperty("btnSetup", "btnSetup"),
+						ACMD_SETUP, 
+						"0"
+					}, 
+				{  labelResource.getProperty("btnCoreDataEditor", "btnCoreDataEditor"), 
+						ACMD_LAUNCH_CORE, 
+						"10" 
+					},
+				{ labelResource.getProperty("btnMetaDataEditor", "btnMetaDataEditor"),
+						ACMD_LAUNCH_META, 
+						"0"
+					},
+				{ labelResource.getProperty("btnHeroEditor", "btnHeroEditor"), 
+						ACMD_LAUNCH_HERO, 
+						"0" 
+					},
 			};
 		
 		int additionalY = 0;
@@ -317,6 +336,22 @@ public class GenesisLauncher
 					btnList[i][1]						//action command
 				);
 		}
+		
+		
+	}
+	
+	/**
+	 * 
+	 */
+	public void loadLabels()
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		labelResource = new LabelResource(
+				this,
+				conf.getLanguage(), 
+				"labels"
+			);
 	}
 	
 	/**
@@ -360,6 +395,7 @@ public class GenesisLauncher
 	 * @param height
 	 * @param icon
 	 * @param cmd
+	 * @param tooltip
 	 */
 	protected void addImageButton(
 			int x, 
@@ -367,7 +403,8 @@ public class GenesisLauncher
 			int width, 
 			int height, 
 			Icon icon, 
-			String cmd 
+			String cmd,
+			String tooltip
 		)
 	{
 		JButton btn = new JButton();
@@ -379,6 +416,7 @@ public class GenesisLauncher
 		btn.setOpaque(false);
 		btn.setFocusPainted(false);
 		btn.setBorder(BorderFactory.createEmptyBorder());
+		btn.setToolTipText(tooltip);
 		// to avoid z fighting
 		imgPanel.add(btn);
 	}

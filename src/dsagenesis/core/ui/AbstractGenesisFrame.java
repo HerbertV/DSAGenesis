@@ -30,7 +30,7 @@ import javax.swing.WindowConstants;
 import dsagenesis.core.GenesisLauncher;
 import dsagenesis.core.config.GenesisConfig;
 
-import jhv.IConfigurableComponent;
+import jhv.component.IConfigurableComponent;
 
 /**
  * Abstract base for all Genesis JFrames

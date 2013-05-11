@@ -156,6 +156,7 @@
 				<filename name="images/**/*.png"/>
 				<filename name="images/**/*.gif"/>
 				<filename name="images/**/*.jpg"/>
+				<filename name="labels/**/*.lbl"/>
 				</or>
 			</fileset>
 			<!-- includes the javaFX classes otherwise they are not found -->
