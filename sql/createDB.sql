@@ -75,5 +75,27 @@ CREATE TABLE [SKT] (
 	[skt_h] INTEGER NOT NULL
 );
 
+/*
+-----------------------------------------------------------------
+	Characteristics
+-----------------------------------------------------------------
+	contains Attributes and anything else that is leved or calculated
+*/
+DROP TABLE IF EXISTS [Characteristics];
+
+CREATE TABLE [Characteristics] (
+	[ID] VARCHAR(10) PRIMARY KEY NOT NULL,
+	[c_acronym] VARCHAR(5) NOT NULL,
+	[c_name] TEXT NOT NULL,
+	[c_min_value] INTEGER NULL,
+	[c_max_value] INTEGER NULL,
+	[c_is_attribute] BOOLEAN DEFAULT 'false' NOT NULL,
+	[c_can_level] BOOLEAN DEFAULT 'false' NOT NULL,
+	[c_skt_column] VARCHAR(5) DEFAULT '' NULL,
+	[c_has_Formular] BOOLEAN DEFAULT 'false' NOT NULL,
+	[c_formular] TEXT NULL,
+	
+	-- TODO
+);
 
 
