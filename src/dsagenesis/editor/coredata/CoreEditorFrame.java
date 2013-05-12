@@ -22,6 +22,7 @@ package dsagenesis.editor.coredata;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
+import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.core.ui.HelpDialog;
 import dsagenesis.core.ui.InfoDialog;
@@ -36,6 +37,8 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
@@ -45,6 +48,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
+
+import javax.swing.JLabel;
 
 /**
  * JFrame for the Core Data Editor.
@@ -66,6 +71,8 @@ public class CoreEditorFrame
 		
 	private LabelResource labelResource;
 	
+	private JLabel lblStatus;
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -85,6 +92,12 @@ public class CoreEditorFrame
 			);
 		
 		initBars();
+		
+		this.lblStatus = new JLabel("Status");
+		getContentPane().add(lblStatus, BorderLayout.SOUTH);
+		
+		
+		initDB();
 	}
 	
 
@@ -92,6 +105,21 @@ public class CoreEditorFrame
 	//  Functions
 	// ============================================================================
 	
+	private void initDB()
+	{
+		DBConnector connector = DBConnector.getInstance();
+		
+		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
+		
+		if( connector.isDBEmpty() )
+		{
+			System.out.println("DB is empty");
+		} else {
+			System.out.println("DB is not empty");
+		}
+		
+	}
+		
 	/**
 	 * initializes the bars.
 	 */
@@ -141,6 +169,7 @@ public class CoreEditorFrame
 			btnDeleteRow.setIcon(irDeleteRow.getImageIcon());
 			toolBar.add(btnDeleteRow);
 		}
+		
 		
 		// menubar
 		{
@@ -245,5 +274,13 @@ public class CoreEditorFrame
 				conf.getLanguage(), 
 				"labels"
 			);
+	}
+	
+	@Override
+	public void close( WindowEvent e )
+	{
+		DBConnector.getInstance().closeConnection();
+		
+		super.close(e);
 	}
 }

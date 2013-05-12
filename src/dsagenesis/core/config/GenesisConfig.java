@@ -141,13 +141,18 @@ public class GenesisConfig
 				+ getString(GenesisConfig.KEY_PATH_PROFESSION) 
 				+ System.getProperty("file.separator");
 	}
-	
-	
+		
 	public String getPathRandomNameGenerator()
 	{
 		return  getPathData() 
 				+ getString(GenesisConfig.KEY_PATH_NAME) 
 				+ System.getProperty("file.separator");
+	}
+	
+	public String getDBFile()
+	{
+		return  getPathData() 
+				+ getString(GenesisConfig.KEY_DB_FILE);
 	}
 	
 	
@@ -160,8 +165,8 @@ public class GenesisConfig
 		// Global defaults
 		this.setSystemProperty(KEY_APPICON, "images/icons/appIcon64.png");
 		this.setSystemProperty(KEY_APPTITLE, "DSA Genesis");
-		this.setSystemProperty(KEY_DEBUG_LEVEL, "0");
-		this.setSystemProperty(KEY_IS_LOGGER_ENABLED, "false");
+		this.setSystemProperty(KEY_DEBUG_LEVEL, "2");
+		this.setSystemProperty(KEY_IS_LOGGER_ENABLED, "true");
 		this.setSystemProperty(KEY_LANGUAGE, "de_DE");
 		this.setSystemProperty(KEY_IS_FIRST_LAUNCH,"true");
 		
@@ -190,8 +195,9 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_PATH_CULTURE, "kulturen");
 		this.setSystemProperty(KEY_PATH_PROFESSION, "professionen");
 		this.setSystemProperty(KEY_PATH_NAME, "namen");
-		//TODO
-		this.setSystemProperty(KEY_DB_FILE, "TODO");
+		
+		// database file
+		this.setSystemProperty(KEY_DB_FILE, "core_de_DE.s3db");
 		
 		// default settings hero editor
 		this.setSystemProperty(KEY_DEFAULT_START_GP, "110");

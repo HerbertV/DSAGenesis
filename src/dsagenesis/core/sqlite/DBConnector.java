@@ -22,7 +22,13 @@ package dsagenesis.core.sqlite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteConfig.Encoding;
+import org.sqlite.SQLiteJDBCLoader;
 
 import jhv.util.debug.logger.ApplicationLogger;
 
@@ -58,6 +64,15 @@ public class DBConnector
 		try {
 			// load the sqlite-JDBC driver using the current class loader
 			Class.forName("org.sqlite.JDBC");
+			
+			ApplicationLogger.separator();
+			ApplicationLogger.logInfo(
+					"SQLite JDBC Driver ("
+						+ SQLiteJDBCLoader.getVersion()
+						+ ") initilized."
+					);
+			ApplicationLogger.separator();
+			
 		} catch (ClassNotFoundException e) {
 			ApplicationLogger.logFatalError("SQLite JDBC Driver not found.");
 		}
@@ -82,14 +97,50 @@ public class DBConnector
 	}
 	
 	/**
+	 * hasConnection
+	 * 
+	 * @return
+	 */
+	public boolean hasConnection()
+	{
+		if( connection != null )
+			return true;
+		
+		return false;
+	}
+	
+	/**
+	 * getConnection
+	 * 
+	 * @return
+	 */
+	public Connection getConnection()
+	{
+		return connection;
+	}
+	
+	/**
 	 * openConnection
 	 * 
+	 * opens an existing DB file or creates a new empty DB.
+	 * 
 	 * @param dbfile absolute path
+	 * @param readonly
 	 */
-	public void openConnection(String dbfile)
+	public void openConnection(String dbfile, boolean readonly)
 	{
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile);
+			ApplicationLogger.logInfo("open DB: "+dbfile);
+			
+			SQLiteConfig sqlconf = new SQLiteConfig();
+			sqlconf.setReadOnly(readonly);   
+			sqlconf.setSharedCache(true);
+			sqlconf.setEncoding(Encoding.UTF8);
+			
+			connection = DriverManager.getConnection(
+					"jdbc:sqlite:" + dbfile,
+					sqlconf.toProperties()
+				);
 		} catch (SQLException e) {
 			ApplicationLogger.logFatalError(e);
 		}
@@ -110,9 +161,97 @@ public class DBConnector
 		}
 	}
 	
-	public void doQuery(String query)
+	/**
+	 * executeQuery
+	 * 
+	 * @param query
+	 * @return
+	 */
+	public ResultSet executeQuery(String query)
 	{
-		//TODO
+		if( connection == null )
+		{
+			ApplicationLogger.logError(
+					"DBConnector.executeQuery: Cannot query unless connected to a Database"
+				);
+			return null;
+		}
+		
+		try
+		{
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);  
+			return statement.executeQuery(query);
+			
+		} catch( SQLException e ) {
+			ApplicationLogger.logError(e);
+		}
+		return null;
 	}
-
+	
+	/**
+	 * executeUpdate
+	 * 
+	 * @param update
+	 * @return
+	 */
+	public void executeUpdate(String update)
+	{
+		if( connection == null )
+		{
+			ApplicationLogger.logError(
+					"DBConnector.executeUpdate: Cannot update unless connected to a Database"
+				);
+			return;
+		}
+		
+		try
+		{
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);  
+			statement.executeUpdate(update);
+			
+		} catch( SQLException e ) {
+			ApplicationLogger.logError(e);
+		}
+	}
+	
+	/**
+	 * isDBEmpty
+	 * 
+	 * returns true if the db contains no tables.
+	 * 
+	 * @return
+	 */
+	public boolean isDBEmpty()
+	{
+		ResultSet rs = this.executeQuery(
+				"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='CoreDataTableIndex'"
+			);
+		
+		try
+		{
+			if( rs == null || rs.getInt(1) == 0 )
+				return true;
+			
+		} catch( SQLException e ) {
+			ApplicationLogger.logError(e);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * executeFile
+	 * 
+	 * executes the sql script from a file. 
+	 * 
+	 * @param filename
+	 */
+	public void executeFile(String filename)
+	{
+		// TODO
+	}
+	
 }
