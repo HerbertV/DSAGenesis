@@ -134,8 +134,11 @@ public class DBConnector
 			
 			SQLiteConfig sqlconf = new SQLiteConfig();
 			sqlconf.setReadOnly(readonly);   
+			sqlconf.enableLoadExtension(true);
 			sqlconf.setSharedCache(true);
 			sqlconf.setEncoding(Encoding.UTF8);
+			sqlconf.useLegacyFileFormat(false);
+			sqlconf.enforceForeignKeys(true);
 			
 			connection = DriverManager.getConnection(
 					"jdbc:sqlite:" + dbfile,

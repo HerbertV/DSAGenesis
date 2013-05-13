@@ -67,24 +67,27 @@ public interface IGenesisConfigKeys
 	/**
 	 * database keys
 	 */
+	public static final String KEY_DB = "database";
 	public static final String KEY_DB_FILE = "database.file";
 
+	public static final String KEY_DEFAULT = "default";
+	
 	/**
 	 * default start generation points
 	 */
-	public static final String KEY_DEFAULT_START_GP = "default.startGP";
+	public static final String KEY_DEFAULT_START_CP = "default.startCP";
 	/**
 	 * default maximum disadvantage generation points
 	 */
-	public static final String KEY_DEFAULT_MAX_DISADVANTAGE_GP = "default.maxDisadvantageGP";
+	public static final String KEY_DEFAULT_MAX_DISADVANTAGE_CP = "default.maxDisadvantageCP";
 	/**
 	 * default maximum attribute generation points
 	 */
-	public static final String KEY_DEFAULT_MAX_ATTRIBUTE_GP = "default.maxAttributeGP";
+	public static final String KEY_DEFAULT_MAX_ATTRIBUTE_CP = "default.maxAttributeCP";
 	/**
 	 * default maximum bad attributes generation points
 	 */
-	public static final String KEY_DEFAULT_MAX_BADATTRIBUTE_GP = "default.maxBadAttributeGP";
+	public static final String KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP = "default.maxNegativeAttributeCP";
 	
 	
 }

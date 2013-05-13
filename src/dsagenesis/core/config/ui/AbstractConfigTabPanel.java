@@ -18,46 +18,76 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.editor.metadata;
+package dsagenesis.core.config.ui;
 
-import dsagenesis.core.config.GenesisConfig;
-import dsagenesis.core.config.IGenesisConfigKeys;
-import dsagenesis.core.ui.AbstractGenesisFrame;
+import jhv.component.IChangeableContentComponent;
+import jhv.component.ILabeledComponent;
+import jhv.component.LabelResource;
+import jhv.swing.AbstractGridBagPanel;
 
-public class MetaEditorFrame 
-		extends AbstractGenesisFrame 
+/**
+ * Abstract base for all Panels used in our SetupFrame.
+ * 
+ */
+public abstract class AbstractConfigTabPanel 
+		extends AbstractGridBagPanel 
+		implements ILabeledComponent,
+			IChangeableContentComponent
 {
 	// ============================================================================
-	//  Variables
+	//  Constants
 	// ============================================================================
-			
+	
 	private static final long serialVersionUID = 1L;
 
 	// ============================================================================
-	//  Constructors
+	//  Variables
 	// ============================================================================
 		
 	/**
-	 * Constructor.
+	 * becomes true if one entry was altered by the user.
 	 */
-	public MetaEditorFrame()
+	protected boolean hasContentChanged = false;
+	
+	
+	protected LabelResource labelResource;
+	
+	
+	// ============================================================================
+	//  Constructors
+	// ============================================================================
+	
+	/**
+	 * Constructor 1.
+	 */
+	public AbstractConfigTabPanel()
 	{
-		super(
-				GenesisConfig.getInstance().getAppTitle() + " - Meta Data Editor",
-				IGenesisConfigKeys.KEY_WIN_META		
-			);
+		super();
 	}
 
+	/**
+	 * Constructor 2.
+	 * 
+	 * @param isDoubleBuffered
+	 */
+	public AbstractConfigTabPanel(boolean isDoubleBuffered)
+	{
+		super(isDoubleBuffered);
+	}
 	
-
+	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-		
-	@Override
-	public boolean hasChanged() 
-	{
-		// TODO
-		return true;
-	}
+	
+	/**
+	 * 
+	 */
+	public abstract void saveSetup();
+	
+	/**
+	 * 
+	 */
+	public abstract void loadSetup();
+
 }

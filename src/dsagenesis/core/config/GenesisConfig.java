@@ -20,6 +20,8 @@
  */
 package dsagenesis.core.config;
 
+import java.util.Enumeration;
+
 import jhv.util.config.AbstractConfig;
 
 
@@ -200,24 +202,37 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_DB_FILE, "core_de_DE.s3db");
 		
 		// default settings hero editor
-		this.setSystemProperty(KEY_DEFAULT_START_GP, "110");
-		this.setSystemProperty(KEY_DEFAULT_MAX_DISADVANTAGE_GP, "50");
-		this.setSystemProperty(KEY_DEFAULT_MAX_ATTRIBUTE_GP, "100");
-		this.setSystemProperty(KEY_DEFAULT_MAX_BADATTRIBUTE_GP, "30");
+		this.setSystemProperty(KEY_DEFAULT_START_CP, "110");
+		this.setSystemProperty(KEY_DEFAULT_MAX_DISADVANTAGE_CP, "50");
+		this.setSystemProperty(KEY_DEFAULT_MAX_ATTRIBUTE_CP, "100");
+		this.setSystemProperty(KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP, "30");
 	}
 
 	@Override
 	protected void setUserDefaults() 
 	{
-		// TODO Auto-generated method stub
-
+		Enumeration<?> propertyNames = propertiesSystem.propertyNames();
+		
+		while( propertyNames.hasMoreElements() )
+		{
+			String key = (String)propertyNames.nextElement();
+			
+			if( key.startsWith(KEY_DEBUG_LEVEL) 
+					|| key.startsWith(KEY_IS_LOGGER_ENABLED)
+					|| key.startsWith(KEY_LANGUAGE)
+					|| key.startsWith(KEY_WIN)
+					|| key.startsWith(KEY_DB)
+					|| key.startsWith(KEY_DEFAULT)
+				)
+				propertiesUser.put(key, propertiesSystem.get(key));
+		}
 	}
 
 	@Override
 	public void resetUser() 
 	{
-		// TODO Auto-generated method stub
-
+		setUserDefaults();
+		saveUser();
 	}
 
 

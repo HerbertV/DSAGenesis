@@ -66,7 +66,6 @@ public class HelpDialog
 	
 	private JFXWebView webView;
 	
-	private LabelResource labelResource;
 	
 	// ============================================================================
 	//  Constructors

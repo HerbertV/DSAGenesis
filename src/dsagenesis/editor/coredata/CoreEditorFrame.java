@@ -69,7 +69,6 @@ public class CoreEditorFrame
 	//  Variables
 	// ============================================================================
 		
-	private LabelResource labelResource;
 	
 	private JLabel lblStatus;
 	
@@ -105,19 +104,13 @@ public class CoreEditorFrame
 	//  Functions
 	// ============================================================================
 	
+	/**
+	 * connection to the database
+	 */
 	private void initDB()
 	{
 		DBConnector connector = DBConnector.getInstance();
-		
 		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
-		
-		if( connector.isDBEmpty() )
-		{
-			System.out.println("DB is empty");
-		} else {
-			System.out.println("DB is not empty");
-		}
-		
 	}
 		
 	/**
@@ -255,14 +248,19 @@ public class CoreEditorFrame
 	
 	/**
 	 * core editor saves on the fly. since it accesses the sqlite database.
-	 * so it returns always true.
+	 * so it returns always false.
 	 */
 	@Override
-	public boolean isSaved() 
+	public boolean hasContentChanged() 
 	{
-		return true;
+		return false;
 	}
 
+	@Override
+	public void contentSaved()
+	{
+		// nothing to do.
+	}
 
 	@Override
 	public void loadLabels()
@@ -283,4 +281,5 @@ public class CoreEditorFrame
 		
 		super.close(e);
 	}
+
 }

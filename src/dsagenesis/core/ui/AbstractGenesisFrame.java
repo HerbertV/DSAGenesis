@@ -30,16 +30,19 @@ import javax.swing.WindowConstants;
 import dsagenesis.core.GenesisLauncher;
 import dsagenesis.core.config.GenesisConfig;
 
+import jhv.component.IChangeableContentComponent;
 import jhv.component.IConfigurableComponent;
 import jhv.component.ILabeledComponent;
+import jhv.component.LabelResource;
 
 /**
  * Abstract base for all Genesis JFrames
  */
 public abstract class AbstractGenesisFrame 
 		extends JFrame 
-		implements IConfigurableComponent, ILabeledComponent
-		
+		implements IConfigurableComponent, 
+			ILabeledComponent, 
+			IChangeableContentComponent
 {
 	
 	// ============================================================================
@@ -52,6 +55,8 @@ public abstract class AbstractGenesisFrame
 	 * config key prefix for the system.config file.
 	 */
 	protected String configKey;
+	
+	protected LabelResource labelResource;
 	
 
 	// ============================================================================
@@ -174,37 +179,30 @@ public abstract class AbstractGenesisFrame
 	{
 		GenesisConfig conf = GenesisConfig.getInstance();
 		
-		conf.setSystemProperty(
+		conf.setUserProperty(
 				this.configKey + "."+ GenesisConfig.KEY_SIZE, 
 				this.getSize().width + "," + this.getSize().height
 			);
 		
-		conf.setSystemProperty(
+		conf.setUserProperty(
 				this.configKey + "."+ GenesisConfig.KEY_POSITION, 
 				this.getLocation().x + "," + this.getLocation().y
 			);
 		
 		if( this.getExtendedState() == MAXIMIZED_BOTH )
 		{
-			conf.setSystemProperty(
+			conf.setUserProperty(
 					this.configKey + "."+ GenesisConfig.KEY_ISFULLSCREEN, 
 					"true"
 				);
 		} else {
-			conf.setSystemProperty(
+			conf.setUserProperty(
 					this.configKey + "."+ GenesisConfig.KEY_ISFULLSCREEN, 
 					"false"
 				);
 		}
-		conf.saveSystem();
+		conf.saveUser();
 	}
 	
-	/**
-	 * isSaved
-	 * returns true if all contents are saved.
-	 * 
-	 * @return
-	 */
-	abstract public boolean isSaved();
 	
 }

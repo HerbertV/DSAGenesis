@@ -59,7 +59,7 @@ public class HeroEditorFrame
 	// ============================================================================
 		
 	@Override
-	public boolean isSaved() 
+	public boolean hasChanged() 
 	{
 		// TODO
 		return true;

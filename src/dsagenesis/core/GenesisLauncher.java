@@ -36,8 +36,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import dsagenesis.core.config.GenesisConfig;
+import dsagenesis.core.config.ui.ConfigFrame;
+import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.ui.AbstractGenesisFrame;
-import dsagenesis.core.ui.SetupFrame;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.hero.HeroEditorFrame;
 import dsagenesis.editor.metadata.MetaEditorFrame;
@@ -212,6 +213,7 @@ public class GenesisLauncher
 		
 		ApplicationLogger.logInfo("doing first launch ...");
 		
+		// create folder structure
 		String[] arr = {
 				conf.getPathArchtype(),
 				conf.getPathCulture(),
@@ -226,6 +228,18 @@ public class GenesisLauncher
 		} catch( IOException e ) {
 			ApplicationLogger.logError(e);
 		}
+		
+		// create database if there is none
+		DBConnector connector = DBConnector.getInstance();
+		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
+		
+		if( connector.isDBEmpty() )
+		{
+			ApplicationLogger.logInfo("DB is Empty. now initializing ...");
+			// TODO
+		} 
+		connector.closeConnection();
+		
 		
 		conf.setFirstLaunchDone();	
 	}
@@ -446,12 +460,13 @@ public class GenesisLauncher
 			{
 				doClose = false;
 				
-				if( openFrame.isSaved() )
+				if( !openFrame.hasContentChanged() )
 				{
 					openFrame.close(null);
 					doClose = true;
 					
 				} else {
+					// TODO generic label
 					int result = JOptionPane.showConfirmDialog(
 							openFrame,
 							openFrame.getTitle() 
@@ -504,7 +519,7 @@ public class GenesisLauncher
 			if( openFrame != null )
 				return;
 			
-			openFrame = new SetupFrame();
+			openFrame = new ConfigFrame();
 			openFrame.setVisible(true);
 		}
 	}

@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JWindow;
 
 import jhv.component.ILabeledComponent;
+import jhv.component.LabelResource;
 
 import dsagenesis.core.config.GenesisConfig;
 
@@ -42,6 +43,7 @@ public abstract class AbstractGenesisDialog
 	
 	private static final long serialVersionUID = 1L;
 	
+	protected LabelResource labelResource;
 	
 	// ============================================================================
 	//  Constructors
