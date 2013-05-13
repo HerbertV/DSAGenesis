@@ -17,7 +17,7 @@ tmp/**/*
 ant/build.properties
 ant/buildproject.num
 
-config/
+/config/
 logs/
 
 
