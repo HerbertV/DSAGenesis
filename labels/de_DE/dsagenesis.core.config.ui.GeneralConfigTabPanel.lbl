@@ -1,0 +1,8 @@
+info.title=Allgemeine Einstellungen
+
+info.message=Default Generierungspunkte.
+
+lblDefaultStartCP=Start GP:
+lblDefaultMaxAttributeCP=Max. Eigenschafts GP:
+lblDefaultMaxDisadvantageCP=Max. Nachteile GP:
+lblDefaultMaxNegativeAttributeCP=Max. Schlechte Eig. GP:

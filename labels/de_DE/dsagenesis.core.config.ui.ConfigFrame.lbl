@@ -1,0 +1,9 @@
+title=Einstellungen
+
+tabGeneral=Allgemein
+tabDebug=Debugging
+tabDB=Datenbank
+tabTemplate=Templates
+
+btnSave=Änderungen Speichern
+btnReset=Auf Default Zurücksetzen
