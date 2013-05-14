@@ -18,12 +18,41 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.core.model;
+package dsagenesis.core.model.sql;
 
-/**
- * Abstract base for all SQL model objects.
- */
-public abstract class AbstractSQLModel 
+public abstract class AbstractSQLTableModel
 {
 
+	
+	/**
+	 * getPrefix
+	 * 
+	 * prefix that is used for the ID and the column names
+	 * 
+	 * @return
+	 */
+	//public String getPrefix();
+	
+	/**
+	 * getDBTableName
+	 * 
+	 * @return
+	 */
+	//public String getDBTableName();
+
+	
+	/**
+	 * 
+	 */
+	//public void newDBEntry();
+		
+	/**
+	 * 
+	 */
+	//public void deleteDBEntry();
+	
+	/**
+	 * 
+	 */
+	//public void updateDBEntry();
 }

@@ -18,12 +18,9 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.core.model;
+package dsagenesis.core.model.xml;
 
-/**
- * Abstract base for all XML based model objects.
- */
-public class AbstractXMLModel 
+public abstract class AbstractXMLModel 
 {
-	
+
 }
