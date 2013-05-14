@@ -13,6 +13,7 @@
 		ti_name: internal name of the table 
 	
 	for generating a db wide unique id:
+		ti_uses_prefix: if false the id is a pure integer.
 		ti_prefix: prefix for the ID of the referenced table
 		ti_last_index_num: last index used for this table
 	
@@ -26,6 +27,7 @@ DROP TABLE IF EXISTS "CoreDataTableIndex";
 CREATE TABLE "CoreDataTableIndex" (
 	"ID" INTEGER  PRIMARY KEY AUTOINCREMENT NULL,
 	"ti_table_name" VARCHAR(50)  NOT NULL,
+	"ti_uses_prefix" BOOLEAN DEFAULT 'true' NOT NULL,
 	"ti_prefix" VARCHAR(4),
 	"ti_last_index_num" INTEGER DEFAULT -1 NOT NULL,
 	"ti_label" TEXT  NOT NULL,
@@ -89,8 +91,11 @@ CREATE TABLE "SKT" (
 	If a single source shifts more than one targets
 	you will need multiple entries here.
 	
-		skts_ref_source_ID: the source that triggers the shift
-		skts_ref_target_ID: the target which is shifted
+		skts_ref_source_ID: the source DB entry that triggers the shift
+		skts_target_table_name: the targets table
+		skts_target_column_name: any column that references an ID.
+			e.g. "ID" itself or "c_ref_cg_ID"
+		skts_target_value: the ID 
 		
 	shifting options:
 		
@@ -108,7 +113,9 @@ DROP TABLE IF EXISTS "SKTShifts";
 CREATE TABLE "SKTShifts" (
 	"ID" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"skts_ref_source_ID" VARCHAR(10) NOT NULL,
-	"skts_ref_target_ID" VARCHAR(10) NOT NULL,
+	"skts_target_table_name" VARCHAR(50) NOT NULL,
+	"skts_target_column_name" VARCHAR(50) NULL,
+	"skts_target_value" VARCHAR(10) NULL,
 	"skts_is_down_shift" BOOLEAN DEFAULT 'true' NOT NULL,
 	"skts_is_up_shift" BOOLEAN DEFAULT 'false' NOT NULL,
 	"skts_shift_factor" INTEGER DEFAULT '0' NOT NULL,

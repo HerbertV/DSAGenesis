@@ -30,6 +30,7 @@ package dsagenesis.core.model;
  * This class is a singleton.
  *
  * The matrix' values are stored in the database as SKT.
+ * but it also use the SKTShifts Table for generating the SKT Column.
  */
 public class SKTMatrix 
 {

@@ -2,9 +2,10 @@
 	SKT
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_prefix, ti_label, ti_note, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_editable )
 	VALUES
 	( 	'SKT', 
+		'false',
 		'skt_', 
 		'SKT', 
 		'Steigerungskosten-Tabelle',
@@ -49,9 +50,10 @@ INSERT INTO TableColumnLabels
 	SKTShifts
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_prefix, ti_label, ti_note, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_editable )
 	VALUES
 	(	'SKTShifts', 
+		'false',
 		'skts_', 
 		'SKT Verschiebungen', 
 		'<html>Hier werden die Verschiebungen der SKT Spalten durch Vor-/Nachteile Sonderfähigkeiten verwaltet.<br></html>',
@@ -65,15 +67,23 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'SKTShifts', 'skts_ref_target_ID', 'Ziel');	
+	( 'SKTShifts', 'skts_target_table_name', 'Ziel Tabelle');
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'SKTShifts', 'skts_is_down_shift', 'Ist Links');	
+	( 'SKTShifts', 'skts_target_column_name', 'Ziel Spalte');
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'SKTShifts', 'skts_is_up_shift', 'Ist Rechts');	
+	( 'SKTShifts', 'skts_target_tskts_target_valueable_name', 'Ziel Wert');
+INSERT INTO TableColumnLabels
+	( tcl_table_name, tcl_column_name, tcl_label )
+	VALUES
+	( 'SKTShifts', 'skts_is_down_shift', 'Shift Links');	
+INSERT INTO TableColumnLabels
+	( tcl_table_name, tcl_column_name, tcl_label )
+	VALUES
+	( 'SKTShifts', 'skts_is_up_shift', 'Shift Rechts');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -92,9 +102,10 @@ INSERT INTO TableColumnLabels
 	CharacteristicGroups
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_prefix, ti_label, ti_note, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_editable )
 	VALUES
 	(	'CharacteristicGroups', 
+		'true',
 		'cg_', 
 		'Grundwerte Gruppen', 
 		'Die Grundwerte sind zur besseren Unterscheidung in Gruppen unterteilt',
@@ -112,9 +123,10 @@ INSERT INTO TableColumnLabels
 
 -- TODO needs update for the new fields
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_prefix, ti_label, ti_note, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_editable )
 	VALUES
 	( 	'Characteristics', 
+		'true',
 		'c_', 
 		'Grundwerte', 
 		'Eigenschaften und sonstige Werte die berechnet werden oder gesteigert werden dürfen.',
