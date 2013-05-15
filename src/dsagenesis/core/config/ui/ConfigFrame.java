@@ -95,7 +95,7 @@ public class ConfigFrame
 				null
 			);
 		
-		JPanel paneDebug = new JPanel();
+		AbstractConfigTabPanel paneDebug = new DebugConfigTabPanel();
 		tabbedPane.addTab(
 				labelResource.getProperty("tabDebug", "tabDebug"), 
 				null, 
@@ -103,7 +103,7 @@ public class ConfigFrame
 				null
 			);
 		
-		JPanel paneDB = new JPanel();
+		AbstractConfigTabPanel paneDB = new DBConfigTabPanel();
 		tabbedPane.addTab(
 				labelResource.getProperty("tabDB", "tabDB"), 
 				null, 
@@ -111,7 +111,7 @@ public class ConfigFrame
 				null
 			);
 		
-		JPanel paneTemplates = new JPanel();
+		AbstractConfigTabPanel paneTemplates = new TemplateConfigTabPanel();
 		tabbedPane.addTab(
 				labelResource.getProperty("tabTemplate", "tabTemplate"), 
 				null, 
@@ -121,6 +121,9 @@ public class ConfigFrame
 		
 		tabPanels = new AbstractConfigTabPanel[tabbedPane.getTabCount()];
 		tabPanels[0] = paneGeneral;
+		tabPanels[1] = paneDebug;
+		tabPanels[2] = paneDB;
+		tabPanels[3] = paneTemplates;
 		
 		
 		// BUTTONS
@@ -131,12 +134,14 @@ public class ConfigFrame
 				labelResource.getProperty("btnReset", "btnReset") 
 			);
 		btnReset.setActionCommand(ACMD_RESET);
+		btnReset.addActionListener(this);
 		paneButtons.add(btnReset);
 		
 		JButton btnSave = new JButton(
 				labelResource.getProperty("btnSave", "btnSave")
 			);
 		btnSave.setActionCommand(ACMD_SAVE);
+		btnSave.addActionListener(this);
 		paneButtons.add(btnSave);
 	}
 
@@ -174,7 +179,6 @@ public class ConfigFrame
 			tabPanels[i].contentSaved();
 	}
 	
-
 	@Override
 	public void applyConfig()
 	{
@@ -187,20 +191,27 @@ public class ConfigFrame
 		// we don't need the default handling
 	}
 
-
-	
-
-
 	@Override
 	public void actionPerformed(ActionEvent ae)
 	{
-		// TODO Auto-generated method stub
-		// TODO save: call save from all tabs and resetcontent saved
-		
-		
-		// TODO reset: call load from all tabs
+		if( ae.getActionCommand().equals(ACMD_SAVE) )
+		{
+			for( int i=0; i<tabPanels.length; i++ )
+				tabPanels[i].saveSetup();
+			
+			GenesisConfig.getInstance().saveUser();
+			contentSaved();
+			
+		} else if( ae.getActionCommand().equals(ACMD_RESET) ) {
+			
+			GenesisConfig.getInstance().resetUser();
+			
+			for( int i=0; i<tabPanels.length; i++ )
+				tabPanels[i].loadSetup();
+			
+			GenesisConfig.getInstance().saveUser();
+			contentSaved();
+		}
 	}
-
-
 	
 }

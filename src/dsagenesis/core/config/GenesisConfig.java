@@ -29,15 +29,21 @@ public class GenesisConfig
 		extends AbstractConfig 
 		implements IGenesisConfigKeys
 {
-
 	// ============================================================================
-	//  Variables
+	//  Constants
 	// ============================================================================
-		
+	
 	/**
 	 * application version.
 	 */
-	public static String APP_VERSION = "0.1.0";
+	public static final String APP_VERSION = "0.1.0";
+	
+	/**
+	 * xml file extensions
+	 */
+	public static final String FILE_EXT_META = "genm";
+	public static final String FILE_EXT_ARCHTYPE = "gena";
+	public static final String FILE_EXT_HERO = "genh";
 	
 	
 	// ============================================================================

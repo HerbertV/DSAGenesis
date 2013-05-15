@@ -20,8 +20,9 @@
  */
 package dsagenesis.core.config.ui;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JSpinner;
 
 import jhv.component.LabelResource;
 import dsagenesis.core.config.GenesisConfig;
@@ -29,7 +30,7 @@ import dsagenesis.core.config.GenesisConfig;
 /**
  * Tab Panel for the General Configuration.
  */
-public class GeneralConfigTabPanel 
+public class DebugConfigTabPanel 
 		extends AbstractConfigTabPanel 
 {
 	// ============================================================================
@@ -38,14 +39,22 @@ public class GeneralConfigTabPanel
 		
 	private static final long serialVersionUID = 1L;
 
+	private static final String[] debugLevelStrings = {
+			"OFF",
+			"ALL",
+			"INFO",
+			"DEBUG",
+			"WARNING",
+			"ERROR",
+			"FATAL ERROR"	
+		};
+	
 	// ============================================================================
 	//  Variables
 	// ============================================================================
 	
-	private JSpinner spinStartCP;
-	private JSpinner spinMaxAttributeCP;
-	private JSpinner spinMaxDisadvantageCP;
-	private JSpinner spinMaxNegativeAttributeCP;
+	private JCheckBox cbxLoggerEnabled;
+	private JComboBox<String> comboDebugLevel;
 	
 	
 	// ============================================================================
@@ -55,7 +64,8 @@ public class GeneralConfigTabPanel
 	/**
 	 * Constructor
 	 */
-	public GeneralConfigTabPanel() 
+	@SuppressWarnings("unchecked")
+	public DebugConfigTabPanel() 
 	{
 		super();
 		
@@ -70,56 +80,26 @@ public class GeneralConfigTabPanel
 				0
 			);
 		
-		JComponent comps[] = this.addLabeledNumericSpinner(
-				labelResource.getProperty("lblDefaultStartCP", "lblDefaultStartCP"), 
-				conf.getInt(GenesisConfig.KEY_DEFAULT_START_CP), 
-				0, 
-				200, 
-				1, 
+		cbxLoggerEnabled = this.addCheckbox(
+				labelResource.getProperty("cbxLoggerEnabled", "cbxLoggerEnabled"), 
+				conf.getBoolean(GenesisConfig.KEY_IS_LOGGER_ENABLED), 
 				0, 
 				1
 			);
-		spinStartCP = (JSpinner)comps[1];
-		//TODO add change handler
 		
-		comps = this.addLabeledNumericSpinner(
-				labelResource.getProperty("lblDefaultMaxAttributeCP", "lblDefaultMaxAttributeCP"), 
-				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_ATTRIBUTE_CP), 
+		JComponent[] comps = this.addLabeledComboBox(
+				labelResource.getProperty("comboDebugLevel", "comboDebugLevel"), 
+				debugLevelStrings, 
 				0, 
-				200, 
-				1, 
-				0, 
-				2
+				2, 
+				debugLevelStrings[conf.getInt(GenesisConfig.KEY_DEBUG_LEVEL)] 
 			);
-		spinMaxAttributeCP = (JSpinner)comps[1];
-		//TODO add change handler
 		
-		comps = this.addLabeledNumericSpinner(
-				labelResource.getProperty("lblDefaultMaxDisadvantageCP", "lblDefaultMaxDisadvantageCP"), 
-				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_DISADVANTAGE_CP), 
-				0, 
-				200, 
-				1, 
-				0, 
-				3
-			);
-		spinMaxDisadvantageCP = (JSpinner)comps[1];
-		//TODO add change handler
+		comboDebugLevel = (JComboBox<String>)comps[1];
 		
-		comps = this.addLabeledNumericSpinner(
-				labelResource.getProperty("lblDefaultMaxNegativeAttributeCP", "lblDefaultMaxNegativeAttributeCP"), 
-				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP), 
-				0, 
-				200, 
-				1, 
-				0, 
-				4
-			);
-		spinMaxNegativeAttributeCP = (JSpinner)comps[1];
-		//TODO spinMaxNegativeAttributeCP.addChangeListener(listener)
+		// TODO Add changed listener
 		
-		
-		this.addEmptyPanel(5);
+		this.addEmptyPanel(3);
 	}
 
 	// ============================================================================
@@ -157,21 +137,14 @@ public class GeneralConfigTabPanel
 	{
 		GenesisConfig conf = GenesisConfig.getInstance();
 		conf.setUserProperty(
-				GenesisConfig.KEY_DEFAULT_START_CP, 
-				Integer.toString((Integer)spinStartCP.getValue())
+				GenesisConfig.KEY_IS_LOGGER_ENABLED, 
+				Boolean.toString(cbxLoggerEnabled.isSelected())
 			);
 		conf.setUserProperty(
-				GenesisConfig.KEY_DEFAULT_MAX_ATTRIBUTE_CP, 
-				Integer.toString((Integer)spinMaxAttributeCP.getValue())
+				GenesisConfig.KEY_DEBUG_LEVEL, 
+				Integer.toString(comboDebugLevel.getSelectedIndex())
 			);
-		conf.setUserProperty(
-				GenesisConfig.KEY_DEFAULT_MAX_DISADVANTAGE_CP, 
-				Integer.toString((Integer)spinMaxDisadvantageCP.getValue())
-			);
-		conf.setUserProperty(
-				GenesisConfig.KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP, 
-				Integer.toString((Integer)spinMaxNegativeAttributeCP.getValue())
-			);
+		
 	}
 
 	@Override
@@ -179,18 +152,13 @@ public class GeneralConfigTabPanel
 	{
 		GenesisConfig conf = GenesisConfig.getInstance();
 		
-		spinStartCP.setValue(
-				conf.getInt(GenesisConfig.KEY_DEFAULT_START_CP)
+		cbxLoggerEnabled.setSelected(
+				conf.getBoolean(GenesisConfig.KEY_IS_LOGGER_ENABLED)
 			);
-		spinMaxAttributeCP.setValue(
-				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_ATTRIBUTE_CP)
+		comboDebugLevel.setSelectedIndex(
+				conf.getInt(GenesisConfig.KEY_DEBUG_LEVEL)
 			);
-		spinMaxDisadvantageCP.setValue(
-				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_DISADVANTAGE_CP)
-			);
-		spinMaxNegativeAttributeCP.setValue(
-				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP)
-			);
+		
 	}
 
 }
