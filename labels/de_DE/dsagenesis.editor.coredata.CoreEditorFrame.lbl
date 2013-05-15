@@ -1,5 +1,6 @@
 title=Core Data Editor
 
+# Menu and bar
 copy=Kopieren
 paste=Einfügen
 
@@ -16,3 +17,7 @@ mnEdit=Berarbeiten
 mnHelp=Hilfe
 mntmInfo=Info
 mntmHelp=Hilfe
+
+# Info Labels
+topNoteTitle=Core Data Tabellen
+bottomNoteTitle=Interne Tabellen

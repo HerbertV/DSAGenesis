@@ -1,0 +1,6 @@
+info.title=Debug und Log
+
+info.message=<html>Log Dateien und Debug Level für die Ausgabe der Logs.</html>
+
+cbxLoggerEnabled=Logger Aktivieren
+comboDebugLevel=Debug Level:
