@@ -29,7 +29,9 @@ import dsagenesis.core.ui.InfoDialog;
 
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -50,6 +52,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 import javax.swing.JLabel;
+import javax.swing.JSplitPane;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+import javax.swing.JTabbedPane;
 
 /**
  * JFrame for the Core Data Editor.
@@ -69,8 +75,31 @@ public class CoreEditorFrame
 	//  Variables
 	// ============================================================================
 		
-	
+	/**
+	 * for status messages
+	 */
 	private JLabel lblStatus;
+	
+	/**
+	 * Note for the top split
+	 */
+	private JLabel lblTopNote;
+	
+	/**
+	 * Note for the bottom split
+	 */
+	private JLabel lblBottomNote;
+	
+	/**
+	 * 
+	 */
+	private JTabbedPane tabbedPaneCore;
+	
+	/**
+	 * 
+	 */
+	private JTabbedPane tabbedPaneInternal;
+	
 	
 	// ============================================================================
 	//  Constructors
@@ -82,6 +111,9 @@ public class CoreEditorFrame
 	public CoreEditorFrame()
 	{
 		super(IGenesisConfigKeys.KEY_WIN_BASE);
+		BorderLayout borderLayout = (BorderLayout) getContentPane().getLayout();
+		borderLayout.setVgap(3);
+		borderLayout.setHgap(3);
 		
 		this.loadLabels();
 		this.setTitle(
@@ -92,11 +124,51 @@ public class CoreEditorFrame
 		
 		initBars();
 		
-		this.lblStatus = new JLabel("Status");
-		getContentPane().add(lblStatus, BorderLayout.SOUTH);
+		// top split
+		JPanel panelSplitTop = new JPanel();
+		panelSplitTop.setLayout(new BorderLayout(0, 0));
+		panelSplitTop.setMinimumSize(new Dimension(50,50));
+		{
+			TitledBorder titleBorder = BorderFactory.createTitledBorder("Core Data Tables");
+			panelSplitTop.setLayout(new BorderLayout(0, 0));
+			this.lblTopNote = new JLabel("Alle Tabellen die direkt mit Inhalten für die Heldenverwaltung in verbindung stehen.");
+			this.lblTopNote.setBorder(titleBorder);
+			panelSplitTop.add(this.lblTopNote,BorderLayout.NORTH);
+		}
+		{
+			this.tabbedPaneCore = new JTabbedPane(JTabbedPane.TOP);
+			panelSplitTop.add(this.tabbedPaneCore, BorderLayout.CENTER);
+		}
+		
+		// bottom split
+		JPanel panelSplitBottom = new JPanel();
+		panelSplitBottom.setLayout(new BorderLayout(0, 0));
+		panelSplitBottom.setMinimumSize(new Dimension(50,50));
+		{
+			TitledBorder titleBorder = BorderFactory.createTitledBorder("Internal Tables");
+			this.lblBottomNote = new JLabel("System Tabellen und Referenz Tabellen.");
+			this.lblBottomNote.setBorder(titleBorder);
+			panelSplitBottom.add(this.lblBottomNote,BorderLayout.NORTH);
+		}
+		{
+			this.tabbedPaneInternal = new JTabbedPane(JTabbedPane.TOP);
+			panelSplitBottom.add(this.tabbedPaneInternal, BorderLayout.CENTER);
+		}
+		
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		getContentPane().add(splitPane, BorderLayout.CENTER);
+		splitPane.setTopComponent(panelSplitTop);
+		splitPane.setBottomComponent(panelSplitBottom);
+		splitPane.setDividerLocation(getHeight()/2);
 		
 		
-		initDB();
+		// TODO status handling
+		this.lblStatus = new JLabel("lblStatus TODO");
+		this.lblStatus.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+		getContentPane().add(this.lblStatus, BorderLayout.SOUTH);
+		
+		initDBAndTabs();
 	}
 	
 
@@ -106,11 +178,24 @@ public class CoreEditorFrame
 	
 	/**
 	 * connection to the database
+	 * and initializing tabs
 	 */
-	private void initDB()
+	private void initDBAndTabs()
 	{
 		DBConnector connector = DBConnector.getInstance();
 		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
+		
+		// internal
+		// tabbedPaneInternal.
+		CoreEditorTabPanel tabPanel = new CoreEditorTabPanel("CoreDataTableIndex");
+		tabbedPaneInternal.addTab("CoreDataTableIndex", tabPanel);
+		
+		tabPanel = new CoreEditorTabPanel("TableColumnLabels");
+		tabbedPaneInternal.addTab("TableColumnLabels", tabPanel);
+		
+		// TODO refresh button Commit Button? or Autocommit
+		
+		// coredata
 	}
 		
 	/**

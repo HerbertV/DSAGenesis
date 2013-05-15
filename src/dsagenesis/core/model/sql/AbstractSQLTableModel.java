@@ -22,8 +22,18 @@ package dsagenesis.core.model.sql;
 
 public abstract class AbstractSQLTableModel
 {
-
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+		
+	protected String dbTableName;
 	
+	protected String[]dbColumnNames;
+	
+	protected String prefix;
+	
+	protected boolean usesPrefix = true;
+		
 	/**
 	 * getPrefix
 	 * 

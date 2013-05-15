@@ -35,6 +35,7 @@ public class TableIndexFactory
 {
 	
 	/**
+	 * getPrefixForTable
 	 * 
 	 * @param tablename
 	 * @return
@@ -55,6 +56,7 @@ public class TableIndexFactory
 	}
 	
 	/**
+	 * getLabelForTable
 	 * 
 	 * @param tablename
 	 * @return
@@ -75,6 +77,7 @@ public class TableIndexFactory
 	}
 	
 	/**
+	 * getColumnLabelsForTable
 	 * 
 	 * @param tablename
 	 * @return
@@ -90,9 +93,8 @@ public class TableIndexFactory
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
 		if( rs.next() )
 			rs.getString("ti_label");
-		
-		
-		return null;
+				
+		return new String[0];
 	}
 	
 }

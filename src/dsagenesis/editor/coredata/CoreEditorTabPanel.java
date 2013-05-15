@@ -1,23 +1,58 @@
+/*
+ *  __  __      
+ * /\ \/\ \  __________   
+ * \ \ \_\ \/_______  /\   
+ *  \ \  _  \  ____/ / /  
+ *   \ \_\ \_\ \ \/ / / 
+ *    \/_/\/_/\ \ \/ /  
+ *             \ \  /
+ *              \_\/
+ *
+ * -----------------------------------------------------------------------------
+ * @author: Herbert Veitengruber 
+ * @version: 1.0.0
+ * -----------------------------------------------------------------------------
+ *
+ * Copyright (c) 2013 Herbert Veitengruber 
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/mit-license.php
+ */
 package dsagenesis.editor.coredata;
 
-import jhv.swing.AbstractGridBagPanel;
+import javax.swing.JPanel;
 
+/**
+ * CoreEditorTabPanel
+ * 
+ * Class for the DB connected Tabs.
+ * Contains a CoreDataTable.
+ */
 public class CoreEditorTabPanel 
-		extends AbstractGridBagPanel 
+		extends JPanel
 {
 
-	
+	// ============================================================================
+	//  Constants
+	// ============================================================================
+		
 	private static final long serialVersionUID = 1L;
 
-	public CoreEditorTabPanel() 
+	// ============================================================================
+	//  Constructors
+	// ============================================================================
+		
+	
+	public CoreEditorTabPanel(String title) 
 	{
-		// TODO Auto-generated constructor stub
+		super();
+		this.setName(title);
+		// TODO add jtable
+		
 	}
 
-	public CoreEditorTabPanel(boolean isDoubleBuffered) 
-	{
-		super(isDoubleBuffered);
-		// TODO Auto-generated constructor stub
-	}
-
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+		
 }
