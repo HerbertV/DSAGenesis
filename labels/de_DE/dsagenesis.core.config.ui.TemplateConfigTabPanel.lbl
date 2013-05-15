@@ -1,5 +1,3 @@
-info.title=Datenbank Einstellungen.
+info.title=Druck Templates.
 
-info.message=<html>Hier kann man Einstellungen der Datenbank ändern.</html>
-
-lblChooser=Verwendete Datenbank:
+info.message=TODO
