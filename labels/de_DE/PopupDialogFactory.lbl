@@ -1,0 +1,6 @@
+# Generic label file for JOptionPane popup dialogs
+
+
+# Unsaved data warning and confirmation
+closeUnsaved.title=Schlieﬂen best‰tigen
+closeUnsaved.message= enth‰lt ungesicherte Daten.\nWillst du wirklich schlieﬂen?

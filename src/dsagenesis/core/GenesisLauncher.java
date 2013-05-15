@@ -39,6 +39,7 @@ import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.ui.ConfigFrame;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.ui.AbstractGenesisFrame;
+import dsagenesis.core.ui.PopupDialogFactory;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.hero.HeroEditorFrame;
 import dsagenesis.editor.metadata.MetaEditorFrame;
@@ -466,14 +467,7 @@ public class GenesisLauncher
 					doClose = true;
 					
 				} else {
-					// TODO generic label
-					int result = JOptionPane.showConfirmDialog(
-							openFrame,
-							openFrame.getTitle() 
-								+ " enth‰lt ungesicherte Daten.\nWillst du wirklich schlieﬂen?",
-							"Schlieﬂen best‰tigen",
-							JOptionPane.YES_NO_OPTION
-						);
+					int result = PopupDialogFactory.confirmCloseWithUnsavedData(openFrame);
 					
 					if( result == JOptionPane.YES_OPTION )
 					{
