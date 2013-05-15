@@ -2,13 +2,15 @@
 	SKT
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	( 	'SKT', 
 		'false',
 		'skt_', 
 		'SKT', 
 		'Steigerungskosten-Tabelle',
+		'true'
+		'0',
 		'true'
 	);
 	
@@ -50,13 +52,15 @@ INSERT INTO TableColumnLabels
 	SKTShifts
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index,  ti_editable )
 	VALUES
 	(	'SKTShifts', 
 		'false',
 		'skts_', 
 		'SKT Verschiebungen', 
 		'<html>Hier werden die Verschiebungen der SKT Spalten durch Vor-/Nachteile Sonderfähigkeiten verwaltet.<br></html>',
+		'false',
+		'0',
 		'true'
 	);
 	
@@ -102,13 +106,15 @@ INSERT INTO TableColumnLabels
 	CharacteristicGroups
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'CharacteristicGroups', 
 		'true',
 		'cg_', 
 		'Grundwerte Gruppen', 
 		'Die Grundwerte sind zur besseren Unterscheidung in Gruppen unterteilt',
+		'true',
+		'1',
 		'false'
 	);
 	
@@ -123,13 +129,15 @@ INSERT INTO TableColumnLabels
 
 -- TODO needs update for the new fields
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	( 	'Characteristics', 
 		'true',
 		'c_', 
 		'Grundwerte', 
 		'Eigenschaften und sonstige Werte die berechnet werden oder gesteigert werden dürfen.',
+		'false',
+		'2',
 		'true'
 	);
 
