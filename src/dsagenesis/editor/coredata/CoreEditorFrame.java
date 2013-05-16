@@ -209,10 +209,12 @@ public class CoreEditorFrame
 		CoreEditorTable table = new CoreEditorTable(new CoreDataTableIndex());
 		internalTables.add(table);
 		// TODO add system db icon
+		
 		tabbedPaneInternal.addTab("CoreDataTableIndex",	new JScrollPane(table)); 
-		
-		
-		
+		tabbedPaneInternal.setIconAt(
+				0, 
+				(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+			);
 		
 		
 		//CoreEditorTabPanel tabPanel = new CoreEditorTabPanel("TableColumnLabels");
