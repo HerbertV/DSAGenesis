@@ -79,13 +79,59 @@
 			<path refid="path.jarlib" />
 		</copy>
 	</target>
+
+<!-- 
+	===========================================================================
+		Target copy_libs
+	===========================================================================
+ -->	
+	<target name="copy_readme_changelog"
+			description="copies readme and changelog to the release folder">
+		
+		<delete file="${dir.build}Readme.txt"/>
+		<delete file="${dir.build}Changelog.txt"/>
+		
+		<copy todir="${dir.build}" file="${dir.src}Readme.txt"/>
+		<copy todir="${dir.build}" file="${dir.src}Changelog.txt"/>
+
+		<replaceregexp file="${dir.build}Readme.txt"
+				match="@VERSION(.*)"
+				replace="${project.version.num}-b${build.number}\1"
+				byline="true"
+			/>
+		<replaceregexp file="${dir.build}Readme.txt"
+				match="@BUILDDATE(.*)"
+				replace="${tsNow}\1"
+				byline="true"
+			/>
+		<replaceregexp file="${dir.build}Readme.txt"
+				match="@COPYRIGHTYEAR(.*)"
+				replace="${tsYear}\1"
+				byline="true"
+			/>
+		<replaceregexp file="${dir.build}Readme.txt"
+				match="@AUTOR(.*)"
+				replace="${author.name}\1"
+				byline="true"
+			/>
+		<replaceregexp file="${dir.build}Changelog.txt"
+				match="@VERSION(.*)"
+				replace="${project.version.num}-b${build.number}\1"
+				byline="true"
+			/>
+		<replaceregexp file="${dir.build}Changelog.txt"
+				match="@BUILDDATE(.*)"
+				replace="${tsNow}\1"
+				byline="true"
+			/>
+	</target>	
 	
 <!--
 	=========================================================================== 
 		DEFAULT Target BUILD
 	===========================================================================
  -->	
-	<target name="process" depends="copy_libs">
+	<target name="process" depends="copy_libs,copy_readme_changelog">
 		<echo message="DSA Genesis building ... "/>
 		<echo message="${ant.version}"/>
 		<echo message="${tsNow}"/>
@@ -142,7 +188,7 @@
 					   	value="${tsNow}"/>
 				
 				<attribute name="Copyright" 
-						value="(c) ${copyright.startyear}-${tsYear} ${author.name} - Licensed under MIT License."/>
+						value="(c) ${copyright.startyear}-${tsYear} ${author.name} - Licensed under The MIT License."/>
 				
 				<!-- launcher attributes -->
 				<attribute name="Short-Version" 
@@ -159,6 +205,8 @@
 					<filename name="images/**/*.gif"/>
 					<filename name="images/**/*.jpg"/>
 					<filename name="labels/**/*.lbl"/>
+					<filename name="sql/**/*.sql"/>
+										
 				</or>
 			</fileset>
 		</fx:jar>
@@ -172,7 +220,7 @@
 		    </fx:resources>
 		</fx:deploy> 
 	
-		
+		<checksum file="${dir.build}${project.jar}" forceOverwrite="yes"/>
 	</target>
 
 </project>
