@@ -9,7 +9,7 @@
 	"SKT" Entries
 -----------------------------------------------------------------
 */
-DELETE * FROM "SKT";
+DELETE FROM "SKT";
 
 INSERT INTO "SKT" VALUES(0, 5, 10, 15, 20, 25, 40, 50, 100);
 INSERT INTO "SKT" VALUES(1, 1, 2, 2, 3, 4, 6, 8, 16);
@@ -50,7 +50,7 @@ INSERT INTO "SKT" VALUES(31, 50, 100, 150, 200, 250, 375, 500, 1000);
 	CharacteristicGroups Entries
 -----------------------------------------------------------------
 */
-DELETE * FROM "CharacteristicGroups";
+DELETE FROM "CharacteristicGroups";
 
 INSERT INTO "CharacteristicGroups" VALUES('cg_0', 'Eigenschaften');
 INSERT INTO "CharacteristicGroups" VALUES('cg_1', 'Energien');
@@ -80,7 +80,7 @@ UPDATE "CoreDataTableIndex"
  	c_has_Formular,
  	c_formular,
 */
-DELETE * FROM "Characteristics";
+DELETE FROM "Characteristics";
 
 INSERT INTO "Characteristics" VALUES(
 	'c_mu', 0, 'MU', 'Mut', 'cg_0', 1, 0, 30, 'true', 'false', 'skt_h', 'false', NULL

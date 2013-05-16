@@ -27,13 +27,13 @@
 DROP TABLE IF EXISTS "CoreDataTableIndex";
 
 CREATE TABLE "CoreDataTableIndex" (
-	"ID" INTEGER  PRIMARY KEY AUTOINCREMENT NULL,
-	"ti_table_name" VARCHAR(50)  NOT NULL,
+	"ID" INTEGER PRIMARY KEY NOT NULL,
+	"ti_table_name" VARCHAR(50) NOT NULL,
 	"ti_uses_prefix" BOOLEAN DEFAULT 'true' NOT NULL,
-	"ti_prefix" VARCHAR(4),
+	"ti_prefix" VARCHAR(5),
 	"ti_last_index_num" INTEGER DEFAULT -1 NOT NULL,
-	"ti_label" TEXT  NOT NULL,
-	"ti_note" TEXT  NULL,
+	"ti_label" TEXT NOT NULL,
+	"ti_note" TEXT NULL,
 	"ti_is_internal" BOOLEAN DEFAULT 'false' NOT NULL,
 	"ti_tab_index" INTEGER DEFAULT '0' NOT NULL,
 	"ti_editable" BOOLEAN DEFAULT 'true' NOT NULL
@@ -53,9 +53,9 @@ CREATE TABLE "CoreDataTableIndex" (
 DROP TABLE IF EXISTS "TableColumnLabels";
 
 CREATE TABLE "TableColumnLabels" (
-	"ID" INTEGER  PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"tcl_table_name" VARCHAR(50)  NOT NULL,
-	"tcl_column_name" VARCHAR(50)  NOT NULL,
+	"ID" INTEGER  PRIMARY KEY NOT NULL,
+	"tcl_table_name" VARCHAR(50) NOT NULL,
+	"tcl_column_name" VARCHAR(50) NOT NULL,
 	"tcl_label" TEXT  NOT NULL
 );
 
@@ -116,7 +116,7 @@ CREATE TABLE "SKT" (
 DROP TABLE IF EXISTS "SKTShifts";
 
 CREATE TABLE "SKTShifts" (
-	"ID" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"ID" INTEGER PRIMARY KEY NOT NULL,
 	"skts_ref_source_ID" VARCHAR(10) NOT NULL,
 	"skts_target_table_name" VARCHAR(50) NOT NULL,
 	"skts_target_column_name" VARCHAR(50) NULL,
@@ -173,7 +173,7 @@ CREATE TABLE "Characteristics" (
 	"c_acronym" VARCHAR(5) NOT NULL,
 	"c_name" TEXT NOT NULL,
 	"c_ref_cg_ID" VARCHAR(10) REFERENCES CharacteristicGroups(ID) NOT NULL,
-	"c_cp_cost" INTEGER DEFAULT '0' NOT NULL
+	"c_cp_cost" INTEGER DEFAULT '0' NOT NULL,
 	"c_min_value" INTEGER NULL,
 	"c_max_value" INTEGER NULL,
 	"c_can_increase" BOOLEAN DEFAULT 'false' NOT NULL,

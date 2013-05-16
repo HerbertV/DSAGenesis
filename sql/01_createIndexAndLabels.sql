@@ -9,8 +9,8 @@ INSERT INTO CoreDataTableIndex
 		'skt_', 
 		'SKT', 
 		'Steigerungskosten-Tabelle',
-		'true'
-		'0',
+		'true',
+		0,
 		'true'
 	);
 	
@@ -60,7 +60,7 @@ INSERT INTO CoreDataTableIndex
 		'SKT Verschiebungen', 
 		'<html>Hier werden die Verschiebungen der SKT Spalten durch Vor-/Nachteile Sonderfähigkeiten verwaltet.<br></html>',
 		'false',
-		'0',
+		0,
 		'true'
 	);
 	
@@ -79,7 +79,7 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'SKTShifts', 'skts_target_tskts_target_valueable_name', 'Ziel Wert');
+	( 'SKTShifts', 'skts_target_value', 'Ziel Wert');
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -114,7 +114,7 @@ INSERT INTO CoreDataTableIndex
 		'Grundwerte Gruppen', 
 		'Die Grundwerte sind zur besseren Unterscheidung in Gruppen unterteilt',
 		'true',
-		'1',
+		1,
 		'false'
 	);
 	
@@ -127,7 +127,6 @@ INSERT INTO TableColumnLabels
 	Characteristics
 */		
 
--- TODO needs update for the new fields
 INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
@@ -135,11 +134,14 @@ INSERT INTO CoreDataTableIndex
 		'true',
 		'c_', 
 		'Grundwerte', 
-		'Eigenschaften und sonstige Werte die berechnet werden oder gesteigert werden dürfen.',
+		'Eigenschaften und sonstige Werte die berechnet werden oder gesteigert werden dÃ¼rfen.',
 		'false',
-		'2',
+		2,
 		'true'
 	);
+
+-- TODO needs update for the new fields
+/*
 
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
@@ -191,3 +193,4 @@ INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
 	( 'Characteristics', 'c_formular', 'Berechnungsformel');
+*/
