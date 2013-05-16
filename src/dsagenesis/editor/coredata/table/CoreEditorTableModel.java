@@ -29,10 +29,8 @@ import javax.swing.table.DefaultTableModel;
  * 
  * Our default table model used by swing.table  
  * in our core data edtior
- *
  */
-@SuppressWarnings("rawtypes")
-public class CoreDataTableModel 
+public class CoreEditorTableModel 
 		extends DefaultTableModel 
 {
 	// ============================================================================
@@ -41,6 +39,10 @@ public class CoreDataTableModel
 		
 	private static final long serialVersionUID = 1L;
 	
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+		
 	private boolean isReadonly = false;
 	
 	// ============================================================================
@@ -50,7 +52,7 @@ public class CoreDataTableModel
 	/**
 	 * Constructor 1.
 	 */
-	public CoreDataTableModel() 
+	public CoreEditorTableModel() 
 	{
 		super();
 	}
@@ -61,54 +63,33 @@ public class CoreDataTableModel
 	 * @param rowCount
 	 * @param columnCount
 	 */
-	public CoreDataTableModel(int rowCount, int columnCount)
+	public CoreEditorTableModel(int rowCount, int columnCount)
 	{
 		super(rowCount, columnCount);
 	}
 	
 	/**
+	 * Constructor 2.
+	 * 
+	 * @param columnNames
+	 * @param rowCount
+	 */
+	public CoreEditorTableModel(Vector<String> columnNames, int rowCount) 
+	{
+		super(columnNames, rowCount);
+	}
+
+	/**
 	 * Constructor 3.
 	 * 
-	 * @param columnNames
-	 * @param rowCount
-	 */
-	public CoreDataTableModel(Vector columnNames, int rowCount) 
-	{
-		super(columnNames, rowCount);
-	}
-
-	/**
-	 * Constructor 4.
-	 * 
-	 * @param columnNames
-	 * @param rowCount
-	 */
-	public CoreDataTableModel(Object[] columnNames, int rowCount) 
-	{
-		super(columnNames, rowCount);
-	}
-
-	/**
-	 * Constructor 5.
-	 * 
 	 * @param data
 	 * @param columnNames
 	 */
-	public CoreDataTableModel(Vector data, Vector columnNames) 
+	public CoreEditorTableModel( Vector<Vector<Object>> data, Vector<String> columnNames) 
 	{
 		super(data, columnNames);
 	}
 
-	/**
-	 * Constructor 6.
-	 * 
-	 * @param data
-	 * @param columnNames
-	 */
-	public CoreDataTableModel(Object[][] data, Object[] columnNames) 
-	{
-		super(data, columnNames);
-	}
 	
 	
 	// ============================================================================

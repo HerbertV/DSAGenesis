@@ -22,10 +22,12 @@ package dsagenesis.editor.coredata;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
+import dsagenesis.core.model.sql.CoreDataTableIndex;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.core.ui.HelpDialog;
 import dsagenesis.core.ui.InfoDialog;
+import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
@@ -35,6 +37,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
@@ -50,11 +53,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.JTabbedPane;
 
 /**
@@ -62,6 +70,7 @@ import javax.swing.JTabbedPane;
  */
 public class CoreEditorFrame 
 		extends AbstractGenesisFrame 
+		implements TableModelListener, ActionListener, ChangeListener
 {
 
 	// ============================================================================
@@ -101,6 +110,11 @@ public class CoreEditorFrame
 	private JTabbedPane tabbedPaneInternal;
 	
 	
+	private Vector<CoreEditorTable> coreTables;
+	private Vector<CoreEditorTable> internalTables;
+	
+	
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -129,6 +143,7 @@ public class CoreEditorFrame
 		panelSplitTop.setLayout(new BorderLayout(0, 0));
 		panelSplitTop.setMinimumSize(new Dimension(50,50));
 		{
+			// TODO labels
 			TitledBorder titleBorder = BorderFactory.createTitledBorder("Core Data Tables");
 			panelSplitTop.setLayout(new BorderLayout(0, 0));
 			this.lblTopNote = new JLabel("Alle Tabellen die direkt mit Inhalten für die Heldenverwaltung in verbindung stehen.");
@@ -145,6 +160,7 @@ public class CoreEditorFrame
 		panelSplitBottom.setLayout(new BorderLayout(0, 0));
 		panelSplitBottom.setMinimumSize(new Dimension(50,50));
 		{
+			// TODO labels
 			TitledBorder titleBorder = BorderFactory.createTitledBorder("Internal Tables");
 			this.lblBottomNote = new JLabel("System Tabellen und Referenz Tabellen.");
 			this.lblBottomNote.setBorder(titleBorder);
@@ -153,6 +169,7 @@ public class CoreEditorFrame
 		{
 			this.tabbedPaneInternal = new JTabbedPane(JTabbedPane.TOP);
 			panelSplitBottom.add(this.tabbedPaneInternal, BorderLayout.CENTER);
+			this.tabbedPaneInternal.addChangeListener(this);
 		}
 		
 		JSplitPane splitPane = new JSplitPane();
@@ -185,15 +202,28 @@ public class CoreEditorFrame
 		DBConnector connector = DBConnector.getInstance();
 		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
 		
-		// internal
-		// tabbedPaneInternal.
-		CoreEditorTabPanel tabPanel = new CoreEditorTabPanel("CoreDataTableIndex");
-		tabbedPaneInternal.addTab("CoreDataTableIndex", tabPanel);
+		//fail save
+		if( connector.getConnection() == null )
+			return;
 		
-		tabPanel = new CoreEditorTabPanel("TableColumnLabels");
-		tabbedPaneInternal.addTab("TableColumnLabels", tabPanel);
+		coreTables = new Vector<CoreEditorTable>();
+		internalTables = new Vector<CoreEditorTable>();
 		
-		// TODO refresh button Commit Button? or Autocommit
+		// init internal Tables
+		CoreEditorTable table = new CoreEditorTable(new CoreDataTableIndex());
+		internalTables.add(table);
+		// TODO add system db icon
+		tabbedPaneInternal.addTab("CoreDataTableIndex",	new JScrollPane(table)); 
+		
+		
+		
+		
+		
+		//CoreEditorTabPanel tabPanel = new CoreEditorTabPanel("TableColumnLabels");
+		//tabbedPaneInternal.addTab("TableColumnLabels", tabPanel);
+		
+		// TODO refresh button in tab
+		// TODO Commit Button per row becomes visible after the first change
 		
 		// coredata
 	}
@@ -365,6 +395,55 @@ public class CoreEditorFrame
 		DBConnector.getInstance().closeConnection();
 		
 		super.close(e);
+	}
+
+	/**
+	 * called if a tab has changed
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void stateChanged(ChangeEvent e) 
+	{
+		System.out.println("stateChanged");
+		
+		if( e.getSource() == tabbedPaneInternal )
+		{
+			int idx = tabbedPaneInternal.getSelectedIndex();
+			
+			System.out.println("Internal Index: "+idx);
+			
+			internalTables.elementAt(idx).loadData();
+		}
+		
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * for menu and toobar handling
+	 * @param e
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		System.out.println("actionPerformed");
+		// TODO Auto-generated method stub
+		
+	}
+
+	/** 
+	 * table data changes 
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void tableChanged(TableModelEvent e)
+	{
+		System.out.println("tableChanged");
+		// TODO Auto-generated method stub
+		
 	}
 
 }

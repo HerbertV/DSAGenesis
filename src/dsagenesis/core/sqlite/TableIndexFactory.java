@@ -22,6 +22,7 @@ package dsagenesis.core.sqlite;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * static helper class for working with the Genesis Database
@@ -38,19 +39,21 @@ public class TableIndexFactory
 	 * getPrefixForTable
 	 * 
 	 * @param tablename
+	 * 
 	 * @return
+	 * 
 	 * @throws SQLException
 	 */
 	public static String getPrefixForTable(String tablename) 
 			throws SQLException
 	{
 		String query = 
-				"SELECT ti_prefix from CoreDataTableIndex WHERE ti_table_name="
-					+ tablename;
+				"SELECT ti_prefix, ti_table_name from CoreDataTableIndex WHERE ti_table_name='"
+					+ tablename+"'";
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
 		if( rs.next() )
-			rs.getString("ti_prefix");
+			return rs.getString("ti_prefix");
 		
 		return "";
 	}
@@ -59,19 +62,21 @@ public class TableIndexFactory
 	 * getLabelForTable
 	 * 
 	 * @param tablename
+	 * 
 	 * @return
+	 * 
 	 * @throws SQLException
 	 */
 	public static String getLabelForTable(String tablename) 
 			throws SQLException
 	{
 		String query = 
-				"SELECT ti_label from CoreDataTableIndex WHERE ti_table_name="
+				"SELECT ti_label, ti_table_name from CoreDataTableIndex WHERE ti_table_name="
 						+ tablename;
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
 		if( rs.next() )
-			rs.getString("ti_label");
+			return rs.getString("ti_label");
 		
 		return "";
 	}
@@ -80,21 +85,29 @@ public class TableIndexFactory
 	 * getColumnLabelsForTable
 	 * 
 	 * @param tablename
+	 * 
 	 * @return
+	 * 
 	 * @throws SQLException
 	 */
+// TODO change to Vector<String>
 	public static String[] getColumnLabelsForTable(String tablename)
 			throws SQLException
 	{
 		String query = 
-				"SELECT tcl_column_name, tcl_label from TableColumnLabels WHERE ti_table_name="
+				"SELECT tcl_column_name, tcl_label, tlc_table_name from TableColumnLabels WHERE tlc_table_name="
 						+ tablename;
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
-		if( rs.next() )
-			rs.getString("ti_label");
-				
-		return new String[0];
+		
+		ArrayList<String> arr = new ArrayList<String>();
+		while( rs.next() )
+			arr.add(rs.getString("ti_label"));
+		
+		String[] sarr = new String[arr.size()];
+		sarr = arr.toArray(sarr);
+		
+		return sarr;
 	}
 	
 }

@@ -27,9 +27,12 @@ import dsagenesis.core.model.xml.AbstractXMLModel;
  * IGenesisModel.
  * 
  * base interface for all Genesis model classes.
+ * used by Meta Data editor and Hero Editor
+ * to link the SQL models with the XML Models
  * 
  * 
  */
+// TODO maybe abstract object is better
 public interface IGenesisModel
 {
 

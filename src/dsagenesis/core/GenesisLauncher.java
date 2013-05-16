@@ -237,6 +237,11 @@ public class GenesisLauncher
 		if( connector.isDBEmpty() )
 		{
 			ApplicationLogger.logInfo("DB is Empty. now initializing ...");
+			
+			connector.executeFile("sql/00_createDB.sql");
+			connector.executeFile("sql/01_createIndexAndLabels.sql");
+			connector.executeFile("sql/02_createCoreData.sql");
+			
 			// TODO
 		} 
 		connector.closeConnection();

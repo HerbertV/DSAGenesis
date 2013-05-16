@@ -23,7 +23,7 @@ package dsagenesis.core.model.sql;
 public abstract class AbstractSQLRowModel 
 {
 
-	
+	// TODO maybe we don't need it 
 	/**
 	 * getPrefix
 	 * 

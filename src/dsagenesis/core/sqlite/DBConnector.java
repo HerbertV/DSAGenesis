@@ -20,6 +20,11 @@
  */
 package dsagenesis.core.sqlite;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -27,7 +32,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.sqlite.SQLiteConfig;
-import org.sqlite.SQLiteConfig.Encoding;
 import org.sqlite.SQLiteJDBCLoader;
 
 import jhv.util.debug.logger.ApplicationLogger;
@@ -51,7 +55,12 @@ public class DBConnector
 	 */
 	private Connection connection;
 	
+	/**
+	 * time for the last query.
+	 */
+	private long queryTime = 0;
 	
+		
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -136,7 +145,6 @@ public class DBConnector
 			sqlconf.setReadOnly(readonly);   
 			sqlconf.enableLoadExtension(true);
 			sqlconf.setSharedCache(true);
-			sqlconf.setEncoding(Encoding.UTF8);
 			sqlconf.useLegacyFileFormat(false);
 			sqlconf.enforceForeignKeys(true);
 			
@@ -179,17 +187,25 @@ public class DBConnector
 				);
 			return null;
 		}
+		queryTime = 0;
+		
+		long startTime = System.currentTimeMillis();
+		ResultSet rs = null;
 		
 		try
 		{
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);  
-			return statement.executeQuery(query);
+			rs = statement.executeQuery(query);
 			
 		} catch( SQLException e ) {
 			ApplicationLogger.logError(e);
+			ApplicationLogger.logError("Query String was:\n" +query);
+			
 		}
-		return null;
+		
+		queryTime = System.currentTimeMillis() - startTime;
+		return rs;
 	}
 	
 	/**
@@ -207,6 +223,9 @@ public class DBConnector
 				);
 			return;
 		}
+		queryTime = 0;
+		
+		long startTime = System.currentTimeMillis();
 		
 		try
 		{
@@ -216,7 +235,65 @@ public class DBConnector
 			
 		} catch( SQLException e ) {
 			ApplicationLogger.logError(e);
+			ApplicationLogger.logError("Update String was:\n" +update);
 		}
+		
+		queryTime = System.currentTimeMillis() - startTime;
+	}
+	
+	/**
+	 * executeFile
+	 * 
+	 * executes the sql script from a file. 
+	 * Till now only updates are possible (no queries)
+	 * 
+	 * @param filename
+	 */
+	public void executeFile(String filename)
+	{
+		String query = "";
+		InputStream in;
+		InputStreamReader isr;
+		
+		try 
+    	{
+    		in = getClass().getClassLoader().getResourceAsStream(filename);
+    		isr = new InputStreamReader(in);
+    		
+        } catch( NullPointerException e1 ) {
+        	// no resource found try to load from file
+        	System.out.println("load sql file: "+ filename);
+        	try {
+        		in = new FileInputStream(filename);
+        		isr = new InputStreamReader(in);
+        		
+        	} catch( Exception e2 ) {
+        		// both loading tries failed
+        		// so no property file is available
+        		ApplicationLogger.logError("sql file: " + filename + " not found!");
+        		return;
+        	}
+        }
+		
+		try 
+		{
+			BufferedReader br = new BufferedReader(isr);
+			String read = br.readLine();
+			while( read != null )
+			{
+				query += read;
+			    read = br.readLine();
+			}
+			br.close();
+			isr.close();
+			in.close();
+			
+		} catch (IOException e) {
+			ApplicationLogger.logError(e);
+			return;
+		}
+		
+		executeUpdate(query);
 	}
 	
 	/**
@@ -246,15 +323,17 @@ public class DBConnector
 	}
 	
 	/**
-	 * executeFile
+	 * getQueryTime
 	 * 
-	 * executes the sql script from a file. 
+	 * returns the time in ms the last query took.
 	 * 
-	 * @param filename
+	 * @return
 	 */
-	public void executeFile(String filename)
+	public long getQueryTime()
 	{
-		// TODO
+		return queryTime;
 	}
+	
+	
 	
 }
