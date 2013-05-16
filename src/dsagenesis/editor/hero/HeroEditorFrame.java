@@ -1,12 +1,8 @@
 /*
- *  __  __      
- * /\ \/\ \  __________   
- * \ \ \_\ \/_______  /\   
- *  \ \  _  \  ____/ / /  
- *   \ \_\ \_\ \ \/ / / 
- *    \/_/\/_/\ \ \/ /  
- *             \ \  /
- *              \_\/
+ *  ___  ___   _      ___                 _    
+ * |   \/ __| /_\    / __|___ _ _  ___ __(_)___
+ * | |) \__ \/ _ \  | (_ / -_) ' \/ -_|_-< (_-<
+ * |___/|___/_/ \_\  \___\___|_||_\___/__/_/__/
  *
  * -----------------------------------------------------------------------------
  * @author: Herbert Veitengruber 
@@ -53,15 +49,30 @@ public class HeroEditorFrame
 	}
 
 	
-
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-		
+	
 	@Override
-	public boolean hasChanged() 
+	public void loadLabels() 
 	{
-		// TODO
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean hasContentChanged() 
+	{
+		// TODO Auto-generated method stub
 		return true;
 	}
+
+	@Override
+	public void contentSaved()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }

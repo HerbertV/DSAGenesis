@@ -1,12 +1,8 @@
 /*
- *  __  __      
- * /\ \/\ \  __________   
- * \ \ \_\ \/_______  /\   
- *  \ \  _  \  ____/ / /  
- *   \ \_\ \_\ \ \/ / / 
- *    \/_/\/_/\ \ \/ /  
- *             \ \  /
- *              \_\/
+ *  ___  ___   _      ___                 _    
+ * |   \/ __| /_\    / __|___ _ _  ___ __(_)___
+ * | |) \__ \/ _ \  | (_ / -_) ' \/ -_|_-< (_-<
+ * |___/|___/_/ \_\  \___\___|_||_\___/__/_/__/
  *
  * -----------------------------------------------------------------------------
  * @author: Herbert Veitengruber 
@@ -24,16 +20,13 @@ import dsagenesis.core.model.sql.AbstractSQLRowModel;
 import dsagenesis.core.model.xml.AbstractXMLModel;
 
 /**
- * IGenesisModel.
+ * AbstractGenesisModel.
  * 
- * base interface for all Genesis model classes.
+ * Abstract base class for all Genesis model classes.
  * used by Meta Data editor and Hero Editor
  * to link the SQL models with the XML Models
- * 
- * 
  */
-// TODO maybe abstract object is better
-public interface IGenesisModel
+public abstract class AbstractGenesisModel
 {
 
 	/**
@@ -47,18 +40,18 @@ public interface IGenesisModel
 	 *  
 	 * @return
 	 */
-	public String getID();
+	public abstract String getID();
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public AbstractSQLRowModel getSQLRowModel();
+	public abstract AbstractSQLRowModel getSQLRowModel();
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public AbstractXMLModel getXMLModel();
+	public abstract AbstractXMLModel getXMLModel();
 	
 }
