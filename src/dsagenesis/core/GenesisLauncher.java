@@ -17,6 +17,7 @@
 package dsagenesis.core;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -54,7 +55,7 @@ import jhv.util.debug.logger.ApplicationLogger;
  */
 public class GenesisLauncher 
 		extends AbstractLauncher 
-		implements ActionListener, ILabeledComponent
+		implements ActionListener, ILabeledComponent, Runnable
 {
 	
 	// ============================================================================
@@ -80,9 +81,26 @@ public class GenesisLauncher
 	//  Variables
 	// ============================================================================
 	
+	/**
+	 * current open Frame (Core-, Meta- or HeroEditor)
+	 */
 	public static AbstractGenesisFrame openFrame;
 	
+	/**
+	 * Thread for processing the first launch
+	 */
+	private static Thread firstLaunchThread;
+	
+	/**
+	 * label resource
+	 */
 	private LabelResource labelResource;
+	
+	/**
+	 * used to show the first launch status
+	 * and the Diclaimer.
+	 */
+	private JLabel lblDisclaimerAndStatus;
 	
 	
 	// ============================================================================
@@ -181,8 +199,6 @@ public class GenesisLauncher
 			ApplicationLogger.newLine();
 		}
 		
-		firstLaunch();
-		
 		// set now the correct level
 		ApplicationLogger.setLevel(conf.getDebugLevel());
 		
@@ -193,57 +209,10 @@ public class GenesisLauncher
 			);
 		// set the app icon image for later use
 		GenesisConfig.APP_ICON = me.getIconImage();
+		me.startFirstLaunch();
+		
 		GenesisLauncher.open();
-	}
-	
-	/**
-	 * firstLaunch
-	 * 
-	 * executed if the application starts for the very first time.
-	 */
-	private static void firstLaunch()
-	{
-		GenesisConfig conf = GenesisConfig.getInstance();
 		
-		if( !conf.isFirstLaunch() )
-			return;
-		
-		ApplicationLogger.logInfo("doing first launch ...");
-		
-		// create folder structure
-		String[] arr = {
-				conf.getPathArchtype(),
-				conf.getPathCulture(),
-				conf.getPathHero(),
-				conf.getPathProfession(),
-				conf.getPathRace(),
-				conf.getPathTemplate()
-			};
-		
-		try {
-			PathCreator.createPathes(arr);
-		} catch( IOException e ) {
-			ApplicationLogger.logError(e);
-		}
-		
-		// create database if there is none
-		DBConnector connector = DBConnector.getInstance();
-		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
-		
-		if( connector.isDBEmpty() )
-		{
-			ApplicationLogger.logInfo("DB is Empty. now initializing ...");
-			
-			connector.executeFile("sql/00_createDB.sql");
-			connector.executeFile("sql/01_createIndexAndLabels.sql");
-			connector.executeFile("sql/02_createCoreData.sql");
-			
-			// TODO
-		} 
-		connector.closeConnection();
-		
-		
-		conf.setFirstLaunchDone();	
 	}
 	
 	/**
@@ -303,20 +272,20 @@ public class GenesisLauncher
 				);
 		lblV.setBounds(margin, 60, defaultWidth-2*margin, 25);
 		
-		// disclaimer label
-		JLabel lblD = new JLabel();
-		lblD.setHorizontalAlignment(JLabel.CENTER);
-		lblD.setForeground(Color.LIGHT_GRAY);
-		lblD.setFont(lblD.getFont().deriveFont(8.0f));
+		// disclaimer and first launch statuslabel
+		lblDisclaimerAndStatus = new JLabel();
+		lblDisclaimerAndStatus.setHorizontalAlignment(JLabel.CENTER);
+		lblDisclaimerAndStatus.setForeground(Color.LIGHT_GRAY);
+		lblDisclaimerAndStatus.setFont(lblDisclaimerAndStatus.getFont().deriveFont(8.0f));
 		
-		lblD.setText(
+		lblDisclaimerAndStatus.setText(
 				labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
 			);
-		lblD.setBounds(margin, 325, defaultWidth-2*margin, 70);
+		lblDisclaimerAndStatus.setBounds(margin, 325, defaultWidth-2*margin, 70);
 		
 		// to avoid z fighting
 		imgPanel.add(lblV);
-		imgPanel.add(lblD);
+		imgPanel.add(lblDisclaimerAndStatus);
 		
 		String[][] btnList = {
 				{ labelResource.getProperty("btnSetup", "btnSetup"),
@@ -518,4 +487,130 @@ public class GenesisLauncher
 			openFrame.setVisible(true);
 		}
 	}
+	
+	/**
+	 * startFirstLaunch
+	 * 
+	 * starts the first launch thread if it is the first launch.
+	 */
+	public void startFirstLaunch()
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		if( !conf.isFirstLaunch() )
+			return;
+		
+		// first disable the buttons
+		for( int i=0; i<this.imgPanel.getComponentCount(); i++ )
+		{
+			if( this.imgPanel.getComponent(i) instanceof JButton )
+			{
+				JButton btn = (JButton)this.imgPanel.getComponent(i);
+				btn.setEnabled(false);
+			}
+		}
+		// set the wait cursor
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		
+		ApplicationLogger.logInfo("doing first launch ...");
+		lblDisclaimerAndStatus.setText(
+				labelResource.getProperty("firstLaunch.start", "firstLaunch.start")
+			);
+		// now start Thread.
+		firstLaunchThread = new Thread(this);
+		firstLaunchThread.start();
+	}
+	
+	/**
+	 * run
+	 * 
+	 * runs through the first launch steps.
+	 */
+	@Override
+	public void run() 
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		DBConnector connector = DBConnector.getInstance();
+		int step = 0;
+		
+		while( step < 5 )
+		{
+			try
+			{
+				Thread.sleep(50);
+			} catch( InterruptedException e ) {
+				//nothing to do
+			}
+			
+			if( step == 0 )
+			{
+				// STEP 1: create folder structure
+				String[] arr = {
+						conf.getPathArchtype(),
+						conf.getPathCulture(),
+						conf.getPathHero(),
+						conf.getPathProfession(),
+						conf.getPathRace(),
+						conf.getPathTemplate()
+					};
+				
+				try {
+					PathCreator.createPathes(arr);
+				} catch( IOException e ) {
+					ApplicationLogger.logError("First launch failed!");
+					ApplicationLogger.logError(e);
+					return;
+				}
+				
+			} else if( step == 1 ) {
+				// open DB Connection and check if its empty
+				ApplicationLogger.logInfo("Try to open DB...");
+				lblDisclaimerAndStatus.setText(
+						labelResource.getProperty("firstLaunch.db.open", "firstLaunch.db.open")
+					);
+				connector.openConnection(
+						GenesisConfig.getInstance().getDBFile(),false
+					);
+				// db is not empty to we are done
+				if( !connector.isDBEmpty() )
+					break;
+				
+			} else if( step == 2 ) {
+				ApplicationLogger.logInfo("DB is Empty. now initializing ...");
+				lblDisclaimerAndStatus.setText(
+						labelResource.getProperty("firstLaunch.db.create", "firstLaunch.db.create")
+					);
+				connector.executeFile("sql/00_createDB.sql");
+				
+			} else if( step == 3 ) {
+				connector.executeFile("sql/01_createIndexAndLabels.sql");
+				
+			} else if( step == 4 ) {
+				connector.executeFile("sql/02_createCoreData.sql");
+			}
+			step++;
+		}
+				
+		// we are done
+		connector.closeConnection();
+		conf.setFirstLaunchDone();	
+		
+		// enable the buttons
+		for( int i=0; i<this.imgPanel.getComponentCount(); i++ )
+		{
+			if( this.imgPanel.getComponent(i) instanceof JButton )
+			{
+				JButton btn = (JButton)this.imgPanel.getComponent(i);
+				btn.setEnabled(true);
+			}
+		}
+		// set normal cursor
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		
+		ApplicationLogger.logInfo("first launch finished.");
+		lblDisclaimerAndStatus.setText(
+				labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
+			);
+	}
+	
 }

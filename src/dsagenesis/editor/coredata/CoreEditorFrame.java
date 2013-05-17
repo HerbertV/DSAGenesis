@@ -27,6 +27,7 @@ import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
@@ -96,16 +97,18 @@ public class CoreEditorFrame
 	private JLabel lblBottomNote;
 	
 	/**
-	 * 
+	 * panel for the editable core data tables
 	 */
 	private JTabbedPane tabbedPaneCore;
 	
 	/**
-	 * 
+	 * panel for mostly uneditable system and cross reference tables.
 	 */
 	private JTabbedPane tabbedPaneInternal;
 	
-	
+	/**
+	 * Vectors for accessing the tables
+	 */
 	private Vector<CoreEditorTable> coreTables;
 	private Vector<CoreEditorTable> internalTables;
 	
@@ -403,19 +406,14 @@ public class CoreEditorFrame
 	@Override
 	public void stateChanged(ChangeEvent e) 
 	{
-		System.out.println("stateChanged");
-		
 		if( e.getSource() == tabbedPaneInternal )
 		{
 			int idx = tabbedPaneInternal.getSelectedIndex();
-			
-			System.out.println("Internal Index: "+idx);
-			
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			internalTables.elementAt(idx).loadData();
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
-		
-		
-		// TODO Auto-generated method stub
+		// TODO core tab
 		
 	}
 

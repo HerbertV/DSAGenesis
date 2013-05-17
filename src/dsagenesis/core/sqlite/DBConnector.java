@@ -163,6 +163,8 @@ public class DBConnector
 			if( connection != null )
 				connection.close();
 			
+			ApplicationLogger.logInfo("closed DB connection.");
+			
 		} catch( SQLException e ) {
 			ApplicationLogger.logFatalError(e);
 		}
