@@ -105,5 +105,6 @@ public class TableIndexFactory
 		
 		return sarr;
 	}
+// TODO get db version
 	
 }

@@ -533,7 +533,7 @@ public class GenesisLauncher
 		DBConnector connector = DBConnector.getInstance();
 		int step = 0;
 		
-		while( step < 5 )
+		while( step < 6 )
 		{
 			try
 			{
@@ -580,13 +580,18 @@ public class GenesisLauncher
 				lblDisclaimerAndStatus.setText(
 						labelResource.getProperty("firstLaunch.db.create", "firstLaunch.db.create")
 					);
-				connector.executeFile("sql/00_createDB.sql");
+				
+// TODO parse the folder for skripts and add them dynamically
+				connector.executeFile("sql/00_createSystemTables.sql");
 				
 			} else if( step == 3 ) {
-				connector.executeFile("sql/01_createIndexAndLabels.sql");
+				connector.executeFile("sql/01_createSKT.sql");
 				
 			} else if( step == 4 ) {
-				connector.executeFile("sql/02_createCoreData.sql");
+				connector.executeFile("sql/02_createWorlds.sql");
+			
+			} else if( step == 5 ) {
+				connector.executeFile("sql/02_createCharacteristics.sql");
 			}
 			step++;
 		}
