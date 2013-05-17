@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Herbert Veitengruber (privat) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="DSAGenesis">
+		<xs:annotation>
+			<xs:documentation>ROOT Tag some Tags are shared between metaData and heroData because the use the same XML class. Therefore all attributes used only for metaData have the prefix md and all attributes used only by heroData have the prefic hd</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="metaIndex"/>
+				<xs:element ref="metaData"/>
+				<xs:element ref="nameData"/>
+				<xs:element ref="heroData"/>
+			</xs:choice>
+			<xs:attribute name="XMLVersion" type="xs:string" use="required" fixed="1.0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="metaIndex">
+		<xs:annotation>
+			<xs:documentation>the meta index is generated when meta data is created, edited or removed. It is used for filitering the race, culture and profession during the first step of hero creation. </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence/>
+			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="metaData">
+		<xs:annotation>
+			<xs:documentation>metaData descripes the meta data files (races, cultures and profession) </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="creationPoints">
+					<xs:complexType>
+						<xs:attribute name="mdValue" type="xs:int" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="raceSpecific" minOccurs="0"/>
+				<xs:element name="cultureSpecific" minOccurs="0"/>
+				<xs:element name="professionSpecific" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
+			<xs:attribute name="type" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="race"/>
+						<xs:enumeration value="culture"/>
+						<xs:enumeration value="profession"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="nameData">
+		<xs:annotation>
+			<xs:documentation>nameData is used by the RandomNameGenerator</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence/>
+			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="heroData">
+		<xs:annotation>
+			<xs:documentation>heroData describes the xml used by heroes and archtypes</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
