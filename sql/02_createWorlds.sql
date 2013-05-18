@@ -30,7 +30,7 @@ INSERT INTO CoreDataTableIndex
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Welten', 'w_name', 'Name');	
+	( 'Worlds', 'w_name', 'Name');	
 
 
 /*
