@@ -55,7 +55,7 @@ CREATE TABLE "Characteristics" (
 
 
 /*
-	CharacteristicGroups
+	CharacteristicGroups Index and Labels
 */
 INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
@@ -76,7 +76,7 @@ INSERT INTO TableColumnLabels
 	( 'CharacteristicGroups', 'cg_name', 'Name');	
 	
 /*
-	Characteristics
+	Characteristics Index and Labels
 */		
 
 INSERT INTO CoreDataTableIndex
@@ -92,9 +92,6 @@ INSERT INTO CoreDataTableIndex
 		'true'
 	);
 
--- TODO needs update for the new fields
-/*
-
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -103,7 +100,6 @@ INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
 	( 'Characteristics', 'c_acronym', 'kz.');
-		
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -116,7 +112,6 @@ INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
 	( 'Characteristics', 'c_cp_cost', 'GP');
-
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -145,9 +140,6 @@ INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
 	( 'Characteristics', 'c_formular', 'Berechnungsformel');
-*/
-	
-
 
 /*
 -----------------------------------------------------------------
@@ -161,7 +153,7 @@ INSERT INTO "CharacteristicGroups" VALUES('cg_3', 'Rüstungswerte');
 INSERT INTO "CharacteristicGroups" VALUES('cg_4', 'Sonstige');
 
 UPDATE "CoreDataTableIndex" 
-	SET "ti_last_index_num"=5 
+	SET "ti_last_index_num"=4 
 	WHERE "ti_table_name"='CharacteristicGroups';
 
 /*
@@ -213,7 +205,13 @@ INSERT INTO "Characteristics" VALUES(
 	'c_le', 0, 'LE', 'Lebensenergie', 'cg_1', 1, 0, 50, 'true', 'false', 'skt_h', 'true', NULL
 );
 INSERT INTO "Characteristics" VALUES(
+	'c_au', 0, 'AU', 'Ausdauer', 'cg_1', 1, 0, 50, 'true', 'true', 'skt_e', 'true', NULL
+);
+INSERT INTO "Characteristics" VALUES(
 	'c_ae', 0, 'AE', 'Astralenergie', 'cg_1', 1, 0, 50, 'true', 'true', 'skt_g', 'true', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_ke', 0, 'KE', 'Karmanergie', 'cg_1', 1, 0, 50, 'true', 'false', NULL, 'false', NULL
 );
 
 
