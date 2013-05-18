@@ -104,18 +104,23 @@
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
+						<xs:attribute name="groupID" type="xs:string" use="required"/>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="cultureSpecific" minOccurs="0">
 					<xs:annotation>
-						<xs:documentation>only used by culture meta data TODO</xs:documentation>
+						<xs:documentation>only used by culture meta data</xs:documentation>
 					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="groupID" type="xs:string" use="required"/>
+					</xs:complexType>
 				</xs:element>
 				<xs:element name="professionSpecific" minOccurs="0">
 					<xs:annotation>
 						<xs:documentation>only used by profession meta data</xs:documentation>
 					</xs:annotation>
 					<xs:complexType>
+						<xs:attribute name="groupID" type="xs:string" use="required"/>
 						<xs:attribute name="categoryID" type="xs:string" use="required"/>
 						<xs:attribute name="typeID" type="xs:string" use="required"/>
 					</xs:complexType>
