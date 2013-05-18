@@ -3,11 +3,10 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="DSAGenesis">
 		<xs:annotation>
-			<xs:documentation>ROOT Tag some Tags are shared between metaData and heroData because the use the same XML class. Therefore all attributes used only for metaData have the prefix md and all attributes used only by heroData have the prefic hd</xs:documentation>
+			<xs:documentation>ROOT Tag</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:choice>
-				<xs:element ref="metaIndex"/>
 				<xs:element ref="metaData"/>
 				<xs:element ref="nameData"/>
 				<xs:element ref="heroData"/>
@@ -30,26 +29,141 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="Name" type="xs:string"/>
-				<xs:element name="creationPoints">
+				<xs:element name="preferences">
 					<xs:complexType>
-						<xs:attribute name="mdValue" type="xs:int" use="required"/>
+						<xs:complexContent>
+							<xs:extension base="preferences">
+								<xs:attribute name="type" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="race"/>
+											<xs:enumeration value="culture"/>
+											<xs:enumeration value="profession"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+								<xs:attribute name="usedNameData" type="xs:string" use="optional"/>
+							</xs:extension>
+						</xs:complexContent>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="raceSpecific" minOccurs="0"/>
-				<xs:element name="cultureSpecific" minOccurs="0"/>
-				<xs:element name="professionSpecific" minOccurs="0"/>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="creationPoints">
+					<xs:annotation>
+						<xs:documentation>stores the CP costs for this race, culture or profession</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="value" type="xs:int" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="raceSpecific" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>only used by race meta data  contains apearance setup</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="height">
+								<xs:annotation>
+									<xs:documentation>in cm</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="minValue" type="xs:int" use="required"/>
+									<xs:attribute name="maxValue" type="xs:int" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="weight">
+								<xs:annotation>
+									<xs:documentation>in Stein</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="modifier" type="xs:int"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="hairColors">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="hairColor" type="xs:string" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="eyeColors">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="eyeColor" type="xs:string" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="skinColorList">
+								<xs:annotation>
+									<xs:documentation>fur or skin </xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="skinColor" type="xs:string" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="cultureSpecific" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>only used by culture meta data TODO</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="professionSpecific" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>only used by profession meta data</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="categoryID" type="xs:string" use="required"/>
+						<xs:attribute name="typeID" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="characteristics">
+					<xs:annotation>
+						<xs:documentation>stores the modifiers and min/max Values for a meta data set.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="characteristic" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="automaticStats">
+					<xs:annotation>
+						<xs:documentation>TODO</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="appropriateStats">
+					<xs:annotation>
+						<xs:documentation>TODO</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="unsuitableStats">
+					<xs:annotation>
+						<xs:documentation>TODO</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="cheapStats">
+					<xs:annotation>
+						<xs:documentation>TODO</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="mandatoryGender" minOccurs="0">
+					<xs:complexType>
+						<xs:attribute name="gender" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="male"/>
+									<xs:enumeration value="female"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
 			</xs:sequence>
 			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
-			<xs:attribute name="type" use="required">
-				<xs:simpleType>
-					<xs:restriction base="xs:string">
-						<xs:enumeration value="race"/>
-						<xs:enumeration value="culture"/>
-						<xs:enumeration value="profession"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="nameData">
@@ -67,12 +181,85 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="preferences">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="preferences">
+								<xs:attribute name="type" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="hero"/>
+											<xs:enumeration value="archtype"/>
+											<xs:enumeration value="npc"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+								<xs:attribute name="usedRace" type="xs:string" use="required"/>
+								<xs:attribute name="usedCulture" type="xs:string" use="required"/>
+								<xs:attribute name="usedProfession1" type="xs:string" use="required"/>
+								<xs:attribute name="usedProfession2" type="xs:string" use="required"/>
+								<xs:attribute name="usedHTMLTemplate" type="xs:string"/>
+								<xs:attribute name="usedStartCP" type="xs:int" use="required"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
 				<xs:element name="Name" type="xs:string"/>
-				<xs:element name="configuration">
-					<xs:complexType/>
+				<xs:element name="characteristics">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="characteristic" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="appearance" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>not used by archtype TODO</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="gender" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="male"/>
+									<xs:enumeration value="female"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="height" type="xs:int" use="required"/>
+						<xs:attribute name="weight" type="xs:int" use="required"/>
+					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
 			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="preferences">
+		<xs:attribute name="usedDBVersion" type="xs:string" use="required"/>
+		<xs:attribute name="worldID" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:element name="characteristic">
+		<xs:annotation>
+			<xs:documentation>modifier, maxValue is used by metadata and herodata.
+startValue, currentValue, lost and meditationMod is only used by herodata.
+minValue is only used by metadata</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+			<xs:attribute name="modifier" type="xs:int" default="0"/>
+			<xs:attribute name="startValue" type="xs:int" default="0"/>
+			<xs:attribute name="currentValue" type="xs:int" default="0"/>
+			<xs:attribute name="minValue" type="xs:int" default="0"/>
+			<xs:attribute name="maxValue" type="xs:int" default="0"/>
+			<xs:attribute name="lost" type="xs:int" default="0">
+				<xs:annotation>
+					<xs:documentation>Wird nur bei der AE benötigt um pernant gezahlt AsP zu verwalten</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="meditationModifier" type="xs:int" default="0">
+				<xs:annotation>
+					<xs:documentation>Wird nur bei der AE für die Große Meditation gebraucht. Hier ist der gesamtwert der durch alle Meditationen erreicht wurde gespeichert</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

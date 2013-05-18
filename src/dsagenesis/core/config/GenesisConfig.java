@@ -193,12 +193,12 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_PATH_USER_HOME, "DSAGenesis");
 		this.setSystemProperty(KEY_PATH_DATA, "data");
 		this.setSystemProperty(KEY_PATH_TEMPLATE, "templates");
-		this.setSystemProperty(KEY_PATH_HERO, "helden");
-		this.setSystemProperty(KEY_PATH_ARCHTYPE, "archetypen");
-		this.setSystemProperty(KEY_PATH_RACE, "rassen");
-		this.setSystemProperty(KEY_PATH_CULTURE, "kulturen");
-		this.setSystemProperty(KEY_PATH_PROFESSION, "professionen");
-		this.setSystemProperty(KEY_PATH_NAME, "namen");
+		this.setSystemProperty(KEY_PATH_HERO, "heros");
+		this.setSystemProperty(KEY_PATH_ARCHTYPE, "archtypes");
+		this.setSystemProperty(KEY_PATH_RACE, "races");
+		this.setSystemProperty(KEY_PATH_CULTURE, "cultures");
+		this.setSystemProperty(KEY_PATH_PROFESSION, "professions");
+		this.setSystemProperty(KEY_PATH_NAME, "names");
 		
 		// database file
 		this.setSystemProperty(KEY_DB_FILE, "core_de_DE.s3db");
