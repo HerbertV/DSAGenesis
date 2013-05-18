@@ -19,6 +19,8 @@ package dsagenesis.editor.coredata;
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
 import dsagenesis.core.model.sql.CoreDataTableIndex;
+import dsagenesis.core.model.sql.CoreDataVersion;
+import dsagenesis.core.model.sql.TableColumnLabels;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.core.ui.HelpDialog;
@@ -208,25 +210,46 @@ public class CoreEditorFrame
 		coreTables = new Vector<CoreEditorTable>();
 		internalTables = new Vector<CoreEditorTable>();
 		
+		CoreEditorTable table;
+		
 		// init internal Tables
-		CoreEditorTable table = new CoreEditorTable(new CoreDataTableIndex());
-		internalTables.add(table);
-		// TODO add system db icon
+		{
+			table = new CoreEditorTable(new CoreDataVersion());
+			internalTables.add(table);
+			
+			tabbedPaneInternal.addTab("CoreDataVersion", new JScrollPane(table)); 
+			tabbedPaneInternal.setIconAt(
+					0, 
+					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+				);
+		}
+		{
+			table = new CoreEditorTable(new CoreDataTableIndex());
+			internalTables.add(table);
+			
+			tabbedPaneInternal.addTab("CoreDataTableIndex",	new JScrollPane(table)); 
+			tabbedPaneInternal.setIconAt(
+					1, 
+					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+				);
+		}
+		{
+			table = new CoreEditorTable(new TableColumnLabels());
+			internalTables.add(table);
+			
+			tabbedPaneInternal.addTab("TableColumnLabels",	new JScrollPane(table)); 
+			tabbedPaneInternal.setIconAt(
+					2, 
+					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+				);
+		}
 		
-		tabbedPaneInternal.addTab("CoreDataTableIndex",	new JScrollPane(table)); 
-		tabbedPaneInternal.setIconAt(
-				0, 
-				(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
-			);
 		
-		
-		//CoreEditorTabPanel tabPanel = new CoreEditorTabPanel("TableColumnLabels");
-		//tabbedPaneInternal.addTab("TableColumnLabels", tabPanel);
 		
 		// TODO refresh button in tab
 		// TODO Commit Button per row becomes visible after the first change
 		
-		// coredata
+		// TODO coredata tables
 	}
 		
 	/**

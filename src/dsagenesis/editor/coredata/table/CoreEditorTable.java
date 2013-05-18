@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
+import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
 
 /**
  * CoreEditorTable
@@ -82,6 +83,10 @@ public class CoreEditorTable
 		this.setAutoCreateRowSorter(true);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.getTableHeader().setReorderingAllowed(false);
+		this.setDefaultRenderer(String.class, new BasicCellRenderer());
+		this.setDefaultRenderer(Integer.class, new BasicCellRenderer());
+		this.setDefaultRenderer(Boolean.class, new BasicCellRenderer());
+		this.setDefaultRenderer(Object.class, new BasicCellRenderer());
 	}
 	
 	

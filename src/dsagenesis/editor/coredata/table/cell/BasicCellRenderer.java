@@ -16,6 +16,7 @@
  */
 package dsagenesis.editor.coredata.table.cell;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.SystemColor;
 
@@ -101,7 +102,7 @@ public class BasicCellRenderer
 		    // selection Color
 			if( table.isCellEditable(row,column) )
 			{
-				this.setBackground(SystemColor.textHighlight);
+				this.setBackground(SystemColor.BLUE);
 				this.setForeground(SystemColor.textHighlightText);
 			} else {
 				// read only 
@@ -113,18 +114,25 @@ public class BasicCellRenderer
 		    // active row
 			if( table.isCellEditable(row,column) ) 
 			{
-				this.setBackground(SystemColor.LIGHT_GRAY);
+				this.setBackground(SystemColor.textHighlight);
 				this.setForeground(SystemColor.textHighlightText);
 			
 			} else {
-		    // read only
+				// read only
 		        this.setBackground(SystemColor.GRAY);
 		        this.setForeground(SystemColor.textHighlightText);
 		    }
 		} else {
 		    // inactive
-		    this.setBackground(SystemColor.text);
-		    this.setForeground(SystemColor.textText);
+			if( row%2 == 0 )
+			{
+				this.setBackground(SystemColor.text);
+				this.setForeground(SystemColor.textText);
+			} else {
+				this.setBackground(new Color(240,240,240));
+				this.setForeground(SystemColor.textText);
+				
+			}
 		}
 		
 		this.setText(value.toString());
