@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * and 
  * TableColumnLabels 
  */
-public class TableIndexFactory 
+public class TableHelper 
 {
 	
 	/**
@@ -105,6 +105,10 @@ public class TableIndexFactory
 		
 		return sarr;
 	}
+	
 // TODO get db version
+	
+// TODO is table editable
+	
 	
 }

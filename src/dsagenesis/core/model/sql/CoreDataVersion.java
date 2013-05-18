@@ -23,57 +23,56 @@ import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
- * CoreDataTableIndex
+ * CoreDataVersion
  * 
  * SQL Model Class.
- * This Table is a special since it is used only by the Core Data Editor
- * to administrate the other tables the user can alter with the Editor.
+ * 
+ * This table is used to determinate the database version for the contents.
  */
-public class CoreDataTableIndex 
+public class CoreDataVersion
 		extends AbstractSQLTableModel 
 {
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-	
+		
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-		
+			
 	/**
-	 * Constructor
+	 * Constructor.	
 	 */
-	public CoreDataTableIndex() 
+	public CoreDataVersion() 
 	{
 		super();
 		
-		this.prefix = "ti_";
+		this.prefix = "ver_";
 		this.usesPrefix = false;
 		
 		this.dbColumnNames = new Vector<String>();
 		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("ti_table_name");
-		this.dbColumnNames.addElement("ti_uses_prefix");
-		this.dbColumnNames.addElement("ti_prefix");
-		this.dbColumnNames.addElement("ti_last_index_num");
-		this.dbColumnNames.addElement("ti_label");
-		this.dbColumnNames.addElement("ti_note");
-		this.dbColumnNames.addElement("ti_is_internal");
-		this.dbColumnNames.addElement("ti_tab_index");
-		this.dbColumnNames.addElement("ti_editable");
+		this.dbColumnNames.addElement("ver_major");
+		this.dbColumnNames.addElement("ver_minor");
+		this.dbColumnNames.addElement("ver_language");
 	}
 	
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-		
+
 	@Override
-	public String getDBTableName()
+	public String getDBTableName() 
 	{
-		return "CoreDataTableIndex";
+		return "CoreDataVersion";
 	}
 
+	@Override
+	public boolean isEditable()
+	{
+		return true;
+	}
 
 	@Override
 	public void setupJTableColumnModels(
@@ -82,26 +81,17 @@ public class CoreDataTableIndex
 		)
 	{
 		super.setupJTableColumnModels(ceframe, cetable);
+		
+		//TODO integer cell renderer and editor
 	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public boolean isEditable()
-	{
-		return false;
-	}
-	
-	
+
 	/**
 	 * since this is a system table there is no AbstractGenesisModel 
 	 */
-	public AbstractGenesisModel getRow(String id)
+	@Override
+	public AbstractGenesisModel getRow(String id) 
 	{
 		return null;
 	}
-	
-	
 
 }

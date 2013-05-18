@@ -591,7 +591,7 @@ public class GenesisLauncher
 				connector.executeFile("sql/02_createWorlds.sql");
 			
 			} else if( step == 5 ) {
-				connector.executeFile("sql/02_createCharacteristics.sql");
+				connector.executeFile("sql/03_createCharacteristics.sql");
 			}
 			step++;
 		}
