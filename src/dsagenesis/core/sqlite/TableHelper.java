@@ -18,7 +18,7 @@ package dsagenesis.core.sqlite;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * static helper class for working with the Genesis Database
@@ -30,6 +30,49 @@ import java.util.ArrayList;
  */
 public class TableHelper 
 {
+	/**
+	 * getDBVersion
+	 * 
+	 * @return
+	 * 
+	 * @throws SQLException
+	 */
+	public static String getDBVersion() 
+			throws SQLException
+	{
+		String query = 
+				"SELECT ID, ver_major, ver_minor from CoreDataTableIndex WHERE ID=0";
+		
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);
+		if( rs.next() )
+		{
+			return rs.getString("ver_major")
+				+ "."
+				+ rs.getString("ver_minor");
+		}
+		return "0.0";
+	}
+	
+	/**
+	 * getDBLanguage
+	 * 
+	 * @return
+	 * 
+	 * @throws SQLException
+	 */
+	public static String getDBLanguage() 
+			throws SQLException
+	{
+		String query = 
+				"SELECT ID, ver_language from CoreDataTableIndex WHERE ID=0";
+		
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);
+		if( rs.next() )
+		{
+			return rs.getString("ver_language");
+		}
+		return "";
+	}
 	
 	/**
 	 * getPrefixForTable
@@ -67,8 +110,8 @@ public class TableHelper
 			throws SQLException
 	{
 		String query = 
-				"SELECT ti_label, ti_table_name from CoreDataTableIndex WHERE ti_table_name="
-						+ tablename;
+				"SELECT ti_label, ti_table_name from CoreDataTableIndex WHERE ti_table_name='"
+						+ tablename	+ "'";
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
 		if( rs.next() )
@@ -86,29 +129,70 @@ public class TableHelper
 	 * 
 	 * @throws SQLException
 	 */
-// TODO change to Vector<String>
-	public static String[] getColumnLabelsForTable(String tablename)
+	public static Vector<Vector<String>> getColumnLabelsForTable(String tablename)
 			throws SQLException
 	{
 		String query = 
-				"SELECT tcl_column_name, tcl_label, tlc_table_name from TableColumnLabels WHERE tlc_table_name="
-						+ tablename;
+				"SELECT tcl_column_name, tcl_label, tlc_table_name from TableColumnLabels WHERE tlc_table_name='"
+						+ tablename	+ "'";
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
 		
-		ArrayList<String> arr = new ArrayList<String>();
+		Vector<Vector<String>> vec = new Vector<Vector<String>>();
 		while( rs.next() )
-			arr.add(rs.getString("ti_label"));
-		
-		String[] sarr = new String[arr.size()];
-		sarr = arr.toArray(sarr);
-		
-		return sarr;
+		{
+			Vector<String> vec2 = new Vector<String>(2);
+			vec2.add(rs.getString("tcl_column_name"));
+			vec2.add(rs.getString("tcl_label"));
+			vec.add(vec2);
+		}
+		return vec;
 	}
 	
-// TODO get db version
-	
-// TODO is table editable
-	
+	/**
+	 * getNoteForTable
+	 * 
+	 * @param tablename
+	 * 
+	 * @return
+	 * 
+	 * @throws SQLException
+	 */
+	public static String getNoteForTable(String tablename) 
+			throws SQLException
+	{
+		String query = 
+				"SELECT ti_note, ti_table_name from CoreDataTableIndex WHERE ti_table_name='"
+						+ tablename	+ "'";
+		
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);
+		if( rs.next() )
+			return rs.getString("ti_note");
+		
+		return "";
+	}
+		
+	/**
+	 * isTableEditable
+	 * 
+	 * @param tablename
+	 * 
+	 * @return
+	 * 
+	 * @throws SQLException
+	 */
+	public static boolean isTableEditable(String tablename) 
+			throws SQLException
+	{
+		String query = 
+				"SELECT ti_editable, ti_table_name from CoreDataTableIndex WHERE ti_table_name='"
+					+ tablename+"'";
+		
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);
+		if( rs.next() )
+			return rs.getBoolean("ti_editable");
+		
+		return false;
+	}
 	
 }

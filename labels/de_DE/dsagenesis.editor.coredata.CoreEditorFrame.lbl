@@ -12,7 +12,7 @@ mntmBackup=Datenbank Backup
 mntmImport=Import
 mntmExport=Export
 
-mnEdit=Berarbeiten
+mnEdit=Bearbeiten
 
 mnHelp=Hilfe
 mntmInfo=Info
@@ -21,3 +21,7 @@ mntmHelp=Hilfe
 # Info Labels
 topNoteTitle=Core Data Tabellen
 bottomNoteTitle=Interne Tabellen
+
+# Status Messages
+status.init=Initialisiere...
+status.ready=Bereit.

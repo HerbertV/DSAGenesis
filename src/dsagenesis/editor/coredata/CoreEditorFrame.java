@@ -22,6 +22,7 @@ import dsagenesis.core.model.sql.CoreDataTableIndex;
 import dsagenesis.core.model.sql.CoreDataVersion;
 import dsagenesis.core.model.sql.TableColumnLabels;
 import dsagenesis.core.sqlite.DBConnector;
+import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.core.ui.HelpDialog;
 import dsagenesis.core.ui.InfoDialog;
@@ -48,10 +49,13 @@ import javax.swing.SwingConstants;
 
 import jhv.component.LabelResource;
 import jhv.image.ImageResource;
+import jhv.util.debug.logger.ApplicationLogger;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.JLabel;
@@ -144,8 +148,9 @@ public class CoreEditorFrame
 		panelSplitTop.setLayout(new BorderLayout(0, 0));
 		panelSplitTop.setMinimumSize(new Dimension(50,50));
 		{
-			// TODO labels
-			TitledBorder titleBorder = BorderFactory.createTitledBorder("Core Data Tables");
+			TitledBorder titleBorder = BorderFactory.createTitledBorder(
+					labelResource.getProperty("topNoteTitle", "topNoteTitle")
+				);
 			panelSplitTop.setLayout(new BorderLayout(0, 0));
 			this.lblTopNote = new JLabel("Alle Tabellen die direkt mit Inhalten für die Heldenverwaltung in verbindung stehen.");
 			this.lblTopNote.setBorder(titleBorder);
@@ -162,7 +167,9 @@ public class CoreEditorFrame
 		panelSplitBottom.setMinimumSize(new Dimension(50,50));
 		{
 			// TODO labels
-			TitledBorder titleBorder = BorderFactory.createTitledBorder("Internal Tables");
+			TitledBorder titleBorder = BorderFactory.createTitledBorder(
+					labelResource.getProperty("bottomNoteTitle", "bottomNoteTitle")
+				);
 			this.lblBottomNote = new JLabel("System Tabellen und Referenz Tabellen.");
 			this.lblBottomNote.setBorder(titleBorder);
 			panelSplitBottom.add(this.lblBottomNote,BorderLayout.NORTH);
@@ -180,13 +187,18 @@ public class CoreEditorFrame
 		splitPane.setBottomComponent(panelSplitBottom);
 		splitPane.setDividerLocation(getHeight()/2);
 		
-		
-		// TODO status handling
-		this.lblStatus = new JLabel("lblStatus TODO");
+		this.lblStatus = new JLabel(
+				labelResource.getProperty("status.init", "status.init")
+			);
 		this.lblStatus.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 		getContentPane().add(this.lblStatus, BorderLayout.SOUTH);
 		
-		initDBAndTabs();
+		try {
+			initDBAndTabs();
+		} catch (SQLException e) {
+			ApplicationLogger.logError("Cannot init tabs for CoreEditorFrame.");
+			ApplicationLogger.logError(e);
+		}
 	}
 	
 
@@ -199,6 +211,7 @@ public class CoreEditorFrame
 	 * and initializing tabs
 	 */
 	private void initDBAndTabs()
+		throws SQLException
 	{
 		DBConnector connector = DBConnector.getInstance();
 		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
@@ -206,6 +219,14 @@ public class CoreEditorFrame
 		//fail save
 		if( connector.getConnection() == null )
 			return;
+		
+		ApplicationLogger.separator();
+		ApplicationLogger.logInfo(
+				"DB Version: "
+					+ TableHelper.getDBVersion() + " "
+					+ TableHelper.getDBLanguage()
+			);
+		
 		
 		coreTables = new Vector<CoreEditorTable>();
 		internalTables = new Vector<CoreEditorTable>();
@@ -247,9 +268,13 @@ public class CoreEditorFrame
 		
 		
 		// TODO refresh button in tab
-		// TODO Commit Button per row becomes visible after the first change
+		// TODO Commit Button per row becomes enabled after the first change
 		
 		// TODO coredata tables
+		
+		this.lblStatus.setText(
+				labelResource.getProperty("status.ready", "status.ready")
+			);
 	}
 		
 	/**
@@ -392,13 +417,14 @@ public class CoreEditorFrame
 	@Override
 	public boolean hasContentChanged() 
 	{
+		//TODO if uncommited changes are there.
 		return false;
 	}
 
 	@Override
 	public void contentSaved()
 	{
-		// nothing to do.
+		// TODO
 	}
 
 	@Override
@@ -417,8 +443,14 @@ public class CoreEditorFrame
 	public void close( WindowEvent e )
 	{
 		DBConnector.getInstance().closeConnection();
-		
 		super.close(e);
+	}
+	
+	@Override
+	public void dispose()
+	{
+		DBConnector.getInstance().closeConnection();
+		super.dispose();
 	}
 
 	/**
@@ -435,13 +467,17 @@ public class CoreEditorFrame
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			internalTables.elementAt(idx).loadData();
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		}
-		// TODO core tab
-		
+			
+		} else if( e.getSource() == tabbedPaneCore ) {
+			int idx = tabbedPaneCore.getSelectedIndex();
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			coreTables.elementAt(idx).loadData();
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		} 
 	}
 
 	/**
-	 * for menu and toobar handling
+	 * for menu and toolbar handling
 	 * @param e
 	 */
 	@Override
