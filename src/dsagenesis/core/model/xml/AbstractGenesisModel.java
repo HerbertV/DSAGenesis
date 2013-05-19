@@ -86,16 +86,14 @@ public abstract class AbstractGenesisModel
 	/**
 	 * Constructor 2.
 	 * 
-	 * for creating the model from the database 
-	 * java.sql.ResultSet.
+	 * for creating the model from its XML
+	 * org.w3c.dom.Element.
 	 * 
 	 * @param ele
 	 */
 	public AbstractGenesisModel( Element ele )
 	{
 		this.id = ele.getAttribute("ID");
-		
-		// TODO set name from db
 	}
 	
 	
@@ -166,5 +164,20 @@ public abstract class AbstractGenesisModel
 		this.sqlModel = model;
 	}
 	
+	/**
+	 * updateFromDB
+	 *
+	 * fills the missing variables with the DB values.
+	 */
+	public abstract void updateFromDB();
+	
+	/**
+	 * getXMLElement
+	 * 
+	 * returns the model as xml element.
+	 * 
+	 * @return
+	 */
+	public abstract Element getXMLElement();
 	
 }
