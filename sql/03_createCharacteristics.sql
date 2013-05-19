@@ -198,9 +198,7 @@ INSERT INTO "Characteristics" VALUES(
 INSERT INTO "Characteristics" VALUES(
 	'c_kk', 7, 'KK', 'Körperkraft', 'cg_0', 1, 0, 30, 'true', 'false', 'skt_h', 'false', NULL
 );
-INSERT INTO "Characteristics" VALUES(
-	'c_so', 0, 'SO', 'Sozialstatus', 'cg_4', 1, 0, 21, 'true', 'true', NULL, 'false', NULL
-);
+
 INSERT INTO "Characteristics" VALUES(
 	'c_le', 0, 'LE', 'Lebensenergie', 'cg_1', 1, 0, 50, 'true', 'false', 'skt_h', 'true', NULL
 );
@@ -214,5 +212,67 @@ INSERT INTO "Characteristics" VALUES(
 	'c_ke', 0, 'KE', 'Karmanergie', 'cg_1', 1, 0, 50, 'true', 'false', NULL, 'false', NULL
 );
 
+INSERT INTO "Characteristics" VALUES(
+	'c_at', 0, 'AT', 'Attacke-Basis', 'cg_2', 0, 0, 50, 'false', 'false', NULL, 'true', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_pa', 1, 'PA', 'Parade-Basis', 'cg_2', 0, 0, 50, 'false', 'false', NULL, 'true', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_aw', 2, 'AW', 'Ausweichen', 'cg_2', 0, 0, 50, 'false', 'false', NULL, 'true', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_ini', 3, 'INI', 'INI-Basis', 'cg_2', 0, 0, 50, 'false', 'false', NULL, 'true', NULL
+);
 
---TODO
+INSERT INTO "Characteristics" VALUES(
+	'c_rs', 0, 'RS', 'Rüstungsschutz', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_rs_z1', 1, 'RS Kopf', 'RS Kopf', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_rs_z2', 2, 'RS Brust', 'RS Brust', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_rs_z3', 3, 'RS Rücken', 'RS Rücken', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_rs_z4', 4, 'RS Bauch', 'RS Bauch', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_rs_z5', 5, 'RS Arm L.', 'RS Arm Links', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_rs_z6', 6, 'RS Arm R.', 'RS Arm Rechts', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_rs_z7', 7, 'RS Bein L.', 'RS Bein Links', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_rs_z7', 8, 'RS Bein R.', 'RS Bein Rechts', 'cg_3', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+
+
+INSERT INTO "Characteristics" VALUES(
+	'c_so', 0, 'SO', 'Sozialstatus', 'cg_4', 1, 0, 21, 'true', 'true', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_gs', 0, 'GS', 'Geschwindigkeit', 'cg_4', 0, 0, 50, 'true', 'true', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_be', 0, 'BE', 'Behinderung', 'cg_4', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_mr', 0, 'MR', 'Magieresistenz', 'cg_4', 0, 0, 50, 'true', 'false', 'skt_h', 'true', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_mr', 0, 'MR', 'Magieresistenz', 'cg_4', 0, 0, 50, 'true', 'false', 'skt_h', 'true', NULL
+);
+-- for companions/familiars
+INSERT INTO "Characteristics" VALUES(
+	'c_lo', 0, 'LO', 'Loyalitiät', 'cg_4', 0, 0, 50, 'true', 'true', NULL, 'false', NULL
+);
+INSERT INTO "Characteristics" VALUES(
+	'c_tp', 0, 'TP', 'trefferpunkte', 'cg_4', 0, 0, 50, 'false', 'false', NULL, 'false', NULL
+);

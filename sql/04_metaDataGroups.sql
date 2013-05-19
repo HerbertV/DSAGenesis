@@ -76,8 +76,137 @@ CREATE TABLE "ProfessionGroups" (
 	"pg_path" VARCHAR(50) NOT NULL
 );	
 
---TODO
+/*
+	RaceCultureGroups Index and Labels
+*/
+INSERT INTO CoreDataTableIndex
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
+	VALUES
+	(	'ProfessionGroups', 
+		'true',
+		'pg_', 
+		'Professionsgruppen', 
+		'<html>Analog zu den Volks-/Kulturgruppen.</html>',
+		'true',
+		0,
+		'true'
+	);
+	
+INSERT INTO TableColumnLabels
+	( tcl_table_name, tcl_column_name, tcl_label )
+	VALUES
+	( 'ProfessionGroups', 'pg_name', 'Name');	
+INSERT INTO TableColumnLabels
+	( tcl_table_name, tcl_column_name, tcl_label )
+	VALUES
+	( 'ProfessionGroups', 'pg_path', 'Unterverzeichnis');	
 
--- TODO ProfessionCategories ( Normal, Vollzauberer, Halbzauberer ...)
--- TODO ProfessionTypes ( Normal, zeitaufwändig, erstproffesion... )
+/*
+	ProfessionGroups Entries
+*/
+INSERT INTO "ProfessionGroups" VALUES('pg_0', 'Elfisch', 'elfs');
+INSERT INTO "ProfessionGroups" VALUES('pg_1', 'Gesellschaft', 'society');
+INSERT INTO "ProfessionGroups" VALUES('pg_2', 'Glaube', 'religion');
+INSERT INTO "ProfessionGroups" VALUES('pg_3', 'Handwerk', 'crafting');
+INSERT INTO "ProfessionGroups" VALUES('pg_4', 'Kampf', 'combat');
+INSERT INTO "ProfessionGroups" VALUES('pg_5', 'Magie', 'magic');
+INSERT INTO "ProfessionGroups" VALUES('pg_6', 'Reise & Wildnis', 'travel_wilderness');
+INSERT INTO "ProfessionGroups" VALUES('pg_7', 'Zusatz', 'additional');
+
+UPDATE "CoreDataTableIndex" 
+	SET "ti_last_index_num"=7
+	WHERE "ti_table_name"='ProfessionGroups';
+
+/*
+-----------------------------------------------------------------
+	ProfessionCategories
+-----------------------------------------------------------------	
+	ProfessionCategories is used by several tables
+	( e.g. Advantages/Disadvantages Special Skills)
+	as crossreference to allow these item only for specific
+	profession.
+*/
+DROP TABLE IF EXISTS "ProfessionCategories";
+
+CREATE TABLE "ProfessionCategories" (
+	"ID" VARCHAR(10) PRIMARY KEY NOT NULL,
+	"pc_name" TEXT NOT NULL
+);	
+
+/*
+	RaceCultureGroups Index and Labels
+*/
+INSERT INTO CoreDataTableIndex
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
+	VALUES
+	(	'ProfessionCategories', 
+		'false',
+		'pc_', 
+		'Professionskategorien', 
+		'<html>Hier wird die Kategorie der Profession unterschieden, also normal, magisch etc.</html>',
+		'true',
+		0,
+		'true'
+	);
+	
+INSERT INTO TableColumnLabels
+	( tcl_table_name, tcl_column_name, tcl_label )
+	VALUES
+	( 'ProfessionCategories', 'pc_name', 'Name');	
+
+/*
+	ProfessionCategories Entries
+*/
+INSERT INTO "ProfessionCategories" VALUES('pc_n', 'Normal');
+INSERT INTO "ProfessionCategories" VALUES('pc_z', 'Vollzauberer');
+INSERT INTO "ProfessionCategories" VALUES('pc_h', 'Halbzauberer');
+INSERT INTO "ProfessionCategories" VALUES('pc_v', 'Viertelzauberer');
+INSERT INTO "ProfessionCategories" VALUES('pc_s', 'Schamane');
+INSERT INTO "ProfessionCategories" VALUES('pc_b', 'Borbaradianer');
+INSERT INTO "ProfessionCategories" VALUES('pc_ga', 'Glaube Alvaran');
+INSERT INTO "ProfessionCategories" VALUES('pc_gan', 'Glaube Animismus');
+INSERT INTO "ProfessionCategories" VALUES('pc_gs', 'Glaube Sonstige');
+
+
+/*
+-----------------------------------------------------------------
+	ProfessionTypes
+-----------------------------------------------------------------	
+	is used for the second profession to validate 
+	which professions can be combined
+*/
+DROP TABLE IF EXISTS "ProfessionTypes";
+
+CREATE TABLE "ProfessionTypes" (
+	"ID" VARCHAR(10) PRIMARY KEY NOT NULL,
+	"pt_name" TEXT NOT NULL
+);	
+
+/*
+	RaceCultureGroups Index and Labels
+*/
+INSERT INTO CoreDataTableIndex
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
+	VALUES
+	(	'ProfessionTypes', 
+		'false',
+		'pt_', 
+		'Professionstypen', 
+		'<html>Wird für die mehrfach auswahl von Professionen gebraucht.</html>',
+		'true',
+		0,
+		'true'
+	);
+	
+INSERT INTO TableColumnLabels
+	( tcl_table_name, tcl_column_name, tcl_label )
+	VALUES
+	( 'ProfessionTypes', 'pt_name', 'Name');	
+
+/*
+	ProfessionCategories Entries
+*/
+INSERT INTO "ProfessionTypes" VALUES('pc_n', 'Normal');
+INSERT INTO "ProfessionTypes" VALUES('pc_z', 'Zeitaufwendig');
+INSERT INTO "ProfessionTypes" VALUES('pc_f', 'Erstprofession');
 
