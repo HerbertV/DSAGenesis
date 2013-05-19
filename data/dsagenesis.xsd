@@ -14,6 +14,63 @@
 			<xs:attribute name="XMLVersion" type="xs:string" use="required" fixed="1.0"/>
 		</xs:complexType>
 	</xs:element>
+	<xs:attribute name="startValue" type="xs:int" default="0"/>
+	<xs:attribute name="maxValue" type="xs:int" default="0"/>
+	<xs:attribute name="isFixed" type="xs:boolean" default="false">
+		<xs:annotation>
+			<xs:documentation>a characteristic or stat becomes fixed if all changes are saved. it can only removed via rollback.</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="isIndicator" type="xs:boolean" default="false">
+		<xs:annotation>
+			<xs:documentation>Talents, Spells, Characteristic and Special Abilities can be a indicator. For Attributes this can be IN KL or CH. for all other elements it is used for a SKTShifts when the hero is a elf (Elfische Weltsicht)</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attributeGroup name="attrgBasicCharacteristicsAndStats">
+		<xs:annotation>
+			<xs:documentation>ID is the referenced database id. value is the current value.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ID" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:int" use="optional" default="0"/>
+	</xs:attributeGroup>
+	<xs:complexType name="ctPreferences">
+		<xs:attribute name="usedDBFile" type="xs:string" use="required"/>
+		<xs:attribute name="usedDBVersion" type="xs:string" use="required"/>
+		<xs:attribute name="worldID" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ctAdvantageDisadvantageStats">
+		<xs:sequence>
+			<xs:element ref="advantage" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="disadvantage" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="badAttribute" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="gift" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctStats">
+		<xs:complexContent>
+			<xs:extension base="ctAdvantageDisadvantageStats">
+				<xs:sequence>
+					<xs:element ref="specialAbility" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="talent" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="language" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="script" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ritualKnowledge" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="spell" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="unarmedSkill" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="miracle" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ctUserSelection">
+		<xs:annotation>
+			<xs:documentation>During the creation step the user may select between different stats and values</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="note"/>
+			<xs:element name="selectionValue" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:element name="metaIndex">
 		<xs:annotation>
 			<xs:documentation>the meta index is generated when meta data is created, edited or removed. It is used for filitering the race, culture and profession during the first step of hero creation. </xs:documentation>
@@ -32,7 +89,7 @@
 				<xs:element name="preferences">
 					<xs:complexType>
 						<xs:complexContent>
-							<xs:extension base="preferences">
+							<xs:extension base="ctPreferences">
 								<xs:attribute name="type" use="required">
 									<xs:simpleType>
 										<xs:restriction base="xs:string">
@@ -93,7 +150,7 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="skinColorList">
+							<xs:element name="skinColors">
 								<xs:annotation>
 									<xs:documentation>fur or skin </xs:documentation>
 								</xs:annotation>
@@ -135,27 +192,146 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="automaticStats">
+				<xs:element name="automaticStats" minOccurs="0">
 					<xs:annotation>
-						<xs:documentation>TODO</xs:documentation>
+						<xs:documentation>stats that are automatically applied.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="ctStats">
+								<xs:sequence>
+									<xs:element name="userSelection" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>where the user must select an element during the creation. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:choice>
+												<xs:element name="talentSelection">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ctUserSelection">
+																<xs:sequence>
+																	<xs:element ref="talent" minOccurs="2" maxOccurs="unbounded"/>
+																</xs:sequence>
+															</xs:extension>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="spellSelection">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ctUserSelection">
+																<xs:sequence>
+																	<xs:element ref="spell" minOccurs="2" maxOccurs="unbounded"/>
+																</xs:sequence>
+															</xs:extension>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="languageSelection">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ctUserSelection">
+																<xs:sequence>
+																	<xs:element ref="language" maxOccurs="unbounded"/>
+																</xs:sequence>
+																<xs:attribute name="isFreeSelection" type="xs:boolean" default="false"/>
+																<xs:attribute name="isFirstLanguageSelection" type="xs:boolean" default="false"/>
+																<xs:attribute name="isSecondLanguageSelection" type="xs:boolean" default="false"/>
+															</xs:extension>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="scriptSelection">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ctUserSelection">
+																<xs:sequence>
+																	<xs:element ref="language" maxOccurs="unbounded"/>
+																</xs:sequence>
+																<xs:attribute name="isFreeSelection" type="xs:boolean" default="false"/>
+															</xs:extension>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="badAttributeSelection">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ctUserSelection">
+																<xs:sequence>
+																	<xs:element ref="badAttribute" maxOccurs="unbounded"/>
+																</xs:sequence>
+															</xs:extension>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="advantageSelection">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ctUserSelection">
+																<xs:sequence>
+																	<xs:element ref="advantage" maxOccurs="unbounded"/>
+																</xs:sequence>
+															</xs:extension>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="disadvantageSelection">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ctUserSelection">
+																<xs:sequence>
+																	<xs:element ref="disadvantage" maxOccurs="unbounded"/>
+																</xs:sequence>
+															</xs:extension>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="Spellpool">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element ref="note"/>
+															<xs:element ref="spell" maxOccurs="unbounded"/>
+														</xs:sequence>
+														<xs:attribute name="indicatorSpellCount" type="xs:int" default="0"/>
+														<xs:attribute name="schoolSpellCount" type="xs:int" default="0"/>
+														<xs:attribute name="maximumSpells" type="xs:int" default="0"/>
+														<xs:attribute name="pointsToDistribute" type="xs:int" default="0"/>
+													</xs:complexType>
+												</xs:element>
+											</xs:choice>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="appropriateStats" type="ctAdvantageDisadvantageStats" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>only the id is used</xs:documentation>
 					</xs:annotation>
 				</xs:element>
-				<xs:element name="appropriateStats">
+				<xs:element name="unsuitableStats" type="ctAdvantageDisadvantageStats" minOccurs="0">
 					<xs:annotation>
-						<xs:documentation>TODO</xs:documentation>
+						<xs:documentation>only the id is used</xs:documentation>
 					</xs:annotation>
 				</xs:element>
-				<xs:element name="unsuitableStats">
+				<xs:element name="cheapStats" minOccurs="0">
 					<xs:annotation>
-						<xs:documentation>TODO</xs:documentation>
+						<xs:documentation>only the id is used</xs:documentation>
 					</xs:annotation>
-				</xs:element>
-				<xs:element name="cheapStats">
-					<xs:annotation>
-						<xs:documentation>TODO</xs:documentation>
-					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="specialAbility" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element ref="unarmedSkill" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
 				</xs:element>
 				<xs:element name="mandatoryGender" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>some cultures and professions have are gender specific.</xs:documentation>
+					</xs:annotation>
 					<xs:complexType>
 						<xs:attribute name="gender" use="required">
 							<xs:simpleType>
@@ -189,7 +365,12 @@
 				<xs:element name="preferences">
 					<xs:complexType>
 						<xs:complexContent>
-							<xs:extension base="preferences">
+							<xs:extension base="ctPreferences">
+								<xs:attribute name="levelLogVersion" type="xs:string" default="0.0">
+									<xs:annotation>
+										<xs:documentation>Wird für die HistorySteps benötigt. Die Versionsnummer: vor dem Punkt ist die stufe nach dem punkt die versionsnummer die hochgezählt wird </xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
 								<xs:attribute name="type" use="required">
 									<xs:simpleType>
 										<xs:restriction base="xs:string">
@@ -202,14 +383,24 @@
 								<xs:attribute name="usedRace" type="xs:string" use="required"/>
 								<xs:attribute name="usedCulture" type="xs:string" use="required"/>
 								<xs:attribute name="usedProfession1" type="xs:string" use="required"/>
-								<xs:attribute name="usedProfession2" type="xs:string" use="required"/>
-								<xs:attribute name="usedHTMLTemplate" type="xs:string"/>
+								<xs:attribute name="usedProfession2" type="xs:string" use="optional"/>
+								<xs:attribute name="usedHTMLTemplate" type="xs:string" use="optional"/>
 								<xs:attribute name="usedStartCP" type="xs:int" use="required"/>
+								<xs:attribute name="firstMagicRepresentation" type="xs:string" use="optional">
+									<xs:annotation>
+										<xs:documentation>FirstRepresentation wird während der Charerschaffung bei magiebegabten Helden gesetzt um die Hausrepräsentation zu setzen.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
 							</xs:extension>
 						</xs:complexContent>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Titel" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>not used by archtype</xs:documentation>
+					</xs:annotation>
+				</xs:element>
 				<xs:element name="characteristics">
 					<xs:complexType>
 						<xs:sequence>
@@ -219,9 +410,16 @@
 				</xs:element>
 				<xs:element name="appearance" minOccurs="0">
 					<xs:annotation>
-						<xs:documentation>not used by archtype TODO</xs:documentation>
+						<xs:documentation>not used by archtype</xs:documentation>
 					</xs:annotation>
 					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eyeColor" type="xs:string"/>
+							<xs:element name="hairColor" type="xs:string"/>
+							<xs:element name="skinColor" type="xs:string" minOccurs="0"/>
+							<xs:element name="description" type="xs:string" minOccurs="0"/>
+							<xs:element name="picture" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
 						<xs:attribute name="gender" use="required">
 							<xs:simpleType>
 								<xs:restriction base="xs:string">
@@ -234,14 +432,95 @@
 						<xs:attribute name="weight" type="xs:int" use="required"/>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="adventurePoints" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>not used by archtype completeAP are all adventure Points the hero has ever got. usedAP are the adventurePoint the hero "sold" for level a stat or characteristic.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="level" type="xs:int" default="0"/>
+						<xs:attribute name="completeAP" type="xs:int" default="0"/>
+						<xs:attribute name="usedAP" type="xs:int" default="0"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="stats" type="ctStats"/>
+				<xs:element name="equipment" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>TODO</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="personalData" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="birthdate" type="xs:string"/>
+							<xs:element name="birthplace" type="xs:string"/>
+							<xs:element name="backgroundStory" type="xs:string" minOccurs="0"/>
+							<xs:element name="religon" type="xs:string" minOccurs="0"/>
+							<xs:element name="family" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="friends" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="foes" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="additionalNotes" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="diary" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="adventureLog" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="companions" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>TODO</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="familiar"/>
+							<xs:element name="mount"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="boronsanger" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>if the hero has died</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="placeOfDeath" type="xs:string"/>
+							<xs:element name="timeOfDeath" type="xs:string"/>
+							<xs:element ref="note"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 			</xs:sequence>
 			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="preferences">
-		<xs:attribute name="usedDBVersion" type="xs:string" use="required"/>
-		<xs:attribute name="worldID" type="xs:string" use="required"/>
-	</xs:complexType>
 	<xs:element name="characteristic">
 		<xs:annotation>
 			<xs:documentation>modifier, maxValue is used by metadata and herodata.
@@ -249,22 +528,198 @@ startValue, currentValue, lost and meditationMod is only used by herodata.
 minValue is only used by metadata</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
-			<xs:attribute name="ID" type="xs:string" use="required"/>
-			<xs:attribute name="modifier" type="xs:int" default="0"/>
-			<xs:attribute name="startValue" type="xs:int" default="0"/>
-			<xs:attribute name="currentValue" type="xs:int" default="0"/>
-			<xs:attribute name="minValue" type="xs:int" default="0"/>
-			<xs:attribute name="maxValue" type="xs:int" default="0"/>
-			<xs:attribute name="lost" type="xs:int" default="0">
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute name="modifier" type="xs:int" use="optional" default="0"/>
+			<xs:attribute ref="startValue" use="optional"/>
+			<xs:attribute name="minValue" type="xs:int" use="optional" default="0"/>
+			<xs:attribute ref="maxValue" use="optional"/>
+			<xs:attribute name="lost" type="xs:int" use="optional" default="0">
 				<xs:annotation>
 					<xs:documentation>Wird nur bei der AE benötigt um pernant gezahlt AsP zu verwalten</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>
-			<xs:attribute name="meditationModifier" type="xs:int" default="0">
+			<xs:attribute name="meditationModifier" type="xs:int" use="optional" default="0">
 				<xs:annotation>
 					<xs:documentation>Wird nur bei der AE für die Große Meditation gebraucht. Hier ist der gesamtwert der durch alle Meditationen erreicht wurde gespeichert</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>
 		</xs:complexType>
+	</xs:element>
+	<xs:element name="levelLogEntry">
+		<xs:annotation>
+			<xs:documentation> Used by Hero Editor only. For each change in the stats or characteristics is a log entry added. this is done for the rollback feature.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="choice">
+		<xs:annotation>
+			<xs:documentation>Some stats have choices where the user must select one. If the type is ID the content references a DB id. if the type is userInput the conent is text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="type" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="ID"/>
+								<xs:enumeration value="userInput"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="note" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>For most elements the user can add a personal note.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="specialization">
+		<xs:complexType>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="advantage">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="disadvantage">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="badAttribute">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="gift">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+			<xs:attribute ref="startValue" use="optional"/>
+			<xs:attribute ref="maxValue"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="specialAbility">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="talent">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="specialization" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+			<xs:attribute ref="isIndicator" use="optional"/>
+			<xs:attribute ref="startValue" use="optional"/>
+			<xs:attribute ref="maxValue" use="optional"/>
+			<xs:attribute name="attackRangedModifier" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+					<xs:documentation>Nur kampftalente</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="parryModifier" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+					<xs:documentation>Nur kampftalente</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="isActivated" type="xs:boolean" use="optional" default="true"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="language">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+			<xs:attribute ref="startValue" use="optional"/>
+			<xs:attribute name="isFirstLanguage" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isSecondLanguage" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="script">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+			<xs:attribute ref="startValue" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ritualKnowledge">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+			<xs:attribute ref="startValue" use="optional"/>
+			<xs:attribute ref="maxValue" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="spell">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="specialization" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute name="representationID" type="xs:string" use="required"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+			<xs:attribute ref="startValue" use="optional"/>
+			<xs:attribute ref="maxValue" use="optional"/>
+			<xs:attribute name="isSchoolSpell" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute ref="isIndicator" use="optional"/>
+			<xs:attribute name="isSupernaturalGift" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="unarmedSkill">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="miracle">
+		<xs:complexType>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="familiar">
+		<xs:annotation>
+			<xs:documentation>TODO</xs:documentation>
+		</xs:annotation>
 	</xs:element>
 </xs:schema>
