@@ -14,6 +14,10 @@
 			<xs:attribute name="XMLVersion" type="xs:string" use="required" fixed="1.0"/>
 		</xs:complexType>
 	</xs:element>
+	<xs:attributeGroup name="logVersion">
+		<xs:attribute name="logVersionMajor" type="xs:int" use="required"/>
+		<xs:attribute name="logVersionMinor" type="xs:int" use="required"/>
+	</xs:attributeGroup>
 	<xs:attribute name="startValue" type="xs:int" default="0"/>
 	<xs:attribute name="maxValue" type="xs:int" default="0"/>
 	<xs:attribute name="isFixed" type="xs:boolean" default="false">
@@ -71,15 +75,6 @@
 			<xs:element name="selectionValue" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:element name="metaIndex">
-		<xs:annotation>
-			<xs:documentation>the meta index is generated when meta data is created, edited or removed. It is used for filitering the race, culture and profession during the first step of hero creation. </xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:sequence/>
-			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
-		</xs:complexType>
-	</xs:element>
 	<xs:element name="metaData">
 		<xs:annotation>
 			<xs:documentation>metaData descripes the meta data files (races, cultures and profession) </xs:documentation>
@@ -352,7 +347,35 @@
 			<xs:documentation>nameData is used by the RandomNameGenerator</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
-			<xs:sequence/>
+			<xs:sequence>
+				<xs:element name="first">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="femaleNames"/>
+							<xs:element ref="maleNames"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="middle" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="femaleNames" minOccurs="0"/>
+							<xs:element ref="maleNames" minOccurs="0"/>
+							<xs:element ref="nameSequence" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="isOptional" type="xs:boolean" default="true"/>
+						<xs:attribute name="hasGenders" type="xs:boolean" default="true"/>
+						<xs:attribute name="attachTo" type="xs:string" default="NONE"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="last">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="nameSequence" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
 			<xs:attribute name="version" type="xs:string" use="required" fixed="1.0"/>
 		</xs:complexType>
 	</xs:element>
@@ -366,11 +389,7 @@
 					<xs:complexType>
 						<xs:complexContent>
 							<xs:extension base="ctPreferences">
-								<xs:attribute name="levelLogVersion" type="xs:string" default="0.0">
-									<xs:annotation>
-										<xs:documentation>Wird für die HistorySteps benötigt. Die Versionsnummer: vor dem Punkt ist die stufe nach dem punkt die versionsnummer die hochgezählt wird </xs:documentation>
-									</xs:annotation>
-								</xs:attribute>
+								<xs:attributeGroup ref="logVersion"/>
 								<xs:attribute name="type" use="required">
 									<xs:simpleType>
 										<xs:restriction base="xs:string">
@@ -432,26 +451,23 @@
 						<xs:attribute name="weight" type="xs:int" use="required"/>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="adventurePoints" minOccurs="0">
-					<xs:annotation>
-						<xs:documentation>not used by archtype completeAP are all adventure Points the hero has ever got. usedAP are the adventurePoint the hero "sold" for level a stat or characteristic.</xs:documentation>
-					</xs:annotation>
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
-						</xs:sequence>
-						<xs:attribute name="level" type="xs:int" default="0"/>
-						<xs:attribute name="completeAP" type="xs:int" default="0"/>
-						<xs:attribute name="usedAP" type="xs:int" default="0"/>
-					</xs:complexType>
-				</xs:element>
+				<xs:element ref="adventurePoints" minOccurs="0"/>
 				<xs:element name="stats" type="ctStats"/>
 				<xs:element name="equipment" minOccurs="0">
 					<xs:annotation>
 						<xs:documentation>TODO</xs:documentation>
 					</xs:annotation>
 					<xs:complexType>
-						<xs:sequence/>
+						<xs:sequence>
+							<xs:element name="weapons" minOccurs="0"/>
+							<xs:element name="armors" minOccurs="0"/>
+							<xs:element name="money" minOccurs="0"/>
+							<xs:element name="gems" minOccurs="0"/>
+							<xs:element name="artifacts" minOccurs="0"/>
+							<xs:element name="cloth" minOccurs="0"/>
+							<xs:element name="documents" minOccurs="0"/>
+							<xs:element name="generic" minOccurs="0"/>
+						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="personalData" minOccurs="0">
@@ -463,45 +479,61 @@
 							<xs:element name="religon" type="xs:string" minOccurs="0"/>
 							<xs:element name="family" minOccurs="0">
 								<xs:complexType>
-									<xs:sequence/>
+									<xs:sequence>
+										<xs:element ref="headedTextEntry"/>
+									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="friends" minOccurs="0">
 								<xs:complexType>
-									<xs:sequence/>
+									<xs:sequence>
+										<xs:element ref="headedTextEntry"/>
+									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="foes" minOccurs="0">
 								<xs:complexType>
-									<xs:sequence/>
+									<xs:sequence>
+										<xs:element ref="headedTextEntry"/>
+									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="additionalNotes" minOccurs="0">
 								<xs:complexType>
-									<xs:sequence/>
+									<xs:sequence>
+										<xs:element ref="headedTextEntry"/>
+									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="diary" minOccurs="0">
 								<xs:complexType>
-									<xs:sequence/>
+									<xs:sequence>
+										<xs:element ref="headedTextEntry"/>
+									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="adventureLog" minOccurs="0">
 								<xs:complexType>
-									<xs:sequence/>
+									<xs:sequence>
+										<xs:element ref="headedTextEntry"/>
+									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="companions" minOccurs="0">
-					<xs:annotation>
-						<xs:documentation>TODO</xs:documentation>
-					</xs:annotation>
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element ref="familiar"/>
-							<xs:element name="mount"/>
+							<xs:element ref="familiar" minOccurs="0"/>
+							<xs:element name="mount" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>TODO</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence/>
+								</xs:complexType>
+							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
@@ -528,6 +560,9 @@ startValue, currentValue, lost and meditationMod is only used by herodata.
 minValue is only used by metadata</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
 			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
 			<xs:attribute name="modifier" type="xs:int" use="optional" default="0"/>
 			<xs:attribute ref="startValue" use="optional"/>
@@ -549,6 +584,46 @@ minValue is only used by metadata</xs:documentation>
 		<xs:annotation>
 			<xs:documentation> Used by Hero Editor only. For each change in the stats or characteristics is a log entry added. this is done for the rollback feature.</xs:documentation>
 		</xs:annotation>
+		<xs:complexType>
+			<xs:attributeGroup ref="logVersion"/>
+			<xs:attribute name="usedSKTColumn" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Wenn nicht gebraucht dann leer lassen</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="APCost" type="xs:int" default="0">
+				<xs:annotation>
+					<xs:documentation>Hier die AP Änderung für den Step angeben</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="changeValue" type="xs:int" default="0">
+				<xs:annotation>
+					<xs:documentation>Hier die Änderung des Parent Wertes angeben, wenn nicht benötigt dann 0</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="isSpecialExpirience" type="xs:boolean" default="false"/>
+			<xs:attribute name="isSalasandra" type="xs:boolean" default="false"/>
+			<xs:attribute name="isNew" type="xs:boolean" default="false">
+				<xs:annotation>
+					<xs:documentation>ist TRUE wenn der parent neu hinzugefügt wurde. Damit man den Kauf von neuen Elementen auch mitbekommt wird auch für den verkauf von permanenten AsP benutzt</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="isActivation" type="xs:boolean" default="false">
+				<xs:annotation>
+					<xs:documentation>Für den Fall das ein talent, Sprache, Schrift oder zauber aktiviert wurde. Gerade weil  es bei den Talenten den unterschied zwischen (0) und 0 gibt </xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="isRemoved" type="xs:boolean" default="false">
+				<xs:annotation>
+					<xs:documentation>Wird nur für SE oder nachteile benötigt die man später wegkaufen kann.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="AESpecial" type="xs:int" default="-1">
+				<xs:annotation>
+					<xs:documentation>Wird nur für AE benötigt um die Änderungen durch eine große Meditation oder  permarnente ASP (add/sub) zu verwalten. wenn es nicht gebraucht wird ist der wert -1</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
 	</xs:element>
 	<xs:element name="choice">
 		<xs:annotation>
@@ -574,6 +649,18 @@ minValue is only used by metadata</xs:documentation>
 			<xs:documentation>For most elements the user can add a personal note.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
+	<xs:element name="headedTextEntry">
+		<xs:annotation>
+			<xs:documentation>similiar to a note but with a healine is used for the personal data entries</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="headline" type="xs:string"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="specialization">
 		<xs:complexType>
 			<xs:attribute name="ID" type="xs:string" use="required"/>
@@ -583,6 +670,7 @@ minValue is only used by metadata</xs:documentation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="note" minOccurs="0"/>
 				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
@@ -593,6 +681,7 @@ minValue is only used by metadata</xs:documentation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="note" minOccurs="0"/>
 				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
@@ -603,6 +692,7 @@ minValue is only used by metadata</xs:documentation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="note" minOccurs="0"/>
 				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
@@ -624,6 +714,7 @@ minValue is only used by metadata</xs:documentation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="note" minOccurs="0"/>
 				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
@@ -692,6 +783,7 @@ minValue is only used by metadata</xs:documentation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="specialization" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="note" minOccurs="0"/>
 				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
@@ -713,13 +805,75 @@ minValue is only used by metadata</xs:documentation>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="miracle">
+		<xs:annotation>
+			<xs:documentation>TODO</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="familiar">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element ref="adventurePoints"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="special" type="xs:string" minOccurs="0"/>
+				<xs:element name="characteristics">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="characteristic" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="ritualKnowledge"/>
+				<xs:element name="familiarSpell" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="ID" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+			<xs:attribute name="typeID" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="adventurePoints">
 		<xs:annotation>
-			<xs:documentation>TODO</xs:documentation>
+			<xs:documentation>not used by archtype completeAP are all adventure Points the hero has ever got. usedAP are the adventurePoint the hero "sold" for level a stat or characteristic.</xs:documentation>
 		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="apLogEntry" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attributeGroup ref="logVersion"/>
+						<xs:attribute name="apChange" type="xs:int" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="level" type="xs:int" default="0"/>
+			<xs:attribute name="completeAP" type="xs:int" default="0"/>
+			<xs:attribute name="usedAP" type="xs:int" default="0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="nameSequence">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string"/>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="femaleNames">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nameSequence" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="maleNames">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nameSequence" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
 	</xs:element>
 </xs:schema>
