@@ -32,7 +32,7 @@ public class GenesisConfig
 	/**
 	 * application version.
 	 */
-	public static final String APP_VERSION = "0.1.0";
+	public static final String APP_VERSION = "0.2.0";
 	
 	/**
 	 * xml file extensions
