@@ -168,7 +168,8 @@ public abstract class AbstractSQLTableModel
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);	
 		
 		ApplicationLogger.logInfo(
-				"CoreDataTableIndex.queryList time: "
+					this.getClass().getSimpleName()
+					+ ".queryList time: "
 					+ DBConnector.getInstance().getQueryTime() 
 					+ " ms"
 			);
@@ -185,8 +186,9 @@ public abstract class AbstractSQLTableModel
 			{
 				Vector<Object> row = new Vector<Object>();
 				for( int col=1; col <= colCount; col++) 
+				{
 					row.add(rs.getObject(col));
-				
+				}
 				data.add(row);
 			}
 			

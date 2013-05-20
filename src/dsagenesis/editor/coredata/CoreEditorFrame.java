@@ -166,11 +166,10 @@ public class CoreEditorFrame
 		panelSplitBottom.setLayout(new BorderLayout(0, 0));
 		panelSplitBottom.setMinimumSize(new Dimension(50,50));
 		{
-			// TODO labels
 			TitledBorder titleBorder = BorderFactory.createTitledBorder(
 					labelResource.getProperty("bottomNoteTitle", "bottomNoteTitle")
 				);
-			this.lblBottomNote = new JLabel("System Tabellen und Referenz Tabellen.");
+			this.lblBottomNote = new JLabel("System und Referenz Tabellen.");
 			this.lblBottomNote.setBorder(titleBorder);
 			panelSplitBottom.add(this.lblBottomNote,BorderLayout.NORTH);
 		}
@@ -235,7 +234,7 @@ public class CoreEditorFrame
 		
 		// init internal Tables
 		{
-			table = new CoreEditorTable(new CoreDataVersion());
+			table = new CoreEditorTable(this, new CoreDataVersion());
 			internalTables.add(table);
 			
 			tabbedPaneInternal.addTab("CoreDataVersion", new JScrollPane(table)); 
@@ -245,7 +244,7 @@ public class CoreEditorFrame
 				);
 		}
 		{
-			table = new CoreEditorTable(new CoreDataTableIndex());
+			table = new CoreEditorTable(this, new CoreDataTableIndex());
 			internalTables.add(table);
 			
 			tabbedPaneInternal.addTab("CoreDataTableIndex",	new JScrollPane(table)); 
@@ -255,7 +254,7 @@ public class CoreEditorFrame
 				);
 		}
 		{
-			table = new CoreEditorTable(new TableColumnLabels());
+			table = new CoreEditorTable(this, new TableColumnLabels());
 			internalTables.add(table);
 			
 			tabbedPaneInternal.addTab("TableColumnLabels",	new JScrollPane(table)); 

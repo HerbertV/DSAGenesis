@@ -531,9 +531,19 @@ public class GenesisLauncher
 	{
 		GenesisConfig conf = GenesisConfig.getInstance();
 		DBConnector connector = DBConnector.getInstance();
-		int step = 0;
 		
-		while( step < 6 )
+		String[] sqlfiles = {
+				"sql/00_createSystemTables.sql",
+				"sql/01_createSKT.sql",
+				"sql/02_createWorlds.sql",
+				"sql/03_createCharacteristics.sql",
+				"sql/04_metaDataGroups.sql"
+			};
+		
+		int step = 0;
+		int stepCount = 3 + sqlfiles.length;
+		
+		while( step < stepCount )
 		{
 			try
 			{
@@ -563,10 +573,13 @@ public class GenesisLauncher
 				}
 				
 			} else if( step == 1 ) {
-				// open DB Connection and check if its empty
+				// STEP 2: open DB Connection and check if its empty
 				ApplicationLogger.logInfo("Try to open DB...");
 				lblDisclaimerAndStatus.setText(
-						labelResource.getProperty("firstLaunch.db.open", "firstLaunch.db.open")
+						labelResource.getProperty(
+								"firstLaunch.db.open", 
+								"firstLaunch.db.open"
+							)
 					);
 				connector.openConnection(
 						GenesisConfig.getInstance().getDBFile(),false
@@ -575,27 +588,35 @@ public class GenesisLauncher
 				if( !connector.isDBEmpty() )
 					break;
 				
-			} else if( step == 2 ) {
 				ApplicationLogger.logInfo("DB is Empty. now initializing ...");
 				lblDisclaimerAndStatus.setText(
-						labelResource.getProperty("firstLaunch.db.create", "firstLaunch.db.create")
+						labelResource.getProperty(
+								"firstLaunch.db.create", 
+								"firstLaunch.db.create"
+							)
 					);
 				
-// TODO parse the folder for skripts and add them dynamically
-				connector.executeFile("sql/00_createSystemTables.sql");
+			} else if( step > 1 && step < (stepCount-1) ) {
+				// STEP 3-N: execute all sql files
 				
-			} else if( step == 3 ) {
-				connector.executeFile("sql/01_createSKT.sql");
+				String status = "<html>" 
+						+ labelResource.getProperty(
+								"firstLaunch.db.create", 
+								"firstLaunch.db.create"
+							)
+						+ "<br>"
+						+ sqlfiles[(step-2)]
+						+ "</html>";
+				lblDisclaimerAndStatus.setText(status);
+				connector.executeFile(sqlfiles[(step-2)]);
 				
-			} else if( step == 4 ) {
-				connector.executeFile("sql/02_createWorlds.sql");
-			
-			} else if( step == 5 ) {
-				connector.executeFile("sql/03_createCharacteristics.sql");
+			} else {
+				// last STEP: create group folders
+				// TODO
 			}
 			step++;
 		}
-				
+		
 		// we are done
 		connector.closeConnection();
 		conf.setFirstLaunchDone();	

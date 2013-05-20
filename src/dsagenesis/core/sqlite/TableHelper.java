@@ -41,7 +41,7 @@ public class TableHelper
 			throws SQLException
 	{
 		String query = 
-				"SELECT ID, ver_major, ver_minor from CoreDataTableIndex WHERE ID=0";
+				"SELECT ID, ver_major, ver_minor from CoreDataVersion WHERE ID=0";
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
 		if( rs.next() )
@@ -64,7 +64,7 @@ public class TableHelper
 			throws SQLException
 	{
 		String query = 
-				"SELECT ID, ver_language from CoreDataTableIndex WHERE ID=0";
+				"SELECT ID, ver_language from CoreDataVersion WHERE ID=0";
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
 		if( rs.next() )

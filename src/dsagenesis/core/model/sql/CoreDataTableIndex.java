@@ -18,9 +18,13 @@ package dsagenesis.core.model.sql;
 
 import java.util.Vector;
 
+import javax.swing.table.TableColumn;
+
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
+import dsagenesis.editor.coredata.table.cell.CheckBoxCellRenderer;
 
 /**
  * CoreDataTableIndex
@@ -82,6 +86,23 @@ public class CoreDataTableIndex
 		)
 	{
 		super.setupJTableColumnModels(ceframe, cetable);
+		
+		TableColumn currColumn;
+        
+        // Bool uses_prefix col 2
+        currColumn = cetable.getColumnModel().getColumn(2);
+        currColumn.setPreferredWidth(25);
+        currColumn.setCellRenderer(new CheckBoxCellRenderer());
+        
+        // Bool col 7
+        currColumn = cetable.getColumnModel().getColumn(7);
+        currColumn.setPreferredWidth(25);
+        currColumn.setCellRenderer(new CheckBoxCellRenderer());
+        
+        // Bool col 9
+        currColumn = cetable.getColumnModel().getColumn(9);
+        currColumn.setPreferredWidth(25);
+        currColumn.setCellRenderer(new CheckBoxCellRenderer());
 	}
 	
 	/**

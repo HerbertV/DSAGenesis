@@ -22,7 +22,9 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
+import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
+import dsagenesis.editor.coredata.table.cell.CheckBoxCellRenderer;
 
 /**
  * CoreEditorTable
@@ -45,30 +47,23 @@ public class CoreEditorTable
 		
 	private AbstractSQLTableModel sqlTable;
 	
+	private CoreEditorFrame jframe;
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-		
-	
-	// FIXME remove this constructor. 
-	public CoreEditorTable(String title) 
-	{
-		super();
-		
-		this.setName(title);
-		setup();
-	}
-	
+			
 	/**
 	 * Constructor.
 	 * 
 	 * @param sqlTable
 	 */
-	public CoreEditorTable(AbstractSQLTableModel sqlTable)
+	public CoreEditorTable(CoreEditorFrame frame, AbstractSQLTableModel sqlTable)
 	{
 		super();
 		
 		this.sqlTable = sqlTable;
+		this.jframe = frame;
 				
 		this.setName(sqlTable.getDBTableName());
 		setup();
@@ -83,9 +78,6 @@ public class CoreEditorTable
 		this.setAutoCreateRowSorter(true);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.getTableHeader().setReorderingAllowed(false);
-		this.setDefaultRenderer(String.class, new BasicCellRenderer());
-		this.setDefaultRenderer(Integer.class, new BasicCellRenderer());
-		this.setDefaultRenderer(Boolean.class, new BasicCellRenderer());
 		this.setDefaultRenderer(Object.class, new BasicCellRenderer());
 	}
 	
@@ -95,8 +87,6 @@ public class CoreEditorTable
 		if( sqlTable == null )
 			return;
 		
-		System.out.println("--> CoreEditorTable load data");
-		
 		Vector<Vector<Object>> data = sqlTable.queryList();
 		CoreEditorTableModel cetm = new CoreEditorTableModel(
 				data, 
@@ -105,8 +95,7 @@ public class CoreEditorTable
 		cetm.setReadOnly(!sqlTable.isEditable());
 		this.setModel(cetm);
 		
-		// TODO set frame
-		this.sqlTable.setupJTableColumnModels(null, this);
+		this.sqlTable.setupJTableColumnModels(jframe, this);
 	}
 
 	
