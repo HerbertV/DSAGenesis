@@ -29,7 +29,7 @@ INSERT INTO CoreDataTableIndex
 		'Volks-/Kulturgruppen', 
 		'Die einzelnen Rassen sind gruppiert um sie in Unterverzeichnisse aufzuteilen.<br>Die Vezeichnisse gelten sowohl für die Rassen als auch für Kulturen.',
 		1,
-		2,
+		3,
 		1
 	);
 	
@@ -88,7 +88,7 @@ INSERT INTO CoreDataTableIndex
 		'Professionsgruppen', 
 		'Analog zu den Volks-/Kulturgruppen, wird für Sortierung und Pfaderstellung benötigt.',
 		1,
-		3,
+		4,
 		1
 	);
 	
@@ -145,7 +145,7 @@ INSERT INTO CoreDataTableIndex
 		'Professionskategorien', 
 		'Hier wird die Kategorie der Profession unterschieden, also normal, magisch etc.',
 		1,
-		4,
+		5,
 		1
 	);
 	
@@ -194,7 +194,7 @@ INSERT INTO CoreDataTableIndex
 		'Professionstypen', 
 		'Wird für die Mehrfachauswahl von Professionen bei der Erschaffung gebraucht.',
 		1,
-		5,
+		6,
 		1
 	);
 	

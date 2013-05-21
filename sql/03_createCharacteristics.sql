@@ -16,7 +16,7 @@ CREATE TABLE "CharacteristicGroups" (
 -----------------------------------------------------------------
 	Characteristics
 -----------------------------------------------------------------
-	contains Attributes and anything else that is leved or calculated
+	contains Attributes and anything else that is leveled or calculated
 	there are columns for heroes and familiars:
 	heroes only columns start with c_h_
 	familiar only columns statr with c_f_	
@@ -76,7 +76,7 @@ INSERT INTO CoreDataTableIndex
 		'Grundwerte Gruppen', 
 		'Die Grundwerte sind zur besseren Unterscheidung in Gruppen unterteilt',
 		1,
-		1,
+		2,
 		0
 	);
 	
@@ -98,7 +98,7 @@ INSERT INTO CoreDataTableIndex
 		'Grundwerte', 
 		'Eigenschaften und sonstige Werte die berechnet werden oder gesteigert werden dürfen.<br>Spalten die für Helden verwendet werden sind mit (H) gekennzeichnet.<br>Spalten für Vertraute sind mit (V) gekennzeichnet.',
 		0,
-		3,
+		1,
 		1
 	);
 

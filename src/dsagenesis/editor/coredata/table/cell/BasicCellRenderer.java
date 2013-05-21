@@ -134,9 +134,12 @@ public class BasicCellRenderer
 				
 			}
 		}
-		
-		this.setText(value.toString());
-		
+		if( value == null )
+		{
+			this.setText("");
+		} else {
+			this.setText(value.toString());
+		}
 		return this;
     }
 
