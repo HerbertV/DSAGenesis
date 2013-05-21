@@ -1,4 +1,4 @@
-# DSA Genesis
+![DSA Genesis Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/DSAGenesisLogo.png)
 
 -----------------------------------
 
@@ -6,18 +6,20 @@
 
 -----------------------------------
 
-![DSA Genesis Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/DSAGenesisLogo.png)
-
 ## About:
 
 [Ulisses Spiele - offical DSA Website](http://www.ulisses-spiele.de/)
 
-[Wiki Aventurica - Fan Wiki](http://www.wiki-aventurica.de/)
+[Wiki Aventurica - Fan Wiki about DSA](http://www.wiki-aventurica.de/)
 
 [DSA Genesis Wiki](https://github.com/HerbertV/DSAGenesis/wiki)
 
 [DSA Genesis Issues](https://github.com/HerbertV/DSAGenesis/issues)
 
+
+## Downloads:
+
+TODO
 
 
 ## Licenses:
