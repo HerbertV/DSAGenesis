@@ -261,6 +261,7 @@ public abstract class AbstractSQLTableModel
         // ID col 0
 		// ID is always Left aligned
         currColumn = cetable.getColumnModel().getColumn(0);
+        currColumn.setMinWidth(30);
         currColumn.setPreferredWidth(50);
         currColumn.setMaxWidth(100);
         currColumn.setCellRenderer(new BasicCellRenderer());

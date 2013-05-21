@@ -65,7 +65,8 @@ public class CoreEditorTable
 		
 		this.sqlTable = sqlTable;
 		this.jframe = frame;
-				
+		// this is better for larger tables
+		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);	
 		this.setName(sqlTable.getDBTableName());
 		setup();
 	}

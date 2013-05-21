@@ -41,6 +41,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.WindowEvent;
@@ -259,8 +261,7 @@ public class CoreEditorFrame
 		{
 			table = new CoreEditorTable(this, new CoreDataTableIndex());
 			internalTables.add(table);
-			
-			tabbedPaneInternal.addTab("CoreDataTableIndex",	new JScrollPane(table)); 
+			tabbedPaneInternal.addTab("CoreDataTableIndex", new JScrollPane(table)); 
 			tabbedPaneInternal.setIconAt(
 					1, 
 					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()

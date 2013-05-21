@@ -19,9 +19,9 @@ package dsagenesis.editor.coredata.table.cell;
 import javax.swing.JLabel;
 
 /**
- * CheckBoxCellRenderer.
+ * IntegerCellRenderer.
  * 
- * Renders Booleans as a Checkbox.
+ * renders Integer Right Aligned.
  */
 public class IntegerCellRenderer 
 		extends BasicCellRenderer 

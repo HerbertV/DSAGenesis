@@ -18,7 +18,11 @@ package dsagenesis.core.model.sql;
 
 import java.util.Vector;
 
+import javax.swing.table.TableColumn;
+
 import dsagenesis.core.model.xml.AbstractGenesisModel;
+import dsagenesis.editor.coredata.CoreEditorFrame;
+import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
  * CoreDataTableIndex
@@ -73,6 +77,29 @@ public class CoreDataTableIndex
 	{
 		return null;
 	}
+	
+	@Override
+	public void setupJTableColumnModels(
+			CoreEditorFrame ceframe,
+			CoreEditorTable cetable
+		)
+	{
+		super.setupJTableColumnModels(ceframe, cetable);
+		
+		TableColumn currColumn;
+        
+        // ti_table_name col 1
+        currColumn = cetable.getColumnModel().getColumn(1);
+        currColumn.setMinWidth(120);
+        
+        // ti_table_name col 5
+        currColumn = cetable.getColumnModel().getColumn(5);
+        currColumn.setMinWidth(120);
+        
+        // ti_table_name col 6
+        currColumn = cetable.getColumnModel().getColumn(6);
+        currColumn.setMinWidth(120);
+    }
 	
 	@Override
 	public Vector<Class<?>> getTableColumnClasses()
