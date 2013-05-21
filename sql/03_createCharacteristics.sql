@@ -71,7 +71,7 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'CharacteristicGroups', 
-		'true',
+		1,
 		'cg_', 
 		'Grundwerte Gruppen', 
 		'Die Grundwerte sind zur besseren Unterscheidung in Gruppen unterteilt',

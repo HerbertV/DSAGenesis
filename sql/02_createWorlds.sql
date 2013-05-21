@@ -18,7 +18,7 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'Worlds', 
-		'true',
+		1,
 		'w_', 
 		'Welten / Kampagnen', 
 		'Hier sind die einzelenen Welten, Kontinente und Kampangen aufgelistet.',

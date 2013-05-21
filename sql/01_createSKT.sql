@@ -77,11 +77,11 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	( 	'SKT', 
-		'false',
+		0,
 		'skt_', 
 		'SKT', 
 		'Steigerungskosten-Tabelle',
-		0,
+		1,
 		1,
 		1
 	);
@@ -127,11 +127,11 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index,  ti_editable )
 	VALUES
 	(	'SKTShifts', 
-		'false',
+		0,
 		'skts_', 
 		'SKT Verschiebungen', 
 		'Hier werden die Verschiebungen der SKT Spalten durch Vor-/Nachteile Sonderfähigkeiten verwaltet.',
-		0,
+		1,
 		2,
 		1
 	);

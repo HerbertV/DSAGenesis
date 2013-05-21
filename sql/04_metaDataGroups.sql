@@ -140,7 +140,7 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'ProfessionCategories', 
-		0,
+		1,
 		'pc_', 
 		'Professionskategorien', 
 		'Hier wird die Kategorie der Profession unterschieden, also normal, magisch etc.',
@@ -189,7 +189,7 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'ProfessionTypes', 
-		0,
+		1,
 		'pt_', 
 		'Professionstypen', 
 		'Wird für die Mehrfachauswahl von Professionen bei der Erschaffung gebraucht.',
@@ -206,7 +206,7 @@ INSERT INTO TableColumnLabels
 /*
 	ProfessionTypes Entries
 */
-INSERT INTO "ProfessionTypes" VALUES('pc_n', 'Normal');
-INSERT INTO "ProfessionTypes" VALUES('pc_z', 'Zeitaufwendig');
-INSERT INTO "ProfessionTypes" VALUES('pc_f', 'Erstprofession');
+INSERT INTO "ProfessionTypes" VALUES('pt_n', 'Normal');
+INSERT INTO "ProfessionTypes" VALUES('pt_z', 'Zeitaufwendig');
+INSERT INTO "ProfessionTypes" VALUES('pt_f', 'Erstprofession');
 
