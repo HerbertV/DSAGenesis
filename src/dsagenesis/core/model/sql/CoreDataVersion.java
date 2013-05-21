@@ -19,8 +19,6 @@ package dsagenesis.core.model.sql;
 import java.util.Vector;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
-import dsagenesis.editor.coredata.CoreEditorFrame;
-import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
  * CoreDataVersion
@@ -49,6 +47,7 @@ public class CoreDataVersion
 		
 		this.prefix = "ver_";
 		this.usesPrefix = false;
+		this.isEditable = true;
 		
 		this.dbColumnNames = new Vector<String>();
 		this.dbColumnNames.addElement("ID");
@@ -62,29 +61,6 @@ public class CoreDataVersion
 	//  Functions
 	// ============================================================================
 
-	@Override
-	public String getDBTableName() 
-	{
-		return "CoreDataVersion";
-	}
-
-	@Override
-	public boolean isEditable()
-	{
-		return true;
-	}
-
-	@Override
-	public void setupJTableColumnModels(
-			CoreEditorFrame ceframe,
-			CoreEditorTable cetable
-		)
-	{
-		super.setupJTableColumnModels(ceframe, cetable);
-		
-		//TODO integer cell renderer and editor
-	}
-
 	/**
 	 * since this is a system table there is no AbstractGenesisModel 
 	 */
@@ -94,4 +70,15 @@ public class CoreDataVersion
 		return null;
 	}
 
+	@Override
+	public Vector<Class<?>> getTableColumnClasses()
+	{
+		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
+		vec.add(Integer.class);
+		vec.add(Integer.class);
+		vec.add(Integer.class);
+		vec.add(String.class);
+		
+		return vec;
+	}
 }

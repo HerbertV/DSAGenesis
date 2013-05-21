@@ -123,6 +123,10 @@ public class TableHelper
 	/**
 	 * getColumnLabelsForTable
 	 * 
+	 * inner Vector fields:
+	 * [0] = tcl_column_name
+	 * [1] = tcl_label
+	 * 
 	 * @param tablename
 	 * 
 	 * @return
@@ -133,7 +137,7 @@ public class TableHelper
 			throws SQLException
 	{
 		String query = 
-				"SELECT tcl_column_name, tcl_label, tlc_table_name from TableColumnLabels WHERE tlc_table_name='"
+				"SELECT tcl_column_name, tcl_label, tcl_table_name from TableColumnLabels WHERE tcl_table_name='"
 						+ tablename	+ "'";
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);

@@ -19,8 +19,6 @@ package dsagenesis.core.model.sql;
 import java.util.Vector;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
-import dsagenesis.editor.coredata.CoreEditorFrame;
-import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
  * TableColumnLabels
@@ -50,6 +48,7 @@ public class TableColumnLabels
 		
 		this.prefix = "tcl_";
 		this.usesPrefix = false;
+		this.isEditable = true;
 		
 		this.dbColumnNames = new Vector<String>();
 		this.dbColumnNames.addElement("ID");
@@ -62,29 +61,6 @@ public class TableColumnLabels
 	//  Functions
 	// ============================================================================
 
-	@Override
-	public String getDBTableName() 
-	{
-		return "TableColumnLabels";
-	}
-
-	@Override
-	public boolean isEditable() 
-	{
-		return true;
-	}
-
-	@Override
-	public void setupJTableColumnModels(
-			CoreEditorFrame ceframe,
-			CoreEditorTable cetable
-		)
-	{
-		super.setupJTableColumnModels(ceframe, cetable);
-		
-		//TODO 
-	}
-	
 	/**
 	 * since this is a system table there is no AbstractGenesisModel 
 	 */
@@ -92,6 +68,18 @@ public class TableColumnLabels
 	public AbstractGenesisModel getRow(String id) 
 	{
 		return null;
+	}
+	
+	@Override
+	public Vector<Class<?>> getTableColumnClasses()
+	{
+		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
+		vec.add(Integer.class);
+		vec.add(String.class);
+		vec.add(String.class);
+		vec.add(String.class);
+		
+		return vec;
 	}
 
 }

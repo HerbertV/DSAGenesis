@@ -25,6 +25,7 @@ import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
 import dsagenesis.editor.coredata.table.cell.CheckBoxCellRenderer;
+import dsagenesis.editor.coredata.table.cell.IntegerCellRenderer;
 
 /**
  * CoreEditorTable
@@ -78,6 +79,10 @@ public class CoreEditorTable
 		this.setAutoCreateRowSorter(true);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.getTableHeader().setReorderingAllowed(false);
+		this.setDefaultRenderer(String.class, new BasicCellRenderer());
+		this.setDefaultRenderer(Boolean.class, new CheckBoxCellRenderer());
+		this.setDefaultRenderer(Integer.class, new IntegerCellRenderer());
+		
 		this.setDefaultRenderer(Object.class, new BasicCellRenderer());
 	}
 	
@@ -87,10 +92,11 @@ public class CoreEditorTable
 		if( sqlTable == null )
 			return;
 		
-		Vector<Vector<Object>> data = sqlTable.queryList();
+		Vector<Vector<Object>> data = sqlTable.queryListAsVector();
 		CoreEditorTableModel cetm = new CoreEditorTableModel(
 				data, 
-				sqlTable.getDBColumnNames()
+				sqlTable.getColumnLabels(),
+				sqlTable.getTableColumnClasses()
 			);
 		cetm.setReadOnly(!sqlTable.isEditable());
 		this.setModel(cetm);

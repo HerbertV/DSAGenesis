@@ -18,6 +18,7 @@ package dsagenesis.editor.coredata;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
+import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.core.model.sql.CoreDataTableIndex;
 import dsagenesis.core.model.sql.CoreDataVersion;
 import dsagenesis.core.model.sql.TableColumnLabels;
@@ -54,7 +55,10 @@ import jhv.util.debug.logger.ApplicationLogger;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -159,6 +163,7 @@ public class CoreEditorFrame
 		{
 			this.tabbedPaneCore = new JTabbedPane(JTabbedPane.TOP);
 			panelSplitTop.add(this.tabbedPaneCore, BorderLayout.CENTER);
+			
 		}
 		
 		// bottom split
@@ -176,7 +181,7 @@ public class CoreEditorFrame
 		{
 			this.tabbedPaneInternal = new JTabbedPane(JTabbedPane.TOP);
 			panelSplitBottom.add(this.tabbedPaneInternal, BorderLayout.CENTER);
-			this.tabbedPaneInternal.addChangeListener(this);
+			
 		}
 		
 		JSplitPane splitPane = new JSplitPane();
@@ -194,6 +199,14 @@ public class CoreEditorFrame
 		
 		try {
 			initDBAndTabs();
+			
+			internalTables.elementAt(tabbedPaneInternal.getSelectedIndex()).loadData();
+			coreTables.elementAt(tabbedPaneCore.getSelectedIndex()).loadData();
+			
+			this.tabbedPaneInternal.addChangeListener(this);
+			this.tabbedPaneCore.addChangeListener(this);
+			
+			
 		} catch (SQLException e) {
 			ApplicationLogger.logError("Cannot init tabs for CoreEditorFrame.");
 			ApplicationLogger.logError(e);
@@ -232,7 +245,7 @@ public class CoreEditorFrame
 		
 		CoreEditorTable table;
 		
-		// init internal Tables
+		// init system Tables
 		{
 			table = new CoreEditorTable(this, new CoreDataVersion());
 			internalTables.add(table);
@@ -264,18 +277,79 @@ public class CoreEditorFrame
 				);
 		}
 		
+		// create the rest.
+		String query = "SELECT * FROM CoreDataTableIndex ORDER BY ti_tab_index ASC";
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);
 		
+		while( rs.next() )
+			this.initDynamicTab(rs);
 		
 		// TODO refresh button in tab
-		// TODO Commit Button per row becomes enabled after the first change
 		
-		// TODO coredata tables
+		// TODO Commit Button per row becomes enabled after the first change
 		
 		this.lblStatus.setText(
 				labelResource.getProperty("status.ready", "status.ready")
 			);
 	}
+	
+	/**
+	 * initDynamicTab
+	 * 
+	 * creates a tab with its table by class reflection.
+	 * 
+	 * @param rs
+	 */
+	private void initDynamicTab(ResultSet rs)
+	{
+		try 
+		{
+			Class<?> c = Class.forName(
+					"dsagenesis.core.model.sql."
+						+ rs.getString("ti_table_name")
+				);
+			
+			Class<?> parameterTypes[] = new Class[1];
+			parameterTypes[0] = ResultSet.class;
+			
+            Constructor<?> con = c.getConstructor(parameterTypes);
+            
+            Object args[] = new Object[1];
+			args[0] = rs;
+			
+			AbstractSQLTableModel model = (AbstractSQLTableModel)con.newInstance(args);
+			CoreEditorTable table = new CoreEditorTable(this, model);
 		
+			if( DBConnector.convertBooleanFromDB(rs.getObject("ti_is_internal")) )
+			{
+				tabbedPaneInternal.addTab(
+						rs.getString("ti_label"),
+						new JScrollPane(table)
+					); 
+				internalTables.add(table);
+			} else {
+				tabbedPaneCore.addTab(
+						rs.getString("ti_label"),
+						new JScrollPane(table)
+					); 
+				coreTables.add(table);
+			}
+			
+		} catch ( SQLException 
+				| InstantiationException 
+				| IllegalAccessException 
+				| NoSuchMethodException 
+				| SecurityException
+				| IllegalArgumentException
+				| InvocationTargetException e 
+			)
+		{
+			ApplicationLogger.logError(e);
+		} catch ( ClassNotFoundException e2 ) {
+			ApplicationLogger.logError(" ClassNotFoundException:"+e2.getMessage());
+		}
+	}
+	
 	/**
 	 * initializes the bars.
 	 */

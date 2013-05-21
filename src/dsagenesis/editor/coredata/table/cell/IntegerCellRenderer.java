@@ -16,21 +16,14 @@
  */
 package dsagenesis.editor.coredata.table.cell;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-
-import dsagenesis.core.sqlite.DBConnector;
+import javax.swing.JLabel;
 
 /**
  * CheckBoxCellRenderer.
  * 
  * Renders Booleans as a Checkbox.
  */
-public class CheckBoxCellRenderer 
+public class IntegerCellRenderer 
 		extends BasicCellRenderer 
 {
 	// ============================================================================
@@ -44,10 +37,7 @@ public class CheckBoxCellRenderer
 	//  Variables
 	// ============================================================================
 			
-	private JCheckBox checkBox;
-	private JPanel panel;
-
-	
+		
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -55,47 +45,14 @@ public class CheckBoxCellRenderer
 	/**
 	 * Constructor
 	 */
-	public CheckBoxCellRenderer()
+	public IntegerCellRenderer()
 	{
 		super();
-		
-		checkBox = new JCheckBox();
-		panel = new JPanel(new BorderLayout());
-		panel.add(checkBox, BorderLayout.CENTER);
-        checkBox.setBackground(this.getBackground());
-        checkBox.setForeground(this.getForeground());
+		this.setHorizontalAlignment(JLabel.RIGHT);
 	}
 
 	// ============================================================================
 	//  Functions
-	// ============================================================================
-		
-	@Override
-	public Component getTableCellRendererComponent(
-			JTable table, 
-			Object value, 
-			boolean isSelected,
-			boolean hasFocus,
-			int row, 
-			int column
-		) 
-	{
-		// call super for coloring
-		super.getTableCellRendererComponent(
-				table,
-				value,
-				isSelected,
-				hasFocus,
-				row,
-				column
-			);
-
-		checkBox.setBackground(this.getBackground());
-		checkBox.setForeground(this.getForeground());
-
-		checkBox.setSelected(
-				DBConnector.convertBooleanFromDB(value)
-			);
-		return panel;
-	}
+	// ============================================================================	
+	
 }

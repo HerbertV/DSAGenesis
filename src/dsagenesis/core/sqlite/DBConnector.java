@@ -34,6 +34,9 @@ import jhv.util.debug.logger.ApplicationLogger;
 
 /**
  * Connector for sqlite database.
+ * 
+ * Depends on SQLite JDBC Driver:
+ * https://bitbucket.org/xerial/sqlite-jdbc/overview
  */
 public class DBConnector 
 {
@@ -102,6 +105,46 @@ public class DBConnector
 	}
 	
 	/**
+	 * convertBooleanFromDB
+	 * 
+	 * since sqlite has no boolean we have to convert it.
+	 * it can be "true" or 1 for true and "false" or 0 for false.
+	 * 
+	 * also the ResultSet.getBoolean does not work.
+	 * 
+	 * @param val
+	 * 
+	 * @return
+	 */
+	public static boolean convertBooleanFromDB(Object val)
+	{
+		if( val.equals(1) || val.equals("true") )
+			return true;
+		
+		return false;
+	}
+	
+	/**
+	 * convertBooleanForDB
+	 * 
+	 * converts a boolean back for sqlite DB.
+	 * 
+	 * @see convertBooleanFromDB
+	 * 
+	 * @param val
+	 * 
+	 * @return
+	 */
+	public static int convertBooleanForDB(boolean val)
+	{
+		if( val )
+			return 1;
+		
+		return 0;
+	}
+	
+	
+	/**
 	 * hasConnection
 	 * 
 	 * @return
@@ -161,10 +204,11 @@ public class DBConnector
 		try
 		{
 			if( connection != null )
+			{
 				connection.close();
-			
-			ApplicationLogger.logInfo("closed DB connection.");
-			
+				connection = null;
+				ApplicationLogger.logInfo("closed DB connection.");
+			}
 		} catch( SQLException e ) {
 			ApplicationLogger.logFatalError(e);
 		}

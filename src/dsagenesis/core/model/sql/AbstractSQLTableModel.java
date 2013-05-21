@@ -26,6 +26,7 @@ import jhv.util.debug.logger.ApplicationLogger;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.core.sqlite.DBConnector;
+import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
@@ -38,6 +39,8 @@ import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
  * 
  * All implementations represent the whole table not a single object.
  * So in most cases the Names of these classes are plural.
+ * 
+ * The Classes have the same name as their referring database tables.
  */
 public abstract class AbstractSQLTableModel
 {
@@ -47,8 +50,11 @@ public abstract class AbstractSQLTableModel
 	
 	/**
 	 * the internal database column names.
+	 * 
+	 * they are used to determinate the column order.
 	 */
 	protected Vector<String>dbColumnNames;
+	
 	
 	/**
 	 * prefix used by column names (except ID)
@@ -63,6 +69,53 @@ public abstract class AbstractSQLTableModel
 	 */
 	protected boolean usesPrefix = true;
 	
+	/**
+	 * 
+	 */
+	protected String note = "";
+	
+	/**
+	 * 
+	 */
+	protected boolean isEditable = false;
+	
+	
+	// ============================================================================
+	//  Constructors
+	// ============================================================================
+	
+	/**
+	 * Constructor 1.
+	 * 
+	 * used by system tables
+	 */
+	public AbstractSQLTableModel()
+	{
+		
+	}
+	
+	/**
+	 * Constructor 2.
+	 * 
+	 * Dynamic setup with the ResultSet of CoreDataTableIndex
+	 * 
+	 * used by all tables with entries in CoreDataTableIndex
+	 * 
+	 * @param rs
+	 * @throws SQLException 
+	 */
+	public AbstractSQLTableModel(ResultSet rs)
+			throws SQLException
+	{
+		this.usesPrefix = DBConnector.convertBooleanFromDB(
+				rs.getObject("ti_uses_prefix")
+			);
+		this.prefix = rs.getString("ti_prefix");
+		this.note = rs.getString("ti_note");
+		this.isEditable = DBConnector.convertBooleanFromDB(
+				rs.getObject("ti_editable")
+			);
+	}
 	
 	// ============================================================================
 	//  Functions
@@ -71,9 +124,14 @@ public abstract class AbstractSQLTableModel
 	/**
 	 * getDBTableName
 	 * 
+	 * The table name is the implementations simple name.
+	 * 
 	 * @return
 	 */
-	public abstract String getDBTableName();
+	public String getDBTableName()
+	{
+		return this.getClass().getSimpleName();
+	}
 	
 	/**
 	 * getPrefix
@@ -116,9 +174,61 @@ public abstract class AbstractSQLTableModel
 	 *  
 	 * @return
 	 */
-	public Vector<String> getColumnLabels()
+	public Vector<String> getColumnLabels() 
 	{
-		return dbColumnNames;
+		try
+		{
+			Vector<Vector<String>> rows = TableHelper.getColumnLabelsForTable(
+					this.getDBTableName()
+				);
+			
+			if( rows.size() == 0 )
+			{
+				ApplicationLogger.logWarning(
+						"No Column Labels found for "
+							+ this.getDBTableName() 
+							+" !"
+					);
+				return this.dbColumnNames;
+			}
+			
+			Vector<String> labels = new Vector<String>(this.dbColumnNames.size());
+			labels.add("ID");
+			for( int i=1; i< this.dbColumnNames.size(); i++ )
+				labels.add("");
+			
+			for( int i=0; i<rows.size(); i++ )
+			{
+				Vector<String> row = rows.elementAt(i);
+				
+				if( this.dbColumnNames.indexOf(row.elementAt(0)) > -1 )
+				{
+					labels.setElementAt(
+							row.elementAt(1), 
+							this.dbColumnNames.indexOf(row.elementAt(0))
+						);
+				} else {
+					ApplicationLogger.logWarning(
+							"Column Label for "
+								+ this.getDBTableName()
+								+ " : "
+								+ row.elementAt(0)
+								+"Not found ! Using internal names now."
+						);
+					return this.dbColumnNames;
+				}
+			}
+			return labels;
+			
+		} catch( SQLException e) {
+			ApplicationLogger.logWarning(
+					"No Column Labels found for "
+						+ this.getDBTableName() 
+						+" !"
+				);
+		}
+		
+		return this.dbColumnNames;
 	}
 	
 	
@@ -127,7 +237,10 @@ public abstract class AbstractSQLTableModel
 	 * 
 	 * @return
 	 */
-	public abstract boolean isEditable();
+	public boolean isEditable()
+	{
+		return isEditable;
+	}
 	
 	/**
 	 * setupJTableColumnModels
@@ -146,10 +259,11 @@ public abstract class AbstractSQLTableModel
 		TableColumn currColumn;
         
         // ID col 0
+		// ID is always Left aligned
         currColumn = cetable.getColumnModel().getColumn(0);
-        currColumn.setPreferredWidth(20);
+        currColumn.setPreferredWidth(50);
+        currColumn.setMaxWidth(100);
         currColumn.setCellRenderer(new BasicCellRenderer());
-        
 	}
 	
 	/**
@@ -159,9 +273,19 @@ public abstract class AbstractSQLTableModel
 	 * 
 	 * @return
 	 */
-	public Vector<Vector<Object>> queryList()
+	public ResultSet queryList()
 	{
-		String query= "SELECT * FROM "
+		String query= "SELECT ";
+		
+		for(int i=0; i< this.dbColumnNames.size(); i++ )
+		{
+			query += this.dbColumnNames.elementAt(i);
+			
+			if( i< (this.dbColumnNames.size()-1) )
+				query += ", ";
+		}
+		
+		query += " FROM "
 				+ getDBTableName()
 				+ " ORDER BY ID ASC";
 		
@@ -174,6 +298,19 @@ public abstract class AbstractSQLTableModel
 					+ " ms"
 			);
 		
+		return rs;
+	}
+	
+	/**
+	 * queryListAsVector
+	 * 
+	 * returns all entries sort by ID
+	 * 
+	 * @return
+	 */
+	public Vector<Vector<Object>> queryListAsVector()
+	{
+		ResultSet rs = queryList();
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		
 		if( rs == null )
@@ -207,6 +344,16 @@ public abstract class AbstractSQLTableModel
 	 * @return
 	 */
 	public abstract AbstractGenesisModel getRow(String id);
+	
+	/**
+	 * getTableColumnClasses
+	 * 
+	 * this is for the CoreEditorTableModel
+	 * to get the correct class for each column.
+	 * 
+	 * @return
+	 */
+	public abstract Vector<Class<?>>getTableColumnClasses();
 	
 	
 	/**

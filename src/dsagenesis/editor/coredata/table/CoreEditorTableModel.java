@@ -41,6 +41,8 @@ public class CoreEditorTableModel
 		
 	private boolean isReadonly = false;
 	
+	private Vector<Class<?>> columnClasses;
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -78,12 +80,20 @@ public class CoreEditorTableModel
 	/**
 	 * Constructor 3.
 	 * 
+	 * In most cases we use this constructor
+	 * 
 	 * @param data
 	 * @param columnNames
+	 * @param columnClasses
 	 */
-	public CoreEditorTableModel( Vector<Vector<Object>> data, Vector<String> columnNames) 
+	public CoreEditorTableModel( 
+			Vector<Vector<Object>> data, 
+			Vector<String> columnNames,
+			Vector<Class<?>> columnClasses
+		) 
 	{
 		super(data, columnNames);
+		this.columnClasses = columnClasses;
 	}
 
 	
@@ -117,6 +127,12 @@ public class CoreEditorTableModel
 	public void setReadOnly(boolean val)
 	{
 		isReadonly = val;
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int column)
+	{
+		return this.columnClasses.elementAt(column);
 	}
 
 }
