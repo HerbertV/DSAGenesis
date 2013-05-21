@@ -9,6 +9,9 @@
 	A*, A** and beyond:
 	for every * cost is reduced by 2 point but minimum is 1.
 	
+	used by:
+	dsagenesis.core.model.SKTMatrix
+	dsagenesis.core.model.sql.SKT
 */
 DROP TABLE IF EXISTS "SKT";
 
@@ -60,11 +63,11 @@ CREATE TABLE "SKTShifts" (
 	"skts_target_table_name" VARCHAR(50) NOT NULL,
 	"skts_target_column_name" VARCHAR(50) NULL,
 	"skts_target_value" VARCHAR(10) NULL,
-	"skts_is_down_shift" BOOLEAN DEFAULT 'true' NOT NULL,
-	"skts_is_up_shift" BOOLEAN DEFAULT 'false' NOT NULL,
+	"skts_is_down_shift" BOOLEAN DEFAULT '1' NOT NULL,
+	"skts_is_up_shift" BOOLEAN DEFAULT '0' NOT NULL,
 	"skts_shift_factor" INTEGER DEFAULT '0' NOT NULL,
 	"skts_is_absolute_shift" BOOLEAN DEFAULT 'false' NOT NULL,
-	"skts_skt_column" VARCHAR(10) DEFAULT '' NULL
+	"skts_skt_column" VARCHAR(10) NULL
 );
 
 /*
@@ -78,9 +81,9 @@ INSERT INTO CoreDataTableIndex
 		'skt_', 
 		'SKT', 
 		'Steigerungskosten-Tabelle',
-		'true',
 		0,
-		'true'
+		1,
+		1
 	);
 	
 INSERT INTO TableColumnLabels
@@ -127,10 +130,10 @@ INSERT INTO CoreDataTableIndex
 		'false',
 		'skts_', 
 		'SKT Verschiebungen', 
-		'<html>Hier werden die Verschiebungen der SKT Spalten durch Vor-/Nachteile Sonderfähigkeiten verwaltet.<br></html>',
-		'false',
+		'Hier werden die Verschiebungen der SKT Spalten durch Vor-/Nachteile Sonderfähigkeiten verwaltet.',
 		0,
-		'true'
+		2,
+		1
 	);
 	
 INSERT INTO TableColumnLabels

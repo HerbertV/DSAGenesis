@@ -22,9 +22,9 @@ INSERT INTO CoreDataTableIndex
 		'w_', 
 		'Welten / Kampagnen', 
 		'Hier sind die einzelenen Welten, Kontinente und Kampangen aufgelistet.',
-		'false',
 		0,
-		'true'
+		0,
+		1
 	);
 	
 INSERT INTO TableColumnLabels

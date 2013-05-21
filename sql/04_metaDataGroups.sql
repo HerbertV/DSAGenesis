@@ -24,13 +24,13 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'RaceCultureGroups', 
-		'true',
+		1,
 		'rcg_', 
 		'Volks-/Kulturgruppen', 
-		'<html>Die einzelnen Rassen sind gruppiert um sie in Unterverzeichnisse aufzuteilen.<br>Die Vezeichnisse gelten sowohl für die Rassen als auch für Kulturen.</html>',
-		'true',
-		0,
-		'true'
+		'Die einzelnen Rassen sind gruppiert um sie in Unterverzeichnisse aufzuteilen.<br>Die Vezeichnisse gelten sowohl für die Rassen als auch für Kulturen.',
+		1,
+		2,
+		1
 	);
 	
 INSERT INTO TableColumnLabels
@@ -77,19 +77,19 @@ CREATE TABLE "ProfessionGroups" (
 );	
 
 /*
-	RaceCultureGroups Index and Labels
+	ProffesionGroups Index and Labels
 */
 INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'ProfessionGroups', 
-		'true',
+		1,
 		'pg_', 
 		'Professionsgruppen', 
-		'<html>Analog zu den Volks-/Kulturgruppen.</html>',
-		'true',
-		0,
-		'true'
+		'Analog zu den Volks-/Kulturgruppen, wird für Sortierung und Pfaderstellung benötigt.',
+		1,
+		3,
+		1
 	);
 	
 INSERT INTO TableColumnLabels
@@ -140,13 +140,13 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'ProfessionCategories', 
-		'false',
+		0,
 		'pc_', 
 		'Professionskategorien', 
-		'<html>Hier wird die Kategorie der Profession unterschieden, also normal, magisch etc.</html>',
-		'true',
-		0,
-		'true'
+		'Hier wird die Kategorie der Profession unterschieden, also normal, magisch etc.',
+		1,
+		4,
+		1
 	);
 	
 INSERT INTO TableColumnLabels
@@ -183,19 +183,19 @@ CREATE TABLE "ProfessionTypes" (
 );	
 
 /*
-	RaceCultureGroups Index and Labels
+	ProfessionTypes Index and Labels
 */
 INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	(	'ProfessionTypes', 
-		'false',
+		0,
 		'pt_', 
 		'Professionstypen', 
-		'<html>Wird für die mehrfach auswahl von Professionen gebraucht.</html>',
-		'true',
-		0,
-		'true'
+		'Wird für die Mehrfachauswahl von Professionen bei der Erschaffung gebraucht.',
+		1,
+		5,
+		1
 	);
 	
 INSERT INTO TableColumnLabels
@@ -204,7 +204,7 @@ INSERT INTO TableColumnLabels
 	( 'ProfessionTypes', 'pt_name', 'Name');	
 
 /*
-	ProfessionCategories Entries
+	ProfessionTypes Entries
 */
 INSERT INTO "ProfessionTypes" VALUES('pc_n', 'Normal');
 INSERT INTO "ProfessionTypes" VALUES('pc_z', 'Zeitaufwendig');

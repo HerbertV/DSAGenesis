@@ -25,7 +25,7 @@ INSERT INTO "CoreDataVersion" VALUES(0, 1, 0, 'de_DE');
 -----------------------------------------------------------------
 	contains an entry for each table.
 	
-		ti_name: internal name of the table 
+		ti_table_name: internal name of the table 
 	
 	for generating a db wide unique id:
 		ti_uses_prefix: if false the id is a pure integer.
@@ -44,14 +44,14 @@ DROP TABLE IF EXISTS "CoreDataTableIndex";
 CREATE TABLE "CoreDataTableIndex" (
 	"ID" INTEGER PRIMARY KEY NOT NULL,
 	"ti_table_name" VARCHAR(50) NOT NULL,
-	"ti_uses_prefix" BOOLEAN DEFAULT 'true' NOT NULL,
+	"ti_uses_prefix" BOOLEAN DEFAULT '1' NOT NULL,
 	"ti_prefix" VARCHAR(5),
 	"ti_last_index_num" INTEGER DEFAULT -1 NOT NULL,
 	"ti_label" TEXT NOT NULL,
 	"ti_note" TEXT NULL,
-	"ti_is_internal" BOOLEAN DEFAULT 'false' NOT NULL,
+	"ti_is_internal" BOOLEAN DEFAULT '0' NOT NULL,
 	"ti_tab_index" INTEGER DEFAULT '0' NOT NULL,
-	"ti_editable" BOOLEAN DEFAULT 'true' NOT NULL
+	"ti_editable" BOOLEAN DEFAULT '1' NOT NULL
 );
 
 /*

@@ -47,21 +47,21 @@ CREATE TABLE "Characteristics" (
 	"c_acronym" VARCHAR(5) NOT NULL,
 	"c_name" TEXT NOT NULL,
 	"c_ref_cg_ID" VARCHAR(10) REFERENCES CharacteristicGroups(ID) NOT NULL,
-	"c_is_used_by_hero" BOOLEAN DEFAULT 'true' NOT NULL,
+	"c_is_used_by_hero" BOOLEAN DEFAULT '1' NOT NULL,
 	"c_h_cp_cost" INTEGER DEFAULT '0' NOT NULL,
 	"c_h_min_value" INTEGER NULL,
 	"c_h_max_value" INTEGER NULL,
-	"c_h_can_increase" BOOLEAN DEFAULT 'false' NOT NULL,
-	"c_h_can_decrease" BOOLEAN DEFAULT 'false' NOT NULL,
-	"c_h_skt_column" VARCHAR(10) DEFAULT '' NULL,
-	"c_h_has_Formular" BOOLEAN DEFAULT 'false' NOT NULL,
+	"c_h_can_increase" BOOLEAN DEFAULT '0' NOT NULL,
+	"c_h_can_decrease" BOOLEAN DEFAULT '0' NOT NULL,
+	"c_h_skt_column" VARCHAR(10) NULL,
+	"c_h_has_Formular" BOOLEAN DEFAULT '0' NOT NULL,
 	"c_h_formular" TEXT NULL,
 	"c_is_used_by_familiar" BOOLEAN DEFAULT 'false' NOT NULL,
 	"c_f_min_value" INTEGER NULL,
 	"c_f_max_value" INTEGER NULL,
-	"c_f_can_increase" BOOLEAN DEFAULT 'false' NOT NULL,
-	"c_f_can_decrease" BOOLEAN DEFAULT 'false' NOT NULL,
-	"c_f_skt_column" VARCHAR(10) DEFAULT '' NULL
+	"c_f_can_increase" BOOLEAN DEFAULT '0' NOT NULL,
+	"c_f_can_decrease" BOOLEAN DEFAULT '0' NOT NULL,
+	"c_f_skt_column" VARCHAR(10) NULL
 );
 
 /*
@@ -75,9 +75,9 @@ INSERT INTO CoreDataTableIndex
 		'cg_', 
 		'Grundwerte Gruppen', 
 		'Die Grundwerte sind zur besseren Unterscheidung in Gruppen unterteilt',
-		'true',
 		1,
-		'false'
+		1,
+		0
 	);
 	
 INSERT INTO TableColumnLabels
@@ -93,13 +93,13 @@ INSERT INTO CoreDataTableIndex
 	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index, ti_editable )
 	VALUES
 	( 	'Characteristics', 
-		'true',
+		1,
 		'c_', 
 		'Grundwerte', 
-		'<html>Eigenschaften und sonstige Werte die berechnet werden oder gesteigert werden dürfen.<br>Spalten die für Helden verwendet werden sind mit (H) gekennzeichnet.<br>Spalten für Vertraute sind mit (V) gekennzeichnet.</html>',
-		'false',
-		2,
-		'true'
+		'Eigenschaften und sonstige Werte die berechnet werden oder gesteigert werden dürfen.<br>Spalten die für Helden verwendet werden sind mit (H) gekennzeichnet.<br>Spalten für Vertraute sind mit (V) gekennzeichnet.',
+		0,
+		3,
+		1
 	);
 
 INSERT INTO TableColumnLabels
