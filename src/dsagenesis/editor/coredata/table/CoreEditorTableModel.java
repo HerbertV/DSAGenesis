@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  * JTableModel
  * 
  * Our default table model used by swing.table  
- * in our core data edtior
+ * in our core data editor
  */
 public class CoreEditorTableModel 
 		extends DefaultTableModel 
@@ -42,6 +42,8 @@ public class CoreEditorTableModel
 	private boolean isReadonly = false;
 	
 	private Vector<Class<?>> columnClasses;
+
+	private CoreEditorTable table;
 	
 	// ============================================================================
 	//  Constructors
@@ -89,11 +91,13 @@ public class CoreEditorTableModel
 	public CoreEditorTableModel( 
 			Vector<Vector<Object>> data, 
 			Vector<String> columnNames,
-			Vector<Class<?>> columnClasses
+			Vector<Class<?>> columnClasses,
+			CoreEditorTable table
 		) 
 	{
 		super(data, columnNames);
 		this.columnClasses = columnClasses;
+		this.table = table;
 	}
 
 	
@@ -101,7 +105,7 @@ public class CoreEditorTableModel
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-		
+	
 	/**
 	 * isCellEditable
 	 * 
@@ -127,6 +131,16 @@ public class CoreEditorTableModel
 	public void setReadOnly(boolean val)
 	{
 		isReadonly = val;
+	}
+	
+	/**
+	 * getTable
+	 * 
+	 * @return
+	 */
+	public CoreEditorTable getTable()
+	{
+		return this.table;
 	}
 	
 	@Override

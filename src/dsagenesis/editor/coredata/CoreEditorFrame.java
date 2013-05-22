@@ -28,6 +28,8 @@ import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.core.ui.HelpDialog;
 import dsagenesis.core.ui.InfoDialog;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.CoreEditorTableModel;
+import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
 
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
@@ -41,7 +43,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
-import javax.swing.ScrollPaneConstants;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
@@ -287,8 +288,6 @@ public class CoreEditorFrame
 		
 		// TODO refresh button in tab
 		
-		// TODO Commit Button per row becomes enabled after the first change
-		
 		this.lblStatus.setText(
 				labelResource.getProperty("status.ready", "status.ready")
 			);
@@ -320,7 +319,7 @@ public class CoreEditorFrame
 			
 			AbstractSQLTableModel model = (AbstractSQLTableModel)con.newInstance(args);
 			CoreEditorTable table = new CoreEditorTable(this, model);
-		
+			
 			if( DBConnector.convertBooleanFromDB(rs.getObject("ti_is_internal")) )
 			{
 				tabbedPaneInternal.addTab(
@@ -540,12 +539,14 @@ public class CoreEditorFrame
 			int idx = tabbedPaneInternal.getSelectedIndex();
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			internalTables.elementAt(idx).loadData();
+			
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			
 		} else if( e.getSource() == tabbedPaneCore ) {
 			int idx = tabbedPaneCore.getSelectedIndex();
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			coreTables.elementAt(idx).loadData();
+			
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		} 
 	}
@@ -570,7 +571,32 @@ public class CoreEditorFrame
 	@Override
 	public void tableChanged(TableModelEvent e)
 	{
-		System.out.println("tableChanged");
+		// now we check if the commit button needs to be enabled
+		int row = e.getFirstRow();
+		int column = e.getColumn();
+        
+		// fail saves
+		// that the button is not enabled unnecessarily
+		if( row < 0 || column < 0 )
+			return;
+		
+		if( e.getType() != TableModelEvent.UPDATE )
+			return;
+	
+		CoreEditorTableModel model = ((CoreEditorTableModel)e.getSource());
+		
+		if( model.getTable().getCellRenderer(row, column) != null
+        		&&  model.getTable().getCellRenderer(row, column) instanceof CommitButtonCell )
+        	return;
+        
+        if( model.getTable().getCellEditor() != null
+        		&&  model.getTable().getCellEditor() instanceof CommitButtonCell )
+        	return;
+        
+		
+		System.out.println("CoreEditorFrame.tableChanged: "+model.getTable().getClass().getName() );
+		
+		
 		// TODO Auto-generated method stub
 		
 	}
