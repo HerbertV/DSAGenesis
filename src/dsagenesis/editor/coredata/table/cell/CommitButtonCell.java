@@ -197,7 +197,6 @@ public class CommitButtonCell
 		if( e.getButton() == MouseEvent.BUTTON1 ) 
 		{
 			table.commitRow(row);
-			changedRows.setElementAt(false, row);
 		}
 		// canceled since the button does not change any data.
 		fireEditingCanceled();

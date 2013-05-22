@@ -19,9 +19,13 @@ mntmInfo=Info
 mntmHelp=Hilfe
 
 # Info Labels
-topNoteTitle=Core Data Tabellen
-bottomNoteTitle=Interne Tabellen
+topNote.title=Core Data Tabellen
+topNote.body=Alle Tabellen die direkt mit Inhalten für die Heldenverwaltung in Verbindung stehen.
+bottomNote.title=Interne Tabellen
+bottomNote.body=System und Referenz Tabellen.
 
 # Status Messages
 status.init=Initialisiere...
 status.ready=Bereit.
+status.commit.success=Änderung erfolgreich gespeichert.
+status.commit.error=Fehler beim Speichern!

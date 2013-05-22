@@ -89,6 +89,9 @@ public class CoreEditorFrame
 			
 	private static final long serialVersionUID = 1L;
 
+	public static final int STATUS_COMMIT_SUCCESS = 0;
+	public static final int STATUS_COMMIT_ERROR = 1;
+	
 	
 	// ============================================================================
 	//  Variables
@@ -156,17 +159,18 @@ public class CoreEditorFrame
 		panelSplitTop.setMinimumSize(new Dimension(50,50));
 		{
 			TitledBorder titleBorder = BorderFactory.createTitledBorder(
-					labelResource.getProperty("topNoteTitle", "topNoteTitle")
+					labelResource.getProperty("topNote.title", "topNote.title")
 				);
 			panelSplitTop.setLayout(new BorderLayout(0, 0));
-			this.lblTopNote = new JLabel("Alle Tabellen die direkt mit Inhalten für die Heldenverwaltung in verbindung stehen.");
+			this.lblTopNote = new JLabel(
+					labelResource.getProperty("topNote.body", "topNote.body")
+				);
 			this.lblTopNote.setBorder(titleBorder);
-			panelSplitTop.add(this.lblTopNote,BorderLayout.NORTH);
+			panelSplitTop.add(this.lblTopNote,BorderLayout.SOUTH);
 		}
 		{
 			this.tabbedPaneCore = new JTabbedPane(JTabbedPane.TOP);
 			panelSplitTop.add(this.tabbedPaneCore, BorderLayout.CENTER);
-			
 		}
 		
 		// bottom split
@@ -175,16 +179,17 @@ public class CoreEditorFrame
 		panelSplitBottom.setMinimumSize(new Dimension(50,50));
 		{
 			TitledBorder titleBorder = BorderFactory.createTitledBorder(
-					labelResource.getProperty("bottomNoteTitle", "bottomNoteTitle")
+					labelResource.getProperty("bottomNote.title", "bottomNote.title")
 				);
-			this.lblBottomNote = new JLabel("System und Referenz Tabellen.");
+			this.lblBottomNote = new JLabel(
+					labelResource.getProperty("bottomNote.body", "bottomNote.body")
+				);
 			this.lblBottomNote.setBorder(titleBorder);
-			panelSplitBottom.add(this.lblBottomNote,BorderLayout.NORTH);
+			panelSplitBottom.add(this.lblBottomNote,BorderLayout.SOUTH);
 		}
 		{
 			this.tabbedPaneInternal = new JTabbedPane(JTabbedPane.TOP);
 			panelSplitBottom.add(this.tabbedPaneInternal, BorderLayout.CENTER);
-			
 		}
 		
 		JSplitPane splitPane = new JSplitPane();
@@ -200,7 +205,8 @@ public class CoreEditorFrame
 		this.lblStatus.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 		getContentPane().add(this.lblStatus, BorderLayout.SOUTH);
 		
-		try {
+		try 
+		{
 			initDBAndTabs();
 			
 			internalTables.elementAt(tabbedPaneInternal.getSelectedIndex()).loadData();
@@ -226,7 +232,7 @@ public class CoreEditorFrame
 	 * and initializing tabs
 	 */
 	private void initDBAndTabs()
-		throws SQLException
+			throws SQLException
 	{
 		DBConnector connector = DBConnector.getInstance();
 		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
@@ -484,20 +490,91 @@ public class CoreEditorFrame
 	}
 	
 	/**
-	 * core editor saves on the fly. since it accesses the sqlite database.
-	 * so it returns always false.
+	 * setStatus
+	 * 
+	 * callback for the CoreEditorTable commitRow
+	 * 
+	 * @param status STATUS_COMMIT_SUCCESS or STATUS_COMMIT_ERROR
+	 * @param table
+	 * @param row
 	 */
+	public void setCommitStatus( 
+			int status, 
+			CoreEditorTable table, 
+			int row 
+		)
+	{
+		if( status == STATUS_COMMIT_SUCCESS )
+		{
+			this.lblStatus.setText(
+					labelResource.getProperty("status.commit.success", "status.commit.success")
+				);
+	
+			if( !table.containsUncommitedData() )
+				markUnsavedTabTitle(table,false);
+			
+			if( !hasContentChanged() )
+			{
+				String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
+				this.setTitle(title);
+			}
+						
+		} else {
+			this.lblStatus.setText(
+					labelResource.getProperty("status.commit.error", "status.commit.error")
+				);
+		}
+	}
+	
+	/**
+	 * markUnsavedTabTitle
+	 * 
+	 * @param table
+	 * @param unsaved
+	 */
+	private void markUnsavedTabTitle(
+			CoreEditorTable table, 
+			boolean unsaved
+		)
+	{
+		JTabbedPane tab = null;
+		int idx = coreTables.indexOf(table);
+		if( idx > -1 )
+		{
+			tab = tabbedPaneCore;
+		} else {
+			idx = internalTables.indexOf(table);
+			if( idx > -1 ) 
+				tab = tabbedPaneInternal;
+		}
+
+		if( tab == null )
+			return;
+		
+		String title = tab.getTitleAt(idx);
+		title = CoreEditorFrame.markUnsaved(title, unsaved);
+		tab.setTitleAt(idx, title);
+	}
+	
+	
 	@Override
 	public boolean hasContentChanged() 
 	{
-		//TODO if uncommited changes are there.
+		for( int i=0; i< coreTables.size(); i++ )
+			if( coreTables.elementAt(i).containsUncommitedData() )
+				return true;
+	
+		for( int i=0; i< coreTables.size(); i++ )
+			if( internalTables.elementAt(i).containsUncommitedData() )
+				return true;
+	
 		return false;
 	}
 
 	@Override
 	public void contentSaved()
 	{
-		// TODO
+		// not used since we have the commit buttons.
 	}
 
 	@Override
@@ -513,10 +590,13 @@ public class CoreEditorFrame
 	}
 	
 	@Override
-	public void close( WindowEvent e )
+	public boolean close( WindowEvent e )
 	{
-		DBConnector.getInstance().closeConnection();
-		super.close(e);
+		boolean doClose = super.close(e);
+		if( doClose )
+			DBConnector.getInstance().closeConnection();
+		
+		return doClose;
 	}
 	
 	@Override
@@ -534,21 +614,35 @@ public class CoreEditorFrame
 	@Override
 	public void stateChanged(ChangeEvent e) 
 	{
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		
+		CoreEditorTable table = null;
+		JLabel lbl = null;
 		if( e.getSource() == tabbedPaneInternal )
 		{
-			int idx = tabbedPaneInternal.getSelectedIndex();
-			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			internalTables.elementAt(idx).loadData();
-			
-			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			table = internalTables.elementAt(
+					tabbedPaneInternal.getSelectedIndex()
+				);
+			lbl = lblBottomNote;
 			
 		} else if( e.getSource() == tabbedPaneCore ) {
-			int idx = tabbedPaneCore.getSelectedIndex();
-			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			coreTables.elementAt(idx).loadData();
+			table = coreTables.elementAt(
+					tabbedPaneCore.getSelectedIndex()
+				);
+			lbl = lblTopNote;
 			
-			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		} 
+		}
+		
+		table.loadData();
+		lbl.setText(
+				"<html>"
+					+ "<b>" + table.getLabel() + "</b>"
+					+ "<br>"
+					+ table.getNote()
+					+ "</html>"
+			);
+		
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 
 	/**
@@ -584,21 +678,21 @@ public class CoreEditorFrame
 			return;
 	
 		CoreEditorTableModel model = ((CoreEditorTableModel)e.getSource());
+		CoreEditorTable table = model.getTable();
 		
-		if( model.getTable().getCellRenderer(row, column) != null
-        		&&  model.getTable().getCellRenderer(row, column) instanceof CommitButtonCell )
+		if( table.getCellRenderer(row, column) != null
+        		&& table.getCellRenderer(row, column) instanceof CommitButtonCell )
         	return;
         
-        if( model.getTable().getCellEditor() != null
-        		&&  model.getTable().getCellEditor() instanceof CommitButtonCell )
+        if( table.getCellEditor() != null
+        		&&  table.getCellEditor() instanceof CommitButtonCell )
         	return;
-        
 		
-		System.out.println("CoreEditorFrame.tableChanged: "+model.getTable().getClass().getName() );
+        markUnsavedTabTitle(table,true);
 		
-		
-		// TODO Auto-generated method stub
-		
+		// set frame title
+		String title = CoreEditorFrame.markUnsaved(this.getTitle(), true);
+		this.setTitle(title);
 	}
-
+	
 }

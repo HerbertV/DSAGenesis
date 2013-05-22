@@ -21,6 +21,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 import dsagenesis.core.GenesisLauncher;
@@ -119,17 +120,37 @@ public abstract class AbstractGenesisFrame
 	 * basic close handler.
 	 * can be overridden. 
 	 * 
+	 * returns true if the frame was really closed.
+	 * 
 	 * @param e
+	 * @return
 	 */
-	public void close( WindowEvent e )
+	public boolean close( WindowEvent e )
 	{
 		this.saveConfig();
 		
-		GenesisLauncher.openFrame = null;
-		GenesisLauncher.bringToFront();
+		boolean doClose = false;
+		if( !this.hasContentChanged() )
+		{
+			doClose = true;
+		} else {
+			int result = PopupDialogFactory.confirmCloseWithUnsavedData(this);
+			
+			if( result == JOptionPane.YES_OPTION )
+			{
+				doClose = true;
+			}
+		}
 		
-		this.setVisible(false);
-		this.dispose();
+		if( doClose )
+		{
+			GenesisLauncher.openFrame = null;
+			GenesisLauncher.bringToFront();
+			
+			this.setVisible(false);
+			this.dispose();
+		} 
+		return doClose;
 	}
 	
 	/**
@@ -200,5 +221,27 @@ public abstract class AbstractGenesisFrame
 		conf.saveUser();
 	}
 	
-	
+	/**
+	 * markUnsaved
+	 * 
+	 * little helper for adding a * to unsaved titles.
+	 * 
+	 * @param text
+	 * @param unsaved
+	 * 
+	 * @return
+	 */
+	public static String markUnsaved(String text, boolean unsaved)
+	{
+		if( unsaved )
+		{
+			if( text.indexOf("*") == -1 )
+				text += "*";
+		} else {
+			int i = text.indexOf("*"); 
+			if( i > -1 )
+				text = text.substring(0, i);
+		}
+		return text;
+	}
 }

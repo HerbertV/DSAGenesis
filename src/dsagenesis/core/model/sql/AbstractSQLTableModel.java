@@ -77,6 +77,11 @@ public abstract class AbstractSQLTableModel
 	/**
 	 * 
 	 */
+	protected String label = "";
+	
+	/**
+	 * 
+	 */
 	protected boolean isEditable = false;
 	
 	
@@ -112,6 +117,7 @@ public abstract class AbstractSQLTableModel
 			);
 		this.prefix = rs.getString("ti_prefix");
 		this.note = rs.getString("ti_note");
+		this.label = rs.getString("ti_label");
 		this.isEditable = DBConnector.convertBooleanFromDB(
 				rs.getObject("ti_editable")
 			);
@@ -133,6 +139,15 @@ public abstract class AbstractSQLTableModel
 		return this.getClass().getSimpleName();
 	}
 	
+	/**
+	 * getDBTableLabel
+	 * 
+	 * @return
+	 */
+	public String getDBTableLabel()
+	{
+		return this.label;
+	}
 	/**
 	 * getPrefix
 	 * 
@@ -231,6 +246,15 @@ public abstract class AbstractSQLTableModel
 		return this.dbColumnNames;
 	}
 	
+	/**
+	 * getNote
+	 * 
+	 * @return
+	 */
+	public String getNote()
+	{
+		return note;
+	}
 	
 	/**
 	 * isEditable

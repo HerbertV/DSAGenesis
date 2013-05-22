@@ -43,7 +43,7 @@ public class PopupDialogFactory
 		GenesisConfig conf = GenesisConfig.getInstance();
 		
 		labelResource = new LabelResource(
-				PopupDialogFactory.class.getSimpleName()+ ".lbl",
+				PopupDialogFactory.class.getSimpleName(),
 				conf.getLanguage(), 
 				"labels"
 			);
@@ -62,7 +62,8 @@ public class PopupDialogFactory
 		
 		return JOptionPane.showConfirmDialog(
 				parent,
-				parent.getTitle() 
+				AbstractGenesisFrame.markUnsaved( parent.getTitle(), false) 
+					+ " "
 					+ labelResource.getProperty("closeUnsaved.message","closeUnsaved.message"),
 				labelResource.getProperty("closeUnsaved.title","closeUnsaved.title"),
 				JOptionPane.YES_NO_OPTION

@@ -102,6 +102,36 @@ public class CoreEditorTable
 	}
 	
 	/**
+	 * getSQLTable
+	 * 
+	 * @return
+	 */
+	public AbstractSQLTableModel getSQLTable()
+	{
+		return this.sqlTable;
+	}
+	
+	/**
+	 * getNote
+	 * 
+	 * @return
+	 */
+	public String getNote()
+	{
+		return this.sqlTable.getNote();
+	}
+	
+	/**
+	 * getLabel
+	 * 
+	 * @return
+	 */
+	public String getLabel()
+	{
+		return this.sqlTable.getDBTableLabel();
+	}
+	
+	/**
 	 * containsUncommitedData
 	 * 
 	 * @return
@@ -128,8 +158,10 @@ public class CoreEditorTable
 		if( sqlTable == null )
 			return;
 		
+		if( containsUncommitedData() )
+			return;
+			
 		// we need to clone since we don't want to alter the original data.
-		
 		Vector<Vector<Object>> data = 
 				(Vector<Vector<Object>>) sqlTable.queryListAsVector().clone();
 		Vector<String> labels = 
@@ -191,11 +223,18 @@ public class CoreEditorTable
 	 */
 	public void commitRow(int row)
 	{
-System.out.println("CoreEditorTable commit "+row);
+System.out.println(" TODO CoreEditorTable commit "+row);
 		
 		// TODO
 
-		
+		// if success
+		this.btnCommit.setEnabled(row, false);
+
+		jframe.setCommitStatus( 
+				CoreEditorFrame.STATUS_COMMIT_SUCCESS, 
+				this, 
+				row 
+			);
 	}
 
 	/**

@@ -28,7 +28,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -36,7 +35,6 @@ import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.ui.ConfigFrame;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.ui.AbstractGenesisFrame;
-import dsagenesis.core.ui.PopupDialogFactory;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.hero.HeroEditorFrame;
 import dsagenesis.editor.metadata.MetaEditorFrame;
@@ -428,24 +426,7 @@ public class GenesisLauncher
 			boolean doClose = true;
 			
 			if( openFrame != null )
-			{
-				doClose = false;
-				
-				if( !openFrame.hasContentChanged() )
-				{
-					openFrame.close(null);
-					doClose = true;
-					
-				} else {
-					int result = PopupDialogFactory.confirmCloseWithUnsavedData(openFrame);
-					
-					if( result == JOptionPane.YES_OPTION )
-					{
-						openFrame.close(null);
-						doClose = true;
-					}
-				}
-			}
+				doClose = openFrame.close(null);
 			
 			if( doClose )
 			{
