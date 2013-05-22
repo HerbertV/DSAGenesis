@@ -122,14 +122,20 @@ public class CoreEditorTable
 	 * 
 	 * updates the whole table for the DB
 	 */
+	@SuppressWarnings("unchecked")
 	public void loadData()
 	{
 		if( sqlTable == null )
 			return;
 		
-		Vector<Vector<Object>> data = sqlTable.queryListAsVector();
-		Vector<String> labels = sqlTable.getColumnLabels();
-		Vector<Class<?>> classes = sqlTable.getTableColumnClasses();
+		// we need to clone since we don't want to alter the original data.
+		
+		Vector<Vector<Object>> data = 
+				(Vector<Vector<Object>>) sqlTable.queryListAsVector().clone();
+		Vector<String> labels = 
+				(Vector<String>) sqlTable.getColumnLabels().clone();
+		Vector<Class<?>> classes = 
+				(Vector<Class<?>>) sqlTable.getTableColumnClasses().clone();
 		
 		//if editable fill up cells for commit button
 		if( sqlTable.isEditable() )
