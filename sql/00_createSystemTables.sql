@@ -34,7 +34,6 @@ INSERT INTO "CoreDataVersion" VALUES(0, 1, 0, 'de_DE');
 	
 		ti_label: the label used by JTabPane from core editor
 		ti_note: an optional note also displayed in the core editor
-		ti_is_internal: if true the table is displayed in Internal section.
 		ti_tab_index: the index postion for the tab panel.
 		ti_editable: to flag a table read only used for internal tables
 			that only contain cross references.
@@ -49,7 +48,6 @@ CREATE TABLE "CoreDataTableIndex" (
 	"ti_last_index_num" INTEGER DEFAULT -1 NOT NULL,
 	"ti_label" TEXT NOT NULL,
 	"ti_note" TEXT NULL,
-	"ti_is_internal" BOOLEAN DEFAULT '0' NOT NULL,
 	"ti_tab_index" INTEGER DEFAULT '0' NOT NULL,
 	"ti_editable" BOOLEAN DEFAULT '1' NOT NULL
 );

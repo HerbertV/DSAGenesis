@@ -68,15 +68,14 @@ CREATE TABLE "Characteristics" (
 	CharacteristicGroups Index and Labels
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_tab_index, ti_editable )
 	VALUES
 	(	'CharacteristicGroups', 
 		1,
 		'cg_', 
 		'Grundwerte Gruppen', 
 		'Die Grundwerte sind zur besseren Unterscheidung in Gruppen unterteilt',
-		1,
-		2,
+		3,
 		0
 	);
 	
@@ -90,15 +89,14 @@ INSERT INTO TableColumnLabels
 */		
 
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_tab_index, ti_editable )
 	VALUES
 	( 	'Characteristics', 
 		1,
 		'c_', 
 		'Grundwerte', 
 		'Eigenschaften und sonstige Werte die berechnet werden oder gesteigert werden dürfen.<br>Spalten die für Helden verwendet werden sind mit (H) gekennzeichnet.<br>Spalten für Vertraute sind mit (V) gekennzeichnet.',
-		0,
-		1,
+		4,
 		1
 	);
 

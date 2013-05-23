@@ -37,7 +37,7 @@ public interface IGenesisConfigKeys
 	/**
 	 * for storing the base editor window states
 	 */
-	public static final String KEY_WIN_BASE = "win.base";
+	public static final String KEY_WIN_BASE = "win.core";
 	/**
 	 * for storing the meta editor window states
 	 */
@@ -47,6 +47,11 @@ public interface IGenesisConfigKeys
 	 */
 	public static final String KEY_WIN_HERO = "win.hero";
 
+	/**
+	 * for storing the active tab
+	 */
+	public static final String KEY_WIN_CORE_ACTIVE_TAB = "win.core.activeTab";
+	
 	/**
 	 * path keys
 	 */

@@ -34,7 +34,6 @@ import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JMenuBar;
@@ -66,7 +65,6 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.JLabel;
-import javax.swing.JSplitPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -103,31 +101,25 @@ public class CoreEditorFrame
 	private JLabel lblStatus;
 	
 	/**
-	 * Note for the top split
+	 * TitleBorder for the not
 	 */
-	private JLabel lblTopNote;
+	private TitledBorder titleBorder;
 	
 	/**
-	 * Note for the bottom split
+	 * for displaying Notes on a tab
 	 */
-	private JLabel lblBottomNote;
+	private JLabel lblNote;
 	
 	/**
-	 * panel for the editable core data tables
+	 * tab panel for the tables
 	 */
-	private JTabbedPane tabbedPaneCore;
+	private JTabbedPane tabbedPane;
+	
 	
 	/**
-	 * panel for mostly uneditable system and cross reference tables.
+	 * Vector for accessing the tables
 	 */
-	private JTabbedPane tabbedPaneInternal;
-	
-	/**
-	 * Vectors for accessing the tables
-	 */
-	private Vector<CoreEditorTable> coreTables;
-	private Vector<CoreEditorTable> internalTables;
-	
+	private Vector<CoreEditorTable> vecTables;
 	
 	
 	// ============================================================================
@@ -153,51 +145,19 @@ public class CoreEditorFrame
 		
 		initBars();
 		
-		// top split
-		JPanel panelSplitTop = new JPanel();
-		panelSplitTop.setLayout(new BorderLayout(0, 0));
-		panelSplitTop.setMinimumSize(new Dimension(50,50));
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout(0, 0));
+		getContentPane().add(panel, BorderLayout.CENTER);
 		{
-			TitledBorder titleBorder = BorderFactory.createTitledBorder(
-					labelResource.getProperty("topNote.title", "topNote.title")
-				);
-			panelSplitTop.setLayout(new BorderLayout(0, 0));
-			this.lblTopNote = new JLabel(
-					labelResource.getProperty("topNote.body", "topNote.body")
-				);
-			this.lblTopNote.setBorder(titleBorder);
-			panelSplitTop.add(this.lblTopNote,BorderLayout.SOUTH);
+			this.titleBorder = BorderFactory.createTitledBorder("");
+			this.lblNote = new JLabel("");
+			this.lblNote.setBorder(titleBorder);
+			panel.add(this.lblNote,BorderLayout.SOUTH);
 		}
 		{
-			this.tabbedPaneCore = new JTabbedPane(JTabbedPane.TOP);
-			panelSplitTop.add(this.tabbedPaneCore, BorderLayout.CENTER);
+			this.tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			panel.add(this.tabbedPane, BorderLayout.CENTER);
 		}
-		
-		// bottom split
-		JPanel panelSplitBottom = new JPanel();
-		panelSplitBottom.setLayout(new BorderLayout(0, 0));
-		panelSplitBottom.setMinimumSize(new Dimension(50,50));
-		{
-			TitledBorder titleBorder = BorderFactory.createTitledBorder(
-					labelResource.getProperty("bottomNote.title", "bottomNote.title")
-				);
-			this.lblBottomNote = new JLabel(
-					labelResource.getProperty("bottomNote.body", "bottomNote.body")
-				);
-			this.lblBottomNote.setBorder(titleBorder);
-			panelSplitBottom.add(this.lblBottomNote,BorderLayout.SOUTH);
-		}
-		{
-			this.tabbedPaneInternal = new JTabbedPane(JTabbedPane.TOP);
-			panelSplitBottom.add(this.tabbedPaneInternal, BorderLayout.CENTER);
-		}
-		
-		JSplitPane splitPane = new JSplitPane();
-		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		getContentPane().add(splitPane, BorderLayout.CENTER);
-		splitPane.setTopComponent(panelSplitTop);
-		splitPane.setBottomComponent(panelSplitBottom);
-		splitPane.setDividerLocation(getHeight()/2);
 		
 		this.lblStatus = new JLabel(
 				labelResource.getProperty("status.init", "status.init")
@@ -209,12 +169,13 @@ public class CoreEditorFrame
 		{
 			initDBAndTabs();
 			
-			internalTables.elementAt(tabbedPaneInternal.getSelectedIndex()).loadData();
-			coreTables.elementAt(tabbedPaneCore.getSelectedIndex()).loadData();
+			int tabIdx = GenesisConfig.getInstance().getInt(
+					GenesisConfig.KEY_WIN_CORE_ACTIVE_TAB
+				);
+			tabbedPane.setSelectedIndex(tabIdx);
 			
-			this.tabbedPaneInternal.addChangeListener(this);
-			this.tabbedPaneCore.addChangeListener(this);
-			
+			this.stateChanged(null);
+			tabbedPane.addChangeListener(this);
 			
 		} catch (SQLException e) {
 			ApplicationLogger.logError("Cannot init tabs for CoreEditorFrame.");
@@ -249,37 +210,36 @@ public class CoreEditorFrame
 			);
 		
 		
-		coreTables = new Vector<CoreEditorTable>();
-		internalTables = new Vector<CoreEditorTable>();
+		vecTables = new Vector<CoreEditorTable>();
 		
 		CoreEditorTable table;
 		
 		// init system Tables
 		{
 			table = new CoreEditorTable(this, new CoreDataVersion());
-			internalTables.add(table);
+			vecTables.add(table);
 			
-			tabbedPaneInternal.addTab("CoreDataVersion", new JScrollPane(table)); 
-			tabbedPaneInternal.setIconAt(
+			tabbedPane.addTab("CoreDataVersion", new JScrollPane(table)); 
+			tabbedPane.setIconAt(
 					0, 
 					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
 				);
 		}
 		{
 			table = new CoreEditorTable(this, new CoreDataTableIndex());
-			internalTables.add(table);
-			tabbedPaneInternal.addTab("CoreDataTableIndex", new JScrollPane(table)); 
-			tabbedPaneInternal.setIconAt(
+			vecTables.add(table);
+			tabbedPane.addTab("CoreDataTableIndex", new JScrollPane(table)); 
+			tabbedPane.setIconAt(
 					1, 
 					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
 				);
 		}
 		{
 			table = new CoreEditorTable(this, new TableColumnLabels());
-			internalTables.add(table);
+			vecTables.add(table);
 			
-			tabbedPaneInternal.addTab("TableColumnLabels",	new JScrollPane(table)); 
-			tabbedPaneInternal.setIconAt(
+			tabbedPane.addTab("TableColumnLabels",	new JScrollPane(table)); 
+			tabbedPane.setIconAt(
 					2, 
 					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
 				);
@@ -325,22 +285,13 @@ public class CoreEditorFrame
 			
 			AbstractSQLTableModel model = (AbstractSQLTableModel)con.newInstance(args);
 			CoreEditorTable table = new CoreEditorTable(this, model);
-			
-			if( DBConnector.convertBooleanFromDB(rs.getObject("ti_is_internal")) )
-			{
-				tabbedPaneInternal.addTab(
-						rs.getString("ti_label"),
-						new JScrollPane(table)
-					); 
-				internalTables.add(table);
-			} else {
-				tabbedPaneCore.addTab(
-						rs.getString("ti_label"),
-						new JScrollPane(table)
-					); 
-				coreTables.add(table);
-			}
-			
+		
+			tabbedPane.addTab(
+					rs.getString("ti_label"),
+					new JScrollPane(table)
+				); 
+			vecTables.add(table);
+	
 		} catch ( SQLException 
 				| InstantiationException 
 				| IllegalAccessException 
@@ -489,6 +440,19 @@ public class CoreEditorFrame
 		
 	}
 	
+	@Override
+	public void saveConfig() 
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		conf.setUserProperty(
+				GenesisConfig.KEY_WIN_CORE_ACTIVE_TAB, 
+				Integer.toString(tabbedPane.getSelectedIndex())
+			);
+		
+		super.saveConfig();
+	}
+	
 	/**
 	 * setStatus
 	 * 
@@ -537,35 +501,18 @@ public class CoreEditorFrame
 			boolean unsaved
 		)
 	{
-		JTabbedPane tab = null;
-		int idx = coreTables.indexOf(table);
-		if( idx > -1 )
-		{
-			tab = tabbedPaneCore;
-		} else {
-			idx = internalTables.indexOf(table);
-			if( idx > -1 ) 
-				tab = tabbedPaneInternal;
-		}
-
-		if( tab == null )
-			return;
-		
-		String title = tab.getTitleAt(idx);
+		int idx = vecTables.indexOf(table);
+		String title = tabbedPane.getTitleAt(idx);
 		title = CoreEditorFrame.markUnsaved(title, unsaved);
-		tab.setTitleAt(idx, title);
+		tabbedPane.setTitleAt(idx, title);
 	}
 	
 	
 	@Override
 	public boolean hasContentChanged() 
 	{
-		for( int i=0; i< coreTables.size(); i++ )
-			if( coreTables.elementAt(i).containsUncommitedData() )
-				return true;
-	
-		for( int i=0; i< coreTables.size(); i++ )
-			if( internalTables.elementAt(i).containsUncommitedData() )
+		for( int i=0; i< vecTables.size(); i++ )
+			if( vecTables.elementAt(i).containsUncommitedData() )
 				return true;
 	
 		return false;
@@ -616,28 +563,14 @@ public class CoreEditorFrame
 	{
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		
-		CoreEditorTable table = null;
-		JLabel lbl = null;
-		if( e.getSource() == tabbedPaneInternal )
-		{
-			table = internalTables.elementAt(
-					tabbedPaneInternal.getSelectedIndex()
-				);
-			lbl = lblBottomNote;
-			
-		} else if( e.getSource() == tabbedPaneCore ) {
-			table = coreTables.elementAt(
-					tabbedPaneCore.getSelectedIndex()
-				);
-			lbl = lblTopNote;
-			
-		}
+		CoreEditorTable table = vecTables.elementAt(
+				tabbedPane.getSelectedIndex()
+			);
 		
 		table.loadData();
-		lbl.setText(
+		titleBorder.setTitle(table.getLabel());
+		lblNote.setText(
 				"<html>"
-					+ "<b>" + table.getLabel() + "</b>"
-					+ "<br>"
 					+ table.getNote()
 					+ "</html>"
 			);

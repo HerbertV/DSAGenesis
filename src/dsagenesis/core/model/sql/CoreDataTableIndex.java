@@ -60,7 +60,6 @@ public class CoreDataTableIndex
 		this.dbColumnNames.addElement("ti_last_index_num");
 		this.dbColumnNames.addElement("ti_label");
 		this.dbColumnNames.addElement("ti_note");
-		this.dbColumnNames.addElement("ti_is_internal");
 		this.dbColumnNames.addElement("ti_tab_index");
 		this.dbColumnNames.addElement("ti_editable");
 	}
@@ -113,7 +112,6 @@ public class CoreDataTableIndex
 		vec.add(String.class);
 		vec.add(String.class);
 		vec.add(Boolean.class);
-		vec.add(Integer.class);
 		vec.add(Boolean.class);
 		
 		return vec;

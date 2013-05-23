@@ -18,11 +18,6 @@ mnHelp=Hilfe
 mntmInfo=Info
 mntmHelp=Hilfe
 
-# Info Labels
-topNote.title=Core Data Tabellen
-topNote.body=Alle Tabellen die direkt mit Inhalten für die Heldenverwaltung in Verbindung stehen.
-bottomNote.title=Interne Tabellen
-bottomNote.body=System und Referenz Tabellen.
 
 # Status Messages
 status.init=Initialisiere...

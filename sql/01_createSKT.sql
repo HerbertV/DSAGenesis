@@ -74,15 +74,14 @@ CREATE TABLE "SKTShifts" (
 	SKT Index
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_tab_index, ti_editable )
 	VALUES
 	( 	'SKT', 
 		0,
 		'skt_', 
 		'SKT', 
 		'Steigerungskosten-Tabelle',
-		1,
-		1,
+		0,
 		1
 	);
 	
@@ -124,15 +123,14 @@ INSERT INTO TableColumnLabels
 	SKTShifts Index
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_is_internal, ti_tab_index,  ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_tab_index, ti_editable )
 	VALUES
 	(	'SKTShifts', 
 		0,
 		'skts_', 
 		'SKT Verschiebungen', 
-		'Hier werden die Verschiebungen der SKT Spalten durch Vor-/Nachteile Sonderfähigkeiten verwaltet.',
+		'Hier werden die Verschiebungen der SKT Spalten durch Vor-/Nachteile und Sonderfähigkeiten verwaltet.',
 		1,
-		2,
 		1
 	);
 	

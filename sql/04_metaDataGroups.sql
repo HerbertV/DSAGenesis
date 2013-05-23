@@ -21,15 +21,14 @@ CREATE TABLE "RaceCultureGroups" (
 	RaceCultureGroups Index and Labels
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_tab_index, ti_editable )
 	VALUES
 	(	'RaceCultureGroups', 
 		1,
 		'rcg_', 
 		'Volks-/Kulturgruppen', 
 		'Die einzelnen Rassen sind gruppiert um sie in Unterverzeichnisse aufzuteilen.<br>Die Vezeichnisse gelten sowohl für die Rassen als auch für Kulturen.',
-		1,
-		3,
+		5,
 		1
 	);
 	
@@ -80,15 +79,14 @@ CREATE TABLE "ProfessionGroups" (
 	ProffesionGroups Index and Labels
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_tab_index, ti_editable )
 	VALUES
 	(	'ProfessionGroups', 
 		1,
 		'pg_', 
 		'Professionsgruppen', 
 		'Analog zu den Volks-/Kulturgruppen, wird für Sortierung und Pfaderstellung benötigt.',
-		1,
-		4,
+		6,
 		1
 	);
 	
@@ -137,15 +135,14 @@ CREATE TABLE "ProfessionCategories" (
 	RaceCultureGroups Index and Labels
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_tab_index, ti_editable )
 	VALUES
 	(	'ProfessionCategories', 
 		1,
 		'pc_', 
 		'Professionskategorien', 
 		'Hier wird die Kategorie der Profession unterschieden, also normal, magisch etc.',
-		1,
-		5,
+		7,
 		1
 	);
 	
@@ -186,15 +183,14 @@ CREATE TABLE "ProfessionTypes" (
 	ProfessionTypes Index and Labels
 */
 INSERT INTO CoreDataTableIndex
-	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note,  ti_is_internal, ti_tab_index, ti_editable )
+	( ti_table_name, ti_uses_prefix, ti_prefix, ti_label, ti_note, ti_tab_index, ti_editable )
 	VALUES
 	(	'ProfessionTypes', 
 		1,
 		'pt_', 
 		'Professionstypen', 
 		'Wird für die Mehrfachauswahl von Professionen bei der Erschaffung gebraucht.',
-		1,
-		6,
+		8,
 		1
 	);
 	
