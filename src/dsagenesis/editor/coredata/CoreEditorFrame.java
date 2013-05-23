@@ -27,6 +27,7 @@ import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.core.ui.HelpDialog;
 import dsagenesis.core.ui.InfoDialog;
+import dsagenesis.core.ui.PopupDialogFactory;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
@@ -34,11 +35,14 @@ import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Rectangle;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
@@ -86,9 +90,28 @@ public class CoreEditorFrame
 	// ============================================================================
 			
 	private static final long serialVersionUID = 1L;
-
+	
+	/**
+	 * for setCommitStatus
+	 */
 	public static final int STATUS_COMMIT_SUCCESS = 0;
 	public static final int STATUS_COMMIT_ERROR = 1;
+	
+	/**
+	 * action commands for menus.
+	 */
+	public static final String ACMD_COPY = "copy";
+	public static final String ACMD_PASTE = "paste";
+	public static final String ACMD_ADDROW = "addRow";
+	public static final String ACMD_DELETEROW = "deleteRow";
+	
+	public static final String ACMD_NEW = "new";
+	public static final String ACMD_BACKUP = "backup";
+	public static final String ACMD_IMPORT = "import";
+	public static final String ACMD_EXPORT = "export";
+	
+	public static final String ACMD_INFO = "info";
+	public static final String ACMD_HELP = "help";
 	
 	
 	// ============================================================================
@@ -115,12 +138,12 @@ public class CoreEditorFrame
 	 */
 	private JTabbedPane tabbedPane;
 	
-	
 	/**
 	 * Vector for accessing the tables
 	 */
 	private Vector<CoreEditorTable> vecTables;
-	
+
+	    
 	
 	// ============================================================================
 	//  Constructors
@@ -285,11 +308,21 @@ public class CoreEditorFrame
 			
 			AbstractSQLTableModel model = (AbstractSQLTableModel)con.newInstance(args);
 			CoreEditorTable table = new CoreEditorTable(this, model);
-		
+			
+			KeyStroke ksCopy = KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.CTRL_MASK,false);
+	        KeyStroke ksPaste = KeyStroke.getKeyStroke(KeyEvent.VK_V,ActionEvent.CTRL_MASK,false);
+	        KeyStroke ksAddRow = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,ActionEvent.CTRL_MASK,false);
+	        KeyStroke ksDeleteRow = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,ActionEvent.CTRL_MASK,false);
+	        table.registerKeyboardAction(this,ACMD_COPY,ksCopy,JComponent.WHEN_FOCUSED);
+	        table.registerKeyboardAction(this,ACMD_PASTE,ksPaste,JComponent.WHEN_FOCUSED);
+	        table.registerKeyboardAction(this,ACMD_ADDROW,ksAddRow,JComponent.WHEN_FOCUSED);
+	        table.registerKeyboardAction(this,ACMD_DELETEROW,ksDeleteRow,JComponent.WHEN_FOCUSED);
+            
 			tabbedPane.addTab(
 					rs.getString("ti_label"),
 					new JScrollPane(table)
 				); 
+			
 			vecTables.add(table);
 	
 		} catch ( SQLException 
@@ -333,11 +366,15 @@ public class CoreEditorFrame
 			JButton btnCopy = new JButton("");
 			btnCopy.setToolTipText(labelResource.getProperty("copy", "copy"));
 			btnCopy.setIcon(irCopy.getImageIcon());
+			btnCopy.setActionCommand(ACMD_COPY);
+			btnCopy.addActionListener(this);
 			toolBar.add(btnCopy);
 			
 			JButton btnPaste = new JButton("");
 			btnPaste.setToolTipText(labelResource.getProperty("paste", "paste"));
 			btnPaste.setIcon(irPaste.getImageIcon());
+			btnPaste.setActionCommand(ACMD_PASTE);
+			btnPaste.addActionListener(this);
 			toolBar.add(btnPaste);
 			
 			JSeparator separator = new JSeparator();
@@ -349,11 +386,15 @@ public class CoreEditorFrame
 			JButton btnAddRow = new JButton("");
 			btnAddRow.setToolTipText(labelResource.getProperty("addRow", "addRow"));
 			btnAddRow.setIcon(irAddRow.getImageIcon());
+			btnAddRow.setActionCommand(ACMD_ADDROW);
+			btnAddRow.addActionListener(this);
 			toolBar.add(btnAddRow);
 			
 			JButton btnDeleteRow = new JButton("");
 			btnDeleteRow.setToolTipText(labelResource.getProperty("deleteRow", "deleteRow"));
 			btnDeleteRow.setIcon(irDeleteRow.getImageIcon());
+			btnDeleteRow.setActionCommand(ACMD_DELETEROW);
+			btnDeleteRow.addActionListener(this);
 			toolBar.add(btnDeleteRow);
 		}
 		
@@ -366,75 +407,81 @@ public class CoreEditorFrame
 			JMenu mnFile = new JMenu(labelResource.getProperty("mnFile", "mnFile"));
 			menuBar.add(mnFile);
 			
-			JMenuItem mntmBackup = new JMenuItem(labelResource.getProperty("mntmBackup", "mntmBackup"));
-			mntmBackup.setIcon(irBackup.getImageIcon());
-			mnFile.add(mntmBackup);
+			JMenuItem mntmNew = new JMenuItem(labelResource.getProperty("mntmNew", "mntmNew"));
+			mntmNew.setActionCommand(ACMD_NEW);
+			mntmNew.addActionListener(this);
+			mnFile.add(mntmNew);
 			
 			JSeparator separator = new JSeparator();
 			mnFile.add(separator);
 			
+			JMenuItem mntmBackup = new JMenuItem(labelResource.getProperty("mntmBackup", "mntmBackup"));
+			mntmBackup.setIcon(irBackup.getImageIcon());
+			mntmBackup.setActionCommand(ACMD_BACKUP);
+			mntmBackup.addActionListener(this);
+			mnFile.add(mntmBackup);
+			
+			JSeparator separator2 = new JSeparator();
+			mnFile.add(separator2);
+			
 			JMenuItem mntmImport = new JMenuItem(labelResource.getProperty("mntmImport", "mntmImport"));
 			mntmImport.setIcon(irImport.getImageIcon());
+			mntmImport.setActionCommand(ACMD_IMPORT);
+			mntmImport.addActionListener(this);
 			mnFile.add(mntmImport);
 			
 			JMenuItem mntmExport = new JMenuItem(labelResource.getProperty("mntmExport", "mntmExport"));
 			mntmExport.setIcon(irExport.getImageIcon());
+			mntmExport.setActionCommand(ACMD_EXPORT);
+			mntmExport.addActionListener(this);
 			mnFile.add(mntmExport);
 			
 			JMenu mnEdit = new JMenu(labelResource.getProperty("mnEdit", "mnEdit"));
 			menuBar.add(mnEdit);
 			
 			JMenuItem mntmCopy = new JMenuItem(labelResource.getProperty("copy", "copy"));
-			mntmCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
 			mntmCopy.setIcon(irCopy.getImageIcon());
+			mntmCopy.setActionCommand(ACMD_COPY);
+			mntmCopy.addActionListener(this);
 			mnEdit.add(mntmCopy);
 			
 			JMenuItem mntmPaste = new JMenuItem(labelResource.getProperty("paste", "paste"));
-			mntmPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
 			mntmPaste.setIcon(irPaste.getImageIcon());
+			mntmPaste.setActionCommand(ACMD_PASTE);
+			mntmPaste.addActionListener(this);
 			mnEdit.add(mntmPaste);
 			
 			JSeparator separator_1 = new JSeparator();
 			mnEdit.add(separator_1);
 			
 			JMenuItem mntmAddRow = new JMenuItem(labelResource.getProperty("addRow", "addRow"));
-			mntmAddRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK));
+			mntmAddRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_MASK));
 			mntmAddRow.setIcon(irAddRow.getImageIcon());
+			mntmAddRow.setActionCommand(ACMD_ADDROW);
+			mntmAddRow.addActionListener(this);
 			mnEdit.add(mntmAddRow);
 			
 			JMenuItem mntmDeleteRow = new JMenuItem(labelResource.getProperty("deleteRow", "deleteRow"));
-			mntmDeleteRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
+			mntmDeleteRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_MASK));
 			mntmDeleteRow.setIcon(irDeleteRow.getImageIcon());
+			mntmDeleteRow.setActionCommand(ACMD_DELETEROW);
+			mntmDeleteRow.addActionListener(this);
 			mnEdit.add(mntmDeleteRow);
 			
 			JMenu mnHelp = new JMenu(labelResource.getProperty("mnHelp", "mnHelp"));
 			menuBar.add(mnHelp);
 			
 			JMenuItem mntmInfo = new JMenuItem(labelResource.getProperty("mntmInfo", "mntmInfo"));
-			mntmInfo.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						InfoDialog d = new InfoDialog(CoreEditorFrame.this);
-						d.setVisible(true);
-					}
-				});
+			mntmInfo.setActionCommand(ACMD_INFO);
+			mntmInfo.addActionListener(this);
 			mntmInfo.setIcon(irInfo.getImageIcon());
 			mnHelp.add(mntmInfo);
 			
 			JMenuItem mntmHelp = new JMenuItem(labelResource.getProperty("mntmHelp", "mntmHelp"));
 			mntmHelp.setIcon(irHelp.getImageIcon());
+			mntmHelp.setActionCommand(ACMD_HELP);
+			mntmHelp.addActionListener(this);
 			mntmHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
-			mntmHelp.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						File page = new File("./help/coreDataEditor.html");
-						try {
-							HelpDialog d = HelpDialog.getInstance();
-							d.openURL(page.toURI().toURL().toExternalForm());
-							d.setVisible(true);
-						} catch (MalformedURLException e) {
-							// nothing to do
-						}
-					}
-				});
 			mnHelp.add(mntmHelp);
 		}
 		
@@ -579,15 +626,193 @@ public class CoreEditorFrame
 	}
 
 	/**
+	 * actionCopy
+	 */
+	private void actionCopy()
+	{
+		int idx = this.tabbedPane.getSelectedIndex();
+		CoreEditorTable table = vecTables.elementAt(idx);
+
+		if( table.isReadOnly() )
+		{
+			lblStatus.setText(
+					labelResource.getProperty(
+							"status.readonly.error",
+							"status.readonly.error"
+						)
+				);
+			return;
+		}
+		ClipboardCellTransfer.getInstance().setClipboardContents(table);
+	}
+	
+	/**
+	 * actionPaste
+	 */
+	private void actionPaste()
+	{
+		int idx = this.tabbedPane.getSelectedIndex();
+		CoreEditorTable table = vecTables.elementAt(idx);
+
+		if( table.isReadOnly() )
+		{
+			lblStatus.setText(
+					labelResource.getProperty("status.readonly.error","status.readonly.error")
+				);
+			return;
+		}
+		
+		ClipboardCellTransfer.getInstance().getClipboardContents(table);
+	}
+	
+	/**
+	 * actionAddRow
+	 */
+	private void actionAddRow()
+	{
+		int idx = this.tabbedPane.getSelectedIndex();
+	    CoreEditorTable table = vecTables.elementAt(idx);
+	   
+	    if( table.isReadOnly() )
+	    {
+	    	lblStatus.setText(
+	    			labelResource.getProperty("status.readonly.error","status.readonly.error")
+	    		);
+	    	return;
+	    }
+	    
+	    table.addEmptyRow();
+	    
+	    // now scroll to new entry
+        int height = table.getHeight();
+        table.scrollRectToVisible(new Rectangle(0, height - 1,1, height));
+        
+        markUnsavedTabTitle(table,true);
+		
+		// set frame title
+		String title = CoreEditorFrame.markUnsaved(this.getTitle(), true);
+		this.setTitle(title);
+		
+	}
+	
+	/**
+	 * actionDeleteRow
+	 */
+	private void actionDeleteRow()
+	{
+		int idx = this.tabbedPane.getSelectedIndex();
+	    CoreEditorTable table = vecTables.elementAt(idx);
+	    
+	    if( table.isReadOnly() )
+	    {
+	    	lblStatus.setText(
+	    			labelResource.getProperty("status.readonly.error","status.readonly.error")
+	    		);
+	    	return;
+	    }
+	    
+	    int rowidx = table.getSelectedRow();  
+	    
+	    if( rowidx == -1 )
+	    	return;
+	    
+	    // confirm
+	    int result = PopupDialogFactory.confirmDeleteDatabaseRow(this);
+	   
+	    // delete
+	    if( result == JOptionPane.YES_OPTION )
+	    	table.removeRow(rowidx);
+	    
+	    // update marks
+	    if( !table.containsUncommitedData() )
+			markUnsavedTabTitle(table,false);
+		
+		if( !hasContentChanged() )
+		{
+			String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
+			this.setTitle(title);
+		}
+	}
+	
+	/**
+	 * actionNew
+	 */
+	private void actionNew()
+	{
+		// TODO
+	}
+	
+	/**
+	 * actionBackup
+	 */
+	private void actionBackup()
+	{
+		// TODO
+	}
+	
+	/**
+	 * actionImport
+	 */
+	private void actionImport()
+	{
+		// TODO
+	}
+	
+	/**
+	 * actionExport
+	 */
+	private void actionExport()
+	{
+		// TODO
+	}
+	
+	/**
+	 * actionPerformed
+	 * 
 	 * for menu and toolbar handling
-	 * @param e
+	 * @param ae
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e) 
+	public void actionPerformed(ActionEvent ae) 
 	{
-		System.out.println("actionPerformed");
-		// TODO Auto-generated method stub
-		
+		if( ae.getActionCommand().equals(ACMD_COPY) )
+		{
+			this.actionCopy();
+		} else if( ae.getActionCommand().equals(ACMD_PASTE) ) {
+			this.actionPaste();
+			
+		} else if( ae.getActionCommand().equals(ACMD_ADDROW) ) {
+			this.actionAddRow();
+			
+		} else if( ae.getActionCommand().equals(ACMD_DELETEROW) ) {
+			this.actionDeleteRow();
+			
+		} else if( ae.getActionCommand().equals(ACMD_NEW) ) {
+			this.actionNew();
+			
+		} else if( ae.getActionCommand().equals(ACMD_BACKUP) ) {
+			this.actionBackup();
+			
+		} else if( ae.getActionCommand().equals(ACMD_IMPORT) ) {
+			this.actionImport();
+			
+		} else if( ae.getActionCommand().equals(ACMD_EXPORT) ) {
+			this.actionExport();
+			
+		} else if( ae.getActionCommand().equals(ACMD_INFO) ) {
+			InfoDialog d = new InfoDialog(CoreEditorFrame.this);
+			d.setVisible(true);
+			
+		} else if( ae.getActionCommand().equals(ACMD_HELP) ) {
+			File page = new File("./help/coreDataEditor.html");
+			try {
+				HelpDialog d = HelpDialog.getInstance();
+				d.openURL(page.toURI().toURL().toExternalForm());
+				d.setVisible(true);
+			} catch (MalformedURLException e) {
+				// nothing to do
+			}
+		}
 	}
 
 	/** 

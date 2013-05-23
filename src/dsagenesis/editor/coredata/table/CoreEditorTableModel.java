@@ -134,6 +134,16 @@ public class CoreEditorTableModel
 	}
 	
 	/**
+	 * isReadOnly
+	 * 
+	 * @return
+	 */
+	public boolean isReadOnly()
+	{
+		return isReadonly;
+	}
+	
+	/**
 	 * getTable
 	 * 
 	 * @return
@@ -148,5 +158,4 @@ public class CoreEditorTableModel
 	{
 		return this.columnClasses.elementAt(column);
 	}
-
 }

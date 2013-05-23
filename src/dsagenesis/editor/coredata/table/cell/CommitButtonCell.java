@@ -124,6 +124,28 @@ public class CommitButtonCell
 	}
 	
 	/**
+	 * addRow
+	 * 
+	 * if a new row is added call this
+	 */
+	public void addRow()
+	{
+		changedRows.add(true);
+	}
+	
+	/**
+	 * deleteRow
+	 * 
+	 * if a row is deleted call this
+	 * 
+	 * @param idx
+	 */
+	public void deleteRow(int idx)
+	{
+		changedRows.remove(idx);
+	}
+	
+	/**
 	 * setEnabled
 	 * 
 	 * enables the commit button for a row

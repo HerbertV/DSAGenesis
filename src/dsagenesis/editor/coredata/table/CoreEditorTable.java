@@ -91,7 +91,7 @@ public class CoreEditorTable
 		this.setName(sqlTable.getDBTableName());
 				
 		this.setAutoCreateRowSorter(true);
-		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.getTableHeader().setReorderingAllowed(false);
 		this.setDefaultRenderer(String.class, new BasicCellRenderer());
 		this.setDefaultRenderer(Boolean.class, new CheckBoxCellRenderer());
@@ -129,6 +129,16 @@ public class CoreEditorTable
 	public String getLabel()
 	{
 		return this.sqlTable.getDBTableLabel();
+	}
+	
+	/**
+	 * isReadOnly
+	 * 
+	 * @return
+	 */
+	public boolean isReadOnly()
+	{
+		return ((CoreEditorTableModel)this.getModel()).isReadOnly();
 	}
 	
 	/**
@@ -212,6 +222,79 @@ public class CoreEditorTable
 			this.getModel().addTableModelListener(this);
 			this.getModel().addTableModelListener(this.jframe);
 		}
+	}
+	
+	/**
+	 * addEmptyRow
+	 * 
+	 * adds an empty row to the table.
+	 * but not to the DB.
+	 */
+	public void addEmptyRow()
+	{
+		Vector<Class<?>> classes = this.sqlTable.getTableColumnClasses();
+		Vector<Object> row = new Vector<Object>();
+		
+		// id is null since we have none yet.
+		row.addElement(null);
+		for(int i=1; i< classes.size(); i++ )
+		{
+			if( classes.elementAt(i).equals(String.class) )
+			{
+				row.addElement("");
+				
+			} else if( classes.elementAt(i).equals(Integer.class) ) {
+				row.addElement(0);
+				
+			} else if( classes.elementAt(i).equals(Boolean.class) ) {
+				row.addElement(false);
+				
+			} else {
+				row.addElement(null);
+			}
+		}
+		// commit button cell
+		row.addElement(null);
+		btnCommit.addRow();
+		((CoreEditorTableModel)this.getModel()).addRow(row);
+	}
+	
+	/**
+	 * removeRow
+	 * 
+	 * removes the row from table and the DB!
+	 * 
+	 * @param row
+	 */
+	public void removeRow(int row)
+	{
+		Object id = ((CoreEditorTableModel)this.getModel()).getValueAt(row, 0);
+		boolean deleteOnlyTable = false;
+		
+		if( id == null )
+		{
+			deleteOnlyTable = true;
+			
+		} else if( this.sqlTable.usesPrefix() ) {
+			// matches only the pre-generated prefix
+			if( this.sqlTable.getPrefix().equals(id) )
+				deleteOnlyTable = true;
+		}
+		
+		try
+		{ 
+			((CoreEditorTableModel)this.getModel()).removeRow(row);
+		} catch( IndexOutOfBoundsException e) {
+			// do nothing this is only here
+			// because the default table sorter throws this exception. 
+		}
+		btnCommit.deleteRow(row);
+		
+		if( deleteOnlyTable )
+			return;
+		
+System.out.println(" TODO CoreEditorTable delete from Table row: "+row);
+		//TODO if the row has no id delete it only from table
 	}
 	
 	/**

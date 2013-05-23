@@ -4,3 +4,14 @@
 # Unsaved data warning and confirmation
 closeUnsaved.title=Schließen bestätigen
 closeUnsaved.message= enthält ungesicherte Daten.\nWillst du wirklich schließen?
+
+# delete Database row confirmation
+deleteDatabaseRow.title=Löschen bestätigen
+deleteDatabaseRow.message=Die Zeile wird automatisch in der Datenbank gelöscht.\nWillst du wirklich löschen?
+
+# copy/paste Database row errors
+copyDatabaseError.title=Kopieren/Einfügen Fehler
+copyDatabaseError.message=Es können nur ganze Zellenblöcke kopiert werden!
+
+pasteDatabaseError.title=Kopieren/Einfügen Fehler
+pasteDatabaseError.message=Kopieren/Einfügen kann nur innerhalb des gleichen Tabs durchgeführt werden.\nUnd es können nur Inhalte innerhalb der gleichen Spalte kopiert werden.

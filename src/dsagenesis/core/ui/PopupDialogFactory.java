@@ -23,8 +23,6 @@ import dsagenesis.core.config.GenesisConfig;
 
 import jhv.component.LabelResource;
 
-
-
 /**
  * PopupDialogFactory
  * 
@@ -67,6 +65,59 @@ public class PopupDialogFactory
 					+ labelResource.getProperty("closeUnsaved.message","closeUnsaved.message"),
 				labelResource.getProperty("closeUnsaved.title","closeUnsaved.title"),
 				JOptionPane.YES_NO_OPTION
+			);
+	}
+	
+	/**
+	 * confirmDeleteDatabaseRow
+	 * 
+	 * @param parent
+	 * @return
+	 */
+	public static int confirmDeleteDatabaseRow(JFrame parent)
+	{
+		if( labelResource == null )
+			loadLabels();
+		
+		return JOptionPane.showConfirmDialog(
+				parent,
+				AbstractGenesisFrame.markUnsaved( parent.getTitle(), false) 
+					+ " "
+					+ labelResource.getProperty("deleteDatabaseRow.message","deleteDatabaseRow.message"),
+				labelResource.getProperty("deleteDatabaseRow.title","deleteDatabaseRow.title"),
+				JOptionPane.YES_NO_OPTION
+			);
+	}
+	
+	/**
+	 * copyDatabaseError
+	 */
+	public static void copyDatabaseError()
+	{
+		if( labelResource == null )
+			loadLabels();
+		
+		JOptionPane.showMessageDialog(
+				null,
+				labelResource.getProperty("copyDatabaseError.message","copyDatabaseError.message"),
+				labelResource.getProperty("copyDatabaseError.title","copyDatabaseError.title"),
+				JOptionPane.ERROR_MESSAGE
+			);
+	}
+	
+	/**
+	 * pasteDatabaseError
+	 */
+	public static void pasteDatabaseError()
+	{
+		if( labelResource == null )
+			loadLabels();
+		
+		JOptionPane.showMessageDialog(
+				null,
+				labelResource.getProperty("pasteDatabaseError.message","pasteDatabaseError.message"),
+				labelResource.getProperty("pasteDatabaseError.title","pasteDatabaseError.title"),
+				JOptionPane.ERROR_MESSAGE
 			);
 	}
 	

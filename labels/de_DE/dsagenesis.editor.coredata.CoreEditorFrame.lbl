@@ -8,6 +8,7 @@ addRow=Zeile Hinzufügen
 deleteRow=Zeile Löschen
 
 mnFile=Datei
+mntmNew=Neue Datenbank
 mntmBackup=Datenbank Backup
 mntmImport=Import
 mntmExport=Export
@@ -22,5 +23,8 @@ mntmHelp=Hilfe
 # Status Messages
 status.init=Initialisiere...
 status.ready=Bereit.
-status.commit.success=Änderung erfolgreich gespeichert.
-status.commit.error=Fehler beim Speichern!
+
+status.commit.success=Änderung erfolgreich in der Datenbank gespeichert.
+status.commit.error=Fehler beim Speichern in die Datenbank!
+
+status.readonly.error=Tabelle ist Schreibgeschützt und kann nicht geändert werden.
