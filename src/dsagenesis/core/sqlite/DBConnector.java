@@ -255,8 +255,10 @@ public class DBConnector
 	 * 
 	 * @param update
 	 * @return
+	 * @throws SQLException 
 	 */
-	public void executeUpdate(String update)
+	public void executeUpdate(String update) 
+			throws SQLException
 	{
 		if( connection == null )
 		{
@@ -268,19 +270,22 @@ public class DBConnector
 		queryTime = 0;
 		
 		long startTime = System.currentTimeMillis();
+		Statement statement = connection.createStatement();
 		
 		try
 		{
-			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);  
 			statement.executeUpdate(update);
-			
 		} catch( SQLException e ) {
 			ApplicationLogger.logError(e);
 			ApplicationLogger.logError("Update String was:\n" +update);
-		}
+			statement.cancel();
+			statement.close();
+			throw new SQLException(e);
+		} 
 		
 		queryTime = System.currentTimeMillis() - startTime;
+		statement.close();
 	}
 	
 	/**
@@ -290,8 +295,10 @@ public class DBConnector
 	 * Till now only updates are possible (no queries)
 	 * 
 	 * @param filename
+	 * @throws SQLException 
 	 */
-	public void executeFile(String filename)
+	public void executeFile(String filename) 
+			throws SQLException 
 	{
 		String query = "";
 		InputStream in;
@@ -323,7 +330,7 @@ public class DBConnector
 			String read = br.readLine();
 			while( read != null )
 			{
-				query += read;
+				query += read + "\n";
 			    read = br.readLine();
 			}
 			br.close();

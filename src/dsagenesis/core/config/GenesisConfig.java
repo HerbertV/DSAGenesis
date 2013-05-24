@@ -193,7 +193,7 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_PATH_USER_HOME, "DSAGenesis");
 		this.setSystemProperty(KEY_PATH_DATA, "data");
 		this.setSystemProperty(KEY_PATH_TEMPLATE, "templates");
-		this.setSystemProperty(KEY_PATH_HERO, "heros");
+		this.setSystemProperty(KEY_PATH_HERO, "heroes");
 		this.setSystemProperty(KEY_PATH_ARCHTYPE, "archtypes");
 		this.setSystemProperty(KEY_PATH_RACE, "races");
 		this.setSystemProperty(KEY_PATH_CULTURE, "cultures");

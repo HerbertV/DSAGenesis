@@ -22,17 +22,19 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.ui.ConfigFrame;
+import dsagenesis.core.sqlite.CreateDBTask;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.editor.coredata.CoreEditorFrame;
@@ -42,8 +44,8 @@ import dsagenesis.editor.metadata.MetaEditorFrame;
 import jhv.component.ILabeledComponent;
 import jhv.component.LabelResource;
 import jhv.image.ImageResource;
-import jhv.io.PathCreator;
 import jhv.swing.launcher.AbstractLauncher;
+import jhv.swing.task.SerialTaskExecutor;
 import jhv.util.debug.DebugLevel;
 import jhv.util.debug.logger.ApplicationLogger;
 
@@ -53,7 +55,7 @@ import jhv.util.debug.logger.ApplicationLogger;
  */
 public class GenesisLauncher 
 		extends AbstractLauncher 
-		implements ActionListener, ILabeledComponent, Runnable
+		implements ActionListener, ILabeledComponent
 {
 	
 	// ============================================================================
@@ -83,11 +85,6 @@ public class GenesisLauncher
 	 * current open Frame (Core-, Meta- or HeroEditor)
 	 */
 	public static AbstractGenesisFrame openFrame;
-	
-	/**
-	 * Thread for processing the first launch
-	 */
-	private static Thread firstLaunchThread;
 	
 	/**
 	 * label resource
@@ -497,127 +494,92 @@ public class GenesisLauncher
 		lblDisclaimerAndStatus.setText(
 				labelResource.getProperty("firstLaunch.start", "firstLaunch.start")
 			);
-		// now start Thread.
-		firstLaunchThread = new Thread(this);
-		firstLaunchThread.start();
+		
+		SerialTaskExecutor executor = new SerialTaskExecutor(false);
+		executor.setFinishedRunnable(new Runnable(){
+				public void run() 
+				{
+					// we are done
+					DBConnector.getInstance().closeConnection();
+					GenesisConfig.getInstance().setFirstLaunchDone();	
+					JPanel p = GenesisLauncher.this.imgPanel;
+					// enable the buttons
+					for( int i=0; i<p.getComponentCount(); i++ )
+					{
+						if( p.getComponent(i) instanceof JButton )
+						{
+							JButton btn = (JButton)p.getComponent(i);
+							btn.setEnabled(true);
+						}
+					}
+					// set normal cursor
+					GenesisLauncher.this.setCursor(
+							Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+						);
+					
+					ApplicationLogger.logInfo("first launch finished.");
+					lblDisclaimerAndStatus.setText(
+							labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
+						);
+				}
+			});
+		
+		executor.setErrorRunnable(new Runnable(){
+			public void run() 
+			{
+				DBConnector.getInstance().closeConnection();
+				JPanel p = GenesisLauncher.this.imgPanel;
+				
+				// delete DB file since it failed 
+				File f = new File(GenesisConfig.getInstance().getDBFile());
+				f.delete();
+				
+				// enable close minimize buttons
+				for( int i=0; i<p.getComponentCount(); i++ )
+				{
+					if( p.getComponent(i) instanceof JButton )
+					{
+						JButton btn = (JButton)p.getComponent(i);
+						if( btn.getIcon() != null )
+							btn.setEnabled(true);
+					}
+				}
+				// set normal cursor
+				GenesisLauncher.this.setCursor(
+						Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+					);
+				
+				ApplicationLogger.logInfo("first launch aborted. see above.");
+				lblDisclaimerAndStatus.setText(
+						labelResource.getProperty("firstLaunch.error", "firstLaunch.error")
+					);
+			}
+		});
+		
+		DBConnector.getInstance().openConnection(
+				GenesisConfig.getInstance().getDBFile(),false
+			);
+		
+		if( DBConnector.getInstance().isDBEmpty() )
+		{		
+			ApplicationLogger.logInfo("DB is Empty. now initializing ...");
+			executor.execute(new CreateDBTask(
+					lblDisclaimerAndStatus, 
+					labelResource.getProperty(
+							"firstLaunch.db.create", 
+							"firstLaunch.db.create"
+						)
+				));
+		}
+		
+		executor.execute(new FirstLaunchTask(
+				lblDisclaimerAndStatus, 
+				labelResource.getProperty(
+						"firstLaunch.pathes", 
+						"firstLaunch.pathes"
+					)
+			));
 	}
 	
-	/**
-	 * run
-	 * 
-	 * runs through the first launch steps.
-	 */
-	@Override
-	public void run() 
-	{
-		GenesisConfig conf = GenesisConfig.getInstance();
-		DBConnector connector = DBConnector.getInstance();
-		
-		String[] sqlfiles = {
-				"sql/00_createSystemTables.sql",
-				"sql/01_createSKT.sql",
-				"sql/02_createWorlds.sql",
-				"sql/03_createCharacteristics.sql",
-				"sql/04_metaDataGroups.sql"
-			};
-		
-		int step = 0;
-		int stepCount = 3 + sqlfiles.length;
-		
-		while( step < stepCount )
-		{
-			try
-			{
-				Thread.sleep(50);
-			} catch( InterruptedException e ) {
-				//nothing to do
-			}
-			
-			if( step == 0 )
-			{
-				// STEP 1: create folder structure
-				String[] arr = {
-						conf.getPathArchtype(),
-						conf.getPathCulture(),
-						conf.getPathHero(),
-						conf.getPathProfession(),
-						conf.getPathRace(),
-						conf.getPathTemplate()
-					};
-				
-				try {
-					PathCreator.createPathes(arr);
-				} catch( IOException e ) {
-					ApplicationLogger.logError("First launch failed!");
-					ApplicationLogger.logError(e);
-					return;
-				}
-				
-			} else if( step == 1 ) {
-				// STEP 2: open DB Connection and check if its empty
-				ApplicationLogger.logInfo("Try to open DB...");
-				lblDisclaimerAndStatus.setText(
-						labelResource.getProperty(
-								"firstLaunch.db.open", 
-								"firstLaunch.db.open"
-							)
-					);
-				connector.openConnection(
-						GenesisConfig.getInstance().getDBFile(),false
-					);
-				// db is not empty to we are done
-				if( !connector.isDBEmpty() )
-					break;
-				
-				ApplicationLogger.logInfo("DB is Empty. now initializing ...");
-				lblDisclaimerAndStatus.setText(
-						labelResource.getProperty(
-								"firstLaunch.db.create", 
-								"firstLaunch.db.create"
-							)
-					);
-				
-			} else if( step > 1 && step < (stepCount-1) ) {
-				// STEP 3-N: execute all sql files
-				
-				String status = "<html>" 
-						+ labelResource.getProperty(
-								"firstLaunch.db.create", 
-								"firstLaunch.db.create"
-							)
-						+ "<br>"
-						+ sqlfiles[(step-2)]
-						+ "</html>";
-				lblDisclaimerAndStatus.setText(status);
-				connector.executeFile(sqlfiles[(step-2)]);
-				
-			} else {
-				// last STEP: create group folders
-				// TODO
-			}
-			step++;
-		}
-		
-		// we are done
-		connector.closeConnection();
-		conf.setFirstLaunchDone();	
-		
-		// enable the buttons
-		for( int i=0; i<this.imgPanel.getComponentCount(); i++ )
-		{
-			if( this.imgPanel.getComponent(i) instanceof JButton )
-			{
-				JButton btn = (JButton)this.imgPanel.getComponent(i);
-				btn.setEnabled(true);
-			}
-		}
-		// set normal cursor
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		
-		ApplicationLogger.logInfo("first launch finished.");
-		lblDisclaimerAndStatus.setText(
-				labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
-			);
-	}
 	
 }
