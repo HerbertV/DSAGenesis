@@ -59,6 +59,10 @@ public class DBConnector
 	 */
 	private long queryTime = 0;
 	
+	/**
+	 * filename of the open DB
+	 */
+	private String openDBFilename;
 		
 	// ============================================================================
 	//  Constructors
@@ -143,6 +147,15 @@ public class DBConnector
 		return 0;
 	}
 	
+	/**
+	 * getDBFilename
+	 * 
+	 * @return
+	 */
+	public String getDBFilename()
+	{
+		return this.openDBFilename;
+	}
 	
 	/**
 	 * hasConnection
@@ -191,6 +204,8 @@ public class DBConnector
 					"jdbc:sqlite:" + dbfile,
 					sqlconf.toProperties()
 				);
+			openDBFilename = dbfile;
+			
 		} catch (SQLException e) {
 			ApplicationLogger.logFatalError(e);
 		}
@@ -207,6 +222,8 @@ public class DBConnector
 			{
 				connection.close();
 				connection = null;
+				openDBFilename = null;
+				
 				ApplicationLogger.logInfo("closed DB connection.");
 			}
 		} catch( SQLException e ) {

@@ -86,8 +86,6 @@ public class ClipboardCellTransfer
 	@Override
 	public void lostOwnership(Clipboard c, Transferable t) 
 	{
-		System.out.println("lostOwnership.");
-		
 		this.selectedStartColumn = -1;
 		this.copyTable = null;
 	}

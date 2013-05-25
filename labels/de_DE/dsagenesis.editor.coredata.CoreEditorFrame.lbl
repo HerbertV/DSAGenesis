@@ -8,7 +8,7 @@ addRow=Zeile Hinzufügen
 deleteRow=Zeile Löschen
 
 commitAll=Alle Änderungen Speichern
-refresh=Tabelle Aktuallisiern
+refresh=Tabelle Aktualisiern
 
 mnFile=Datei
 mntmNew=Neue Datenbank
@@ -27,7 +27,10 @@ mntmHelp=Hilfe
 status.init=Initialisiere...
 status.ready=Bereit.
 
-status.commit.success=Änderung erfolgreich in der Datenbank gespeichert.
+status.commit.success=Änderung(en) erfolgreich in der Datenbank gespeichert.
 status.commit.error=Fehler beim Speichern in die Datenbank!
 
 status.readonly.error=Tabelle ist Schreibgeschützt und kann nicht geändert werden.
+
+status.backup.success=Backup erfolgreich:
+status.backup.error=Fehler beim Backup! Siehe Log Datei.

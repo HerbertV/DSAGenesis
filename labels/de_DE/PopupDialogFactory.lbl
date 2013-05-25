@@ -3,7 +3,7 @@
 
 # Unsaved data warning and confirmation
 closeUnsaved.title=Schließen bestätigen
-closeUnsaved.message= enthält ungesicherte Daten.\nWillst du wirklich schließen?
+closeUnsaved.message=enthält ungesicherte Daten.\nWillst du wirklich schließen?
 
 # delete Database row confirmation
 deleteDatabaseRow.title=Löschen bestätigen
@@ -17,5 +17,9 @@ pasteDatabaseError.title=Kopieren/Einfügen Fehler
 pasteDatabaseError.message=Kopieren/Einfügen kann nur innerhalb des gleichen Tabs durchgeführt werden.\nUnd es können nur Inhalte innerhalb der gleichen Spalte kopiert werden.
 
 # confirm refresh of uncommited tab
-refreshUncommitedTab.title=Aktuallisierung bestätigen
-refreshUncommitedTab.message= enthält nicht gespeicherte Änderungen.\nWillst du wirklich aktuallisieren?
+refreshUncommitedTab.title=Aktualisierung bestätigen
+refreshUncommitedTab.message=enthält nicht gespeicherte Änderungen.\nWillst du wirklich aktualisieren?
+
+# action aborted
+actionAborted.title=Aktion Abgebrochen
+actionAborted.message=kann erst durchgeführt werden\nwenn alle Änderungen gesichert wurden.

@@ -144,6 +144,27 @@ public class PopupDialogFactory
 			);
 	}
 	
+	/**
+	 * actionAborted
+	 * 
+	 * @param action
+	 */
+	public static void actionAborted(String action)
+	{
+		if( labelResource == null )
+			loadLabels();
+		
+		JOptionPane.showMessageDialog(
+				null,
+				action 
+					+ " "
+					+ labelResource.getProperty("actionAborted.message","actionAborted.message"),
+				labelResource.getProperty("actionAborted.title","actionAborted.title"),
+				JOptionPane.ERROR_MESSAGE
+			);
+	}
+	
+	
 	// TODO save success dialog
 	
 	// TODO save failed dialog

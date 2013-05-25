@@ -28,6 +28,7 @@ import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.core.ui.HelpDialog;
 import dsagenesis.core.ui.InfoDialog;
 import dsagenesis.core.ui.PopupDialogFactory;
+import dsagenesis.core.ui.StatusBar;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
@@ -41,13 +42,13 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 import java.awt.event.KeyEvent;
@@ -55,7 +56,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.SwingConstants;
 
 import jhv.component.LabelResource;
 import jhv.image.ImageResource;
@@ -64,11 +64,17 @@ import jhv.util.debug.logger.ApplicationLogger;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.JLabel;
@@ -78,6 +84,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTabbedPane;
 
 /**
@@ -127,7 +134,7 @@ public class CoreEditorFrame
 	/**
 	 * for status messages
 	 */
-	private JLabel lblStatus;
+	private StatusBar statusBar;
 	
 	/**
 	 * TitleBorder for the not
@@ -191,11 +198,12 @@ public class CoreEditorFrame
 			panel.add(this.tabbedPane, BorderLayout.CENTER);
 		}
 		
-		this.lblStatus = new JLabel(
-				labelResource.getProperty("status.init", "status.init")
+		this.statusBar = new StatusBar();
+		this.statusBar.setStatus(
+				labelResource.getProperty("status.init", "status.init"),
+				StatusBar.STATUS_WORKING
 			);
-		this.lblStatus.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-		getContentPane().add(this.lblStatus, BorderLayout.SOUTH);
+		getContentPane().add(this.statusBar, BorderLayout.SOUTH);
 		
 		try 
 		{
@@ -280,12 +288,13 @@ public class CoreEditorFrame
 		// create the rest.
 		String query = "SELECT * FROM CoreDataTableIndex ORDER BY ti_tab_index ASC";
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
-		
+
 		while( rs.next() )
 			this.initDynamicTab(rs);
 		
-		this.lblStatus.setText(
-				labelResource.getProperty("status.ready", "status.ready")
+		this.statusBar.setStatus(
+				labelResource.getProperty("status.ready", "status.ready"),
+				StatusBar.STATUS_OK
 			);
 	}
 	
@@ -550,8 +559,9 @@ public class CoreEditorFrame
 	{
 		if( status == STATUS_COMMIT_SUCCESS )
 		{
-			this.lblStatus.setText(
-					labelResource.getProperty("status.commit.success", "status.commit.success")
+			this.statusBar.setStatus(
+					labelResource.getProperty("status.commit.success", "status.commit.success"),
+					StatusBar.STATUS_OK
 				);
 	
 			if( !table.containsUncommitedData() )
@@ -564,8 +574,9 @@ public class CoreEditorFrame
 			}
 						
 		} else {
-			this.lblStatus.setText(
-					labelResource.getProperty("status.commit.error", "status.commit.error")
+			this.statusBar.setStatus(
+					labelResource.getProperty("status.commit.error", "status.commit.error"),
+					StatusBar.STATUS_ERROR		
 				);
 		}
 	}
@@ -642,7 +653,7 @@ public class CoreEditorFrame
 	public void stateChanged(ChangeEvent e) 
 	{
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		
+// TODO put this in a task		
 		CoreEditorTable table = vecTables.elementAt(
 				tabbedPane.getSelectedIndex()
 			);
@@ -670,11 +681,12 @@ public class CoreEditorFrame
 
 		if( table.isReadOnly() )
 		{
-			lblStatus.setText(
+			this.statusBar.setStatus(
 					labelResource.getProperty(
 							"status.readonly.error",
 							"status.readonly.error"
-						)
+						),
+					StatusBar.STATUS_ERROR
 				);
 			return;
 		}
@@ -691,8 +703,12 @@ public class CoreEditorFrame
 
 		if( table.isReadOnly() )
 		{
-			lblStatus.setText(
-					labelResource.getProperty("status.readonly.error","status.readonly.error")
+			this.statusBar.setStatus(
+					labelResource.getProperty(
+							"status.readonly.error",
+							"status.readonly.error"
+						),
+					StatusBar.STATUS_ERROR
 				);
 			return;
 		}
@@ -710,9 +726,13 @@ public class CoreEditorFrame
 	   
 	    if( table.isReadOnly() )
 	    {
-	    	lblStatus.setText(
-	    			labelResource.getProperty("status.readonly.error","status.readonly.error")
-	    		);
+	    	this.statusBar.setStatus(
+					labelResource.getProperty(
+							"status.readonly.error",
+							"status.readonly.error"
+						),
+					StatusBar.STATUS_ERROR
+				);
 	    	return;
 	    }
 	    
@@ -740,9 +760,13 @@ public class CoreEditorFrame
 	    
 	    if( table.isReadOnly() )
 	    {
-	    	lblStatus.setText(
-	    			labelResource.getProperty("status.readonly.error","status.readonly.error")
-	    		);
+	    	this.statusBar.setStatus(
+					labelResource.getProperty(
+							"status.readonly.error",
+							"status.readonly.error"
+						),
+					StatusBar.STATUS_ERROR
+				);
 	    	return;
 	    }
 	    
@@ -831,8 +855,58 @@ System.out.println("TODO actionNew");
 	 */
 	private void actionBackup()
 	{
-		// TODO
-System.out.println("TODO actionBackup");
+		if( this.hasContentChanged() )
+		{
+			PopupDialogFactory.actionAborted(
+					labelResource.getProperty("mntmBackup", "mntmBackup")
+				);
+			return;
+		}
+		
+		String filepath = DBConnector.getInstance().getDBFilename();
+		String filename = filepath.substring(
+				filepath.lastIndexOf(System.getProperty("file.separator"))+1,
+				filepath.lastIndexOf(".")
+			);
+		filename = GenesisConfig.getInstance().getPathUserHome()
+				+ filename 
+				+ "_backup_" 
+				+ new SimpleDateFormat( "yyyy_MM_dd" ).format(new Date(System.currentTimeMillis()))
+				+ ".s3db";
+		
+		JFileChooser chooser = new JFileChooser();
+		chooser.setMultiSelectionEnabled(false);
+		chooser.setSelectedFile(new File(filename));
+		chooser.setDialogTitle(labelResource.getProperty("mntmBackup", "mntmBackup"));
+		chooser.setFileFilter(new FileNameExtensionFilter("SQLite3 File", "s3db", "db"));
+		int result = chooser.showSaveDialog(this);
+		
+		if( result != JFileChooser.APPROVE_OPTION )
+			return;
+		
+		String selectedFile = chooser.getCurrentDirectory()
+				+ System.getProperty("file.separator")
+				+ chooser.getSelectedFile().getName();
+		try 
+		{
+			Files.copy(
+					Paths.get(filepath), 
+					Paths.get(selectedFile), 
+					StandardCopyOption.REPLACE_EXISTING
+				);
+			this.statusBar.setStatus(
+					labelResource.getProperty("status.backup.success", "status.backup.success")
+						+ " "
+						+ selectedFile,
+					StatusBar.STATUS_OK
+				);
+		} catch( IOException e) {
+			ApplicationLogger.logError(e);
+			this.statusBar.setStatus(
+					labelResource.getProperty("status.backup.error", "status.backup.error"),
+					StatusBar.STATUS_ERROR
+				);
+		}
 	}
 	
 	/**
