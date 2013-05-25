@@ -7,6 +7,9 @@ paste=Einfügen
 addRow=Zeile Hinzufügen
 deleteRow=Zeile Löschen
 
+commitAll=Alle Änderungen Speichern
+refresh=Tabelle Aktuallisiern
+
 mnFile=Datei
 mntmNew=Neue Datenbank
 mntmBackup=Datenbank Backup

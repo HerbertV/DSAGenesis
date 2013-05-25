@@ -121,6 +121,29 @@ public class PopupDialogFactory
 			);
 	}
 	
+	/**
+	 * confirmRefreshWithUncommitedData
+	 * 
+	 * @param parent
+	 * @param tabTitle
+	 * 
+	 * @return
+	 */
+	public static int confirmRefreshWithUncommitedData(JFrame parent, String tabTitle)
+	{
+		if( labelResource == null )
+			loadLabels();
+		
+		return JOptionPane.showConfirmDialog(
+				parent,
+				tabTitle
+					+ " "
+					+ labelResource.getProperty("refreshUncommitedTab.message","refreshUncommitedTab.message"),
+				labelResource.getProperty("refreshUncommitedTab.title","refreshUncommitedTab.title"),
+				JOptionPane.YES_NO_OPTION
+			);
+	}
+	
 	// TODO save success dialog
 	
 	// TODO save failed dialog

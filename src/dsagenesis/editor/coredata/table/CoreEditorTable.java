@@ -167,9 +167,6 @@ public class CoreEditorTable
 	{
 		if( sqlTable == null )
 			return;
-		
-		if( containsUncommitedData() )
-			return;
 			
 		// we need to clone since we don't want to alter the original data.
 		Vector<Vector<Object>> data = 

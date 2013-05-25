@@ -37,12 +37,15 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Rectangle;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
@@ -105,6 +108,9 @@ public class CoreEditorFrame
 	public static final String ACMD_ADDROW = "addRow";
 	public static final String ACMD_DELETEROW = "deleteRow";
 	
+	public static final String ACMD_COMMITALL= "commitAll";
+	public static final String ACMD_REFRESH = "refresh";
+	
 	public static final String ACMD_NEW = "new";
 	public static final String ACMD_BACKUP = "backup";
 	public static final String ACMD_IMPORT = "import";
@@ -143,7 +149,10 @@ public class CoreEditorFrame
 	 */
 	private Vector<CoreEditorTable> vecTables;
 
-	    
+	/**
+	 * commit all button.
+	 */
+	private JButton btnCommitAll;
 	
 	// ============================================================================
 	//  Constructors
@@ -275,8 +284,6 @@ public class CoreEditorFrame
 		while( rs.next() )
 			this.initDynamicTab(rs);
 		
-		// TODO refresh button in tab
-		
 		this.lblStatus.setText(
 				labelResource.getProperty("status.ready", "status.ready")
 			);
@@ -350,6 +357,9 @@ public class CoreEditorFrame
 		ImageResource irPaste = new ImageResource("images/icons/paste.gif",this);
 		ImageResource irAddRow = new ImageResource("images/icons/dbAddRow.gif",this);
 		ImageResource irDeleteRow = new ImageResource("images/icons/dbRemoveRow.gif",this);
+		ImageResource irCommit = new ImageResource("images/icons/dbCommit.gif",this);
+		ImageResource irRefresh = new ImageResource("images/icons/reload.gif",this);
+		
 		
 		ImageResource irExport = new ImageResource("images/icons/dbExport.gif",this);
 		ImageResource irImport = new ImageResource("images/icons/dbImport.gif",this);
@@ -377,11 +387,7 @@ public class CoreEditorFrame
 			btnPaste.addActionListener(this);
 			toolBar.add(btnPaste);
 			
-			JSeparator separator = new JSeparator();
-			separator.setOrientation(SwingConstants.VERTICAL);
-			separator.setSize(10, 16);
-			separator.setMaximumSize(separator.getSize());
-			toolBar.add(separator);
+			toolBar.add(new JToolBar.Separator());
 			
 			JButton btnAddRow = new JButton("");
 			btnAddRow.setToolTipText(labelResource.getProperty("addRow", "addRow"));
@@ -396,6 +402,36 @@ public class CoreEditorFrame
 			btnDeleteRow.setActionCommand(ACMD_DELETEROW);
 			btnDeleteRow.addActionListener(this);
 			toolBar.add(btnDeleteRow);
+			
+			toolBar.add(new JToolBar.Separator());
+			
+			btnCommitAll = new JButton("");
+			btnCommitAll.setToolTipText(labelResource.getProperty("commitAll", "commitAll"));
+			btnCommitAll.setIcon(irCommit.getImageIcon());
+			btnCommitAll.setActionCommand(ACMD_COMMITALL);
+			btnCommitAll.addActionListener(this);
+			toolBar.add(btnCommitAll);
+			btnCommitAll.setEnabled(false);
+			
+			JButton btnRefresh = new JButton("");
+			btnRefresh.setToolTipText(
+					labelResource.getProperty("refresh", "refresh")
+						+ " (F5)"
+				);
+			btnRefresh.setIcon(irRefresh.getImageIcon());
+			btnRefresh.setActionCommand(ACMD_REFRESH);
+			KeyStroke keyRefresh = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0); 
+			Action aRefresh = new AbstractAction(ACMD_REFRESH) {  
+					private static final long serialVersionUID = 1L;
+	
+					public void actionPerformed(ActionEvent e) {     
+				        CoreEditorFrame.this.actionRefresh();
+				    }
+				};
+			btnRefresh.getActionMap().put(ACMD_REFRESH, aRefresh);
+			btnRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyRefresh, ACMD_REFRESH);
+			btnRefresh.addActionListener(this);
+			toolBar.add(btnRefresh);
 		}
 		
 		
@@ -412,8 +448,7 @@ public class CoreEditorFrame
 			mntmNew.addActionListener(this);
 			mnFile.add(mntmNew);
 			
-			JSeparator separator = new JSeparator();
-			mnFile.add(separator);
+			mnFile.add(new JPopupMenu.Separator());
 			
 			JMenuItem mntmBackup = new JMenuItem(labelResource.getProperty("mntmBackup", "mntmBackup"));
 			mntmBackup.setIcon(irBackup.getImageIcon());
@@ -421,8 +456,7 @@ public class CoreEditorFrame
 			mntmBackup.addActionListener(this);
 			mnFile.add(mntmBackup);
 			
-			JSeparator separator2 = new JSeparator();
-			mnFile.add(separator2);
+			mnFile.add(new JPopupMenu.Separator());
 			
 			JMenuItem mntmImport = new JMenuItem(labelResource.getProperty("mntmImport", "mntmImport"));
 			mntmImport.setIcon(irImport.getImageIcon());
@@ -451,8 +485,7 @@ public class CoreEditorFrame
 			mntmPaste.addActionListener(this);
 			mnEdit.add(mntmPaste);
 			
-			JSeparator separator_1 = new JSeparator();
-			mnEdit.add(separator_1);
+			mnEdit.add(new JPopupMenu.Separator());
 			
 			JMenuItem mntmAddRow = new JMenuItem(labelResource.getProperty("addRow", "addRow"));
 			mntmAddRow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_MASK));
@@ -613,8 +646,10 @@ public class CoreEditorFrame
 		CoreEditorTable table = vecTables.elementAt(
 				tabbedPane.getSelectedIndex()
 			);
+
+		if( !table.containsUncommitedData() )
+			table.loadData();
 		
-		table.loadData();
 		titleBorder.setTitle(table.getLabel());
 		lblNote.setText(
 				"<html>"
@@ -692,6 +727,7 @@ public class CoreEditorFrame
 		// set frame title
 		String title = CoreEditorFrame.markUnsaved(this.getTitle(), true);
 		this.setTitle(title);
+		btnCommitAll.setEnabled(true);
 	}
 	
 	/**
@@ -724,13 +760,61 @@ public class CoreEditorFrame
 	    
 	    // update marks
 	    if( !table.containsUncommitedData() )
-			markUnsavedTabTitle(table,false);
+	    	markUnsavedTabTitle(table,false);
+	    
+	    if( !hasContentChanged() )
+		{
+			String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
+			this.setTitle(title);
+			btnCommitAll.setEnabled(false);
+		}
+	}
+	
+	/**
+	 * actionCommitAll
+	 */
+	private void actionCommitAll()
+	{
+		// TODO
+System.out.println("TODO actionCommitAll");
+
+	}
+	
+	/**
+	 * actionRefresh
+	 */
+	private void actionRefresh()
+	{
+		int idx = tabbedPane.getSelectedIndex();
+		CoreEditorTable table = vecTables.elementAt(idx);
+		boolean refresh = true;
+		
+		
+		if( table.containsUncommitedData() )
+		{
+			int result = PopupDialogFactory.confirmRefreshWithUncommitedData(
+					this, 
+					tabbedPane.getTitleAt(idx)
+				);
+			if( result != JOptionPane.YES_OPTION )
+				refresh = false;
+		} 
+		
+		if( !refresh )
+			return;
+			
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			
+		table.loadData();
+		markUnsavedTabTitle(table,false);
 		
 		if( !hasContentChanged() )
 		{
 			String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
 			this.setTitle(title);
-		}
+			btnCommitAll.setEnabled(false);
+		}	
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 	
 	/**
@@ -739,6 +823,7 @@ public class CoreEditorFrame
 	private void actionNew()
 	{
 		// TODO
+System.out.println("TODO actionNew");
 	}
 	
 	/**
@@ -747,6 +832,7 @@ public class CoreEditorFrame
 	private void actionBackup()
 	{
 		// TODO
+System.out.println("TODO actionBackup");
 	}
 	
 	/**
@@ -755,6 +841,7 @@ public class CoreEditorFrame
 	private void actionImport()
 	{
 		// TODO
+System.out.println("TODO actionImport");
 	}
 	
 	/**
@@ -763,6 +850,7 @@ public class CoreEditorFrame
 	private void actionExport()
 	{
 		// TODO
+System.out.println("TODO actionExport");
 	}
 	
 	/**
@@ -785,6 +873,12 @@ public class CoreEditorFrame
 			
 		} else if( ae.getActionCommand().equals(ACMD_DELETEROW) ) {
 			this.actionDeleteRow();
+			
+		} else if( ae.getActionCommand().equals(ACMD_COMMITALL) ) {
+			this.actionCommitAll();
+			
+		} else if( ae.getActionCommand().equals(ACMD_REFRESH) ) {
+			this.actionRefresh();
 			
 		} else if( ae.getActionCommand().equals(ACMD_NEW) ) {
 			this.actionNew();
@@ -845,11 +939,11 @@ public class CoreEditorFrame
         		&&  table.getCellEditor() instanceof CommitButtonCell )
         	return;
 		
+        // refresh unsaved indicators
         markUnsavedTabTitle(table,true);
-		
-		// set frame title
 		String title = CoreEditorFrame.markUnsaved(this.getTitle(), true);
 		this.setTitle(title);
+		btnCommitAll.setEnabled(true);
 	}
 	
 }

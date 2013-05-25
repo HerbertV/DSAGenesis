@@ -15,3 +15,7 @@ copyDatabaseError.message=Es können nur ganze Zellenblöcke kopiert werden!
 
 pasteDatabaseError.title=Kopieren/Einfügen Fehler
 pasteDatabaseError.message=Kopieren/Einfügen kann nur innerhalb des gleichen Tabs durchgeführt werden.\nUnd es können nur Inhalte innerhalb der gleichen Spalte kopiert werden.
+
+# confirm refresh of uncommited tab
+refreshUncommitedTab.title=Aktuallisierung bestätigen
+refreshUncommitedTab.message= enthält nicht gespeicherte Änderungen.\nWillst du wirklich aktuallisieren?
