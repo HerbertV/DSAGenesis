@@ -79,6 +79,7 @@ import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -242,6 +243,14 @@ public class CoreEditorFrame
 		if( connector.getConnection() == null )
 			return;
 		
+		this.setTitle(
+				GenesisConfig.getInstance().getAppTitle()
+					+ " - "
+					+ labelResource.getProperty("title", "title")
+					+ " - "
+					+ connector.getDBFilename()
+			);
+
 		ApplicationLogger.separator();
 		ApplicationLogger.logInfo(
 				"DB Version: "

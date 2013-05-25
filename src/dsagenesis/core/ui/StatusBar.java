@@ -72,11 +72,6 @@ public class StatusBar
 	private static ImageIcon iconWorking;
 		
 	/**
-	 * status icon
-	 */
-	private JLabel statusIcon;
-	
-	/**
 	 * status label
 	 */
 	private JLabel statusLabel;
@@ -108,29 +103,23 @@ public class StatusBar
 			iconWorking = new ImageResource("images/icons/statusWorking.gif",this).getImageIcon();
 		}
 		
-		statusIcon = new JLabel(iconOk);
-		statusIcon.setMaximumSize(new Dimension(20,20));
-		statusIcon.setMinimumSize(new Dimension(20,20));
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0;
-		this.add(statusIcon,gbc);
-		
 		statusLabel = new JLabel("READY");
+		statusLabel.setIcon(iconOk);
+		statusLabel.setIconTextGap(5);
 		statusLabel.setPreferredSize(new Dimension(400,25));
-		gbc.gridx = 1;
+		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 0.5;
 		this.add(statusLabel,gbc);
 		
 		statusProgressBar = new JProgressBar();
 		
-		gbc.gridx = 2;
+		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.weightx = 0.2;
 		this.add(statusProgressBar,gbc);
 		
-		this.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+		this.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
 	}
 
 	// ============================================================================
@@ -170,11 +159,11 @@ public class StatusBar
 		this.statusLabel.setText(msg);
 	
 		if( status == STATUS_OK )
-			statusIcon.setIcon(iconOk);
+			this.statusLabel.setIcon(iconOk);
 		else if( status == STATUS_ERROR )
-			statusIcon.setIcon(iconError);
+			this.statusLabel.setIcon(iconError);
 		else if( status == STATUS_WORKING )
-			statusIcon.setIcon(iconWorking);
+			this.statusLabel.setIcon(iconWorking);
 	}
 	
 	/**

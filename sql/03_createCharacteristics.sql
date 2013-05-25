@@ -107,7 +107,7 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Characteristics', 'c_acronym', 'kz.');
+	( 'Characteristics', 'c_acronym', 'Kürzel');
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
