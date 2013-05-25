@@ -17,6 +17,7 @@
 package dsagenesis.core.config.ui;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
 
 import jhv.component.LabelResource;
@@ -43,6 +44,10 @@ public class GeneralConfigTabPanel
 	private JSpinner spinMaxDisadvantageCP;
 	private JSpinner spinMaxNegativeAttributeCP;
 	
+	private JPanel colorPickerPositive;
+	private JPanel colorPickerNegative;
+	private JPanel colorPickerComment;
+	
 	
 	// ============================================================================
 	//  Constructors
@@ -50,10 +55,12 @@ public class GeneralConfigTabPanel
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param frame
 	 */
-	public GeneralConfigTabPanel() 
+	public GeneralConfigTabPanel(ConfigFrame frame) 
 	{
-		super();
+		super(frame);
 		
 		this.loadLabels();
 		
@@ -76,7 +83,7 @@ public class GeneralConfigTabPanel
 				1
 			);
 		spinStartCP = (JSpinner)comps[1];
-		//TODO add change handler
+		spinStartCP.addChangeListener(this);
 		
 		comps = this.addLabeledNumericSpinner(
 				labelResource.getProperty("lblDefaultMaxAttributeCP", "lblDefaultMaxAttributeCP"), 
@@ -88,7 +95,7 @@ public class GeneralConfigTabPanel
 				2
 			);
 		spinMaxAttributeCP = (JSpinner)comps[1];
-		//TODO add change handler
+		spinMaxAttributeCP.addChangeListener(this);
 		
 		comps = this.addLabeledNumericSpinner(
 				labelResource.getProperty("lblDefaultMaxDisadvantageCP", "lblDefaultMaxDisadvantageCP"), 
@@ -100,7 +107,7 @@ public class GeneralConfigTabPanel
 				3
 			);
 		spinMaxDisadvantageCP = (JSpinner)comps[1];
-		//TODO add change handler
+		spinMaxDisadvantageCP.addChangeListener(this);
 		
 		comps = this.addLabeledNumericSpinner(
 				labelResource.getProperty("lblDefaultMaxNegativeAttributeCP", "lblDefaultMaxNegativeAttributeCP"), 
@@ -112,10 +119,39 @@ public class GeneralConfigTabPanel
 				4
 			);
 		spinMaxNegativeAttributeCP = (JSpinner)comps[1];
-		//TODO spinMaxNegativeAttributeCP.addChangeListener(listener)
+		spinMaxNegativeAttributeCP.addChangeListener(this);
 		
+		comps = this.addLabeledColorPicker(
+				labelResource.getProperty("lblColorPostive", "lblColorPostive"), 
+				labelResource.getProperty("dlgTitlePostive", "dlgTitlePostive"), 
+				conf.getColor(GenesisConfig.KEY_COLOR_POSITIVE), 
+				0, 
+				5
+			);
+		colorPickerPositive = (JPanel)comps[1];
+		colorPickerPositive.addPropertyChangeListener("background", this);
 		
-		this.addEmptyPanel(5);
+		comps = this.addLabeledColorPicker(
+				labelResource.getProperty("lblColorNegative", "lblColorNegative"), 
+				labelResource.getProperty("dlgTitleNegative", "dlgTitleNegative"), 
+				conf.getColor(GenesisConfig.KEY_COLOR_NEGATIVE), 
+				0, 
+				6
+			);
+		colorPickerNegative = (JPanel)comps[1];
+		colorPickerNegative.addPropertyChangeListener("background", this);
+		
+		comps = this.addLabeledColorPicker(
+				labelResource.getProperty("lblColorComment", "lblColorComment"), 
+				labelResource.getProperty("dlgTitleComment", "dlgTitleComment"), 
+				conf.getColor(GenesisConfig.KEY_COLOR_COMMENT), 
+				0, 
+				7
+			);
+		colorPickerComment = (JPanel)comps[1];
+		colorPickerComment.addPropertyChangeListener("background", this);
+		
+		this.addEmptyPanel(8);
 	}
 
 	// ============================================================================
@@ -168,6 +204,19 @@ public class GeneralConfigTabPanel
 				GenesisConfig.KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP, 
 				Integer.toString((Integer)spinMaxNegativeAttributeCP.getValue())
 			);
+		
+		conf.setUserProperty(
+				GenesisConfig.KEY_COLOR_POSITIVE,
+				GenesisConfig.colorToHexString(colorPickerPositive.getBackground())
+			);
+		conf.setUserProperty(
+				GenesisConfig.KEY_COLOR_NEGATIVE,
+				GenesisConfig.colorToHexString(colorPickerNegative.getBackground())
+			);
+		conf.setUserProperty(
+				GenesisConfig.KEY_COLOR_COMMENT,
+				GenesisConfig.colorToHexString(colorPickerComment.getBackground())
+			);
 	}
 
 	@Override
@@ -187,6 +236,18 @@ public class GeneralConfigTabPanel
 		spinMaxNegativeAttributeCP.setValue(
 				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP)
 			);
+		
+		colorPickerPositive.setBackground(
+				conf.getColor(GenesisConfig.KEY_COLOR_POSITIVE)
+			);
+		colorPickerNegative.setBackground(
+				conf.getColor(GenesisConfig.KEY_COLOR_NEGATIVE)
+			);
+		colorPickerComment.setBackground(
+				conf.getColor(GenesisConfig.KEY_COLOR_COMMENT)
+			);
 	}
+
+	
 
 }

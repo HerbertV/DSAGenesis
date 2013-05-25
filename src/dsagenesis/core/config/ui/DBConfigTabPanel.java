@@ -49,10 +49,12 @@ public class DBConfigTabPanel
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param frame
 	 */
-	public DBConfigTabPanel() 
+	public DBConfigTabPanel(ConfigFrame frame) 
 	{
-		super();
+		super(frame);
 		
 		this.loadLabels();
 		GenesisConfig conf = GenesisConfig.getInstance();
@@ -72,8 +74,7 @@ public class DBConfigTabPanel
 				new FileNameExtensionFilter("SQLite3 File", "s3db", "db") 
 			);
 		txtDBName = (JTextField)comps[1];
-		
-		// TODO add text changed handler
+		txtDBName.getDocument().addDocumentListener(this);
 		
 		this.addEmptyPanel(3);
 	}

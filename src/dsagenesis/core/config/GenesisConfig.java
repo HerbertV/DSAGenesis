@@ -208,6 +208,13 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_DEFAULT_MAX_DISADVANTAGE_CP, "50");
 		this.setSystemProperty(KEY_DEFAULT_MAX_ATTRIBUTE_CP, "100");
 		this.setSystemProperty(KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP, "30");
+		
+		//color setup
+		this.setSystemProperty(KEY_COLOR_POSITIVE, "00CC00");
+		this.setSystemProperty(KEY_COLOR_NEGATIVE, "FF0000");
+		this.setSystemProperty(KEY_COLOR_COMMENT, "0094FF");
+		
+		// TODO Calendar
 	}
 
 	@Override

@@ -1,8 +1,16 @@
 info.title=Allgemeine Einstellungen
 
-info.message=Default Generierungspunkte für die Helden Erschaffung.
+info.message=<html>Default Generierungspunkte für die Helden Erschaffung.<br>Makierungsfarben für den Hero Editor.</html>
 
 lblDefaultStartCP=Start GP:
 lblDefaultMaxAttributeCP=Max. Eigenschafts GP:
 lblDefaultMaxDisadvantageCP=Max. Nachteile GP:
 lblDefaultMaxNegativeAttributeCP=Max. Schlechte Eig. GP:
+
+lblColorPostive=Farbe für positive Hinweise:
+lblColorNegative=Farbe für negative Hinweise:
+lblColorComment=Farbe für Kommentare:
+
+dlgTitlePostive=Positive Farbe wählen
+dlgTitleNegative=Negative Farbe wählen
+dlgTitleComment=Kommentar Farbe wählen

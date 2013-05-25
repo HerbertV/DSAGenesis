@@ -44,10 +44,12 @@ public class TemplateConfigTabPanel
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param frame
 	 */
-	public TemplateConfigTabPanel() 
+	public TemplateConfigTabPanel(ConfigFrame frame) 
 	{
-		super();
+		super(frame);
 		
 		this.loadLabels();
 		GenesisConfig conf = GenesisConfig.getInstance();

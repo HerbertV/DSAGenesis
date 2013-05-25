@@ -59,11 +59,13 @@ public class DebugConfigTabPanel
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param frame
 	 */
 	@SuppressWarnings("unchecked")
-	public DebugConfigTabPanel() 
+	public DebugConfigTabPanel(ConfigFrame frame) 
 	{
-		super();
+		super(frame);
 		
 		this.loadLabels();
 		
@@ -82,6 +84,7 @@ public class DebugConfigTabPanel
 				0, 
 				1
 			);
+		cbxLoggerEnabled.addItemListener(this);
 		
 		JComponent[] comps = this.addLabeledComboBox(
 				labelResource.getProperty("comboDebugLevel", "comboDebugLevel"), 
@@ -92,8 +95,7 @@ public class DebugConfigTabPanel
 			);
 		
 		comboDebugLevel = (JComboBox<String>)comps[1];
-		
-		// TODO Add changed listener
+		comboDebugLevel.addItemListener(this);
 		
 		this.addEmptyPanel(3);
 	}

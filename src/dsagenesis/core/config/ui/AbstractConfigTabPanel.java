@@ -20,6 +20,17 @@
  */
 package dsagenesis.core.config.ui;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.JCheckBox;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import jhv.component.IChangeableContentComponent;
 import jhv.component.ILabeledComponent;
 import jhv.component.LabelResource;
@@ -32,14 +43,19 @@ import jhv.swing.AbstractGridBagPanel;
 public abstract class AbstractConfigTabPanel 
 		extends AbstractGridBagPanel 
 		implements ILabeledComponent,
-			IChangeableContentComponent
+			IChangeableContentComponent,
+			PropertyChangeListener,
+			ChangeListener,
+			DocumentListener,
+			ItemListener
 {
 	// ============================================================================
 	//  Constants
 	// ============================================================================
-	
+
 	private static final long serialVersionUID = 1L;
 
+	
 	// ============================================================================
 	//  Variables
 	// ============================================================================
@@ -49,31 +65,31 @@ public abstract class AbstractConfigTabPanel
 	 */
 	protected boolean hasContentChanged = false;
 	
-	
+	/**
+	 * label property resource
+	 */
 	protected LabelResource labelResource;
 	
+	/**
+	 * the frame
+	 */
+	protected ConfigFrame jFrame;
 	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
 	
 	/**
-	 * Constructor 1.
+	 * Constructor
+	 * 
+	 * @param frame
 	 */
-	public AbstractConfigTabPanel()
+	public AbstractConfigTabPanel(ConfigFrame frame)
 	{
 		super();
+		this.jFrame = frame;
 	}
 
-	/**
-	 * Constructor 2.
-	 * 
-	 * @param isDoubleBuffered
-	 */
-	public AbstractConfigTabPanel(boolean isDoubleBuffered)
-	{
-		super(isDoubleBuffered);
-	}
 	
 	
 	// ============================================================================
@@ -90,4 +106,65 @@ public abstract class AbstractConfigTabPanel
 	 */
 	public abstract void loadSetup();
 
+	/**
+	 * for color picker JPanel, 
+	 */
+	@Override
+	public void propertyChange(PropertyChangeEvent e) 
+	{
+		// used by color pickers
+		if( e.getNewValue() == e.getOldValue() )
+			return;
+		
+		this.jFrame.setUnsavedMarker(true);
+	}
+	
+	/**
+	 * for JSpinner
+	 */
+	@Override
+	public void stateChanged(ChangeEvent e) 
+	{
+		this.jFrame.setUnsavedMarker(true);	
+	}
+	
+	/**
+	 * for JTextFields
+	 */
+	@Override
+	public void changedUpdate(DocumentEvent e)
+	{
+		this.jFrame.setUnsavedMarker(true);	
+	}
+
+	/**
+	 * for JTextFields
+	 */
+	@Override
+	public void insertUpdate(DocumentEvent e)
+	{
+		this.jFrame.setUnsavedMarker(true);	
+	}
+
+	/**
+	 * for JTextFields
+	 */
+	@Override
+	public void removeUpdate(DocumentEvent e)
+	{
+		this.jFrame.setUnsavedMarker(true);	
+	}
+	
+	/**
+	 * for JCheckbox, JCombobox
+	 */
+	@Override
+	public void itemStateChanged(ItemEvent e) 
+	{
+		if( e.getStateChange() == ItemEvent.SELECTED
+				|| (e.getSource() instanceof JCheckBox)
+			) 
+			this.jFrame.setUnsavedMarker(true);	
+	}
 }
+	 

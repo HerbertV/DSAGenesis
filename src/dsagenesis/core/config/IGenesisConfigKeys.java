@@ -89,6 +89,13 @@ public interface IGenesisConfigKeys
 	 * default maximum bad attributes generation points
 	 */
 	public static final String KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP = "default.maxNegativeAttributeCP";
-	
+
+	public static final String KEY_COLOR_POSITIVE = "color.positive";
+
+	public static final String KEY_COLOR_NEGATIVE = "color.negative";
+
+	public static final String KEY_COLOR_COMMENT = "color.comment";
+
+// TODO Calendar keys
 	
 }

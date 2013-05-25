@@ -692,7 +692,6 @@ public class CoreEditorFrame
 		// set frame title
 		String title = CoreEditorFrame.markUnsaved(this.getTitle(), true);
 		this.setTitle(title);
-		
 	}
 	
 	/**

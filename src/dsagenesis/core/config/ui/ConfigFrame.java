@@ -83,7 +83,7 @@ public class ConfigFrame
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		AbstractConfigTabPanel paneGeneral = new GeneralConfigTabPanel();
+		AbstractConfigTabPanel paneGeneral = new GeneralConfigTabPanel(this);
 		tabbedPane.addTab(
 				labelResource.getProperty("tabGeneral", "tabGeneral"), 
 				null, 
@@ -91,7 +91,7 @@ public class ConfigFrame
 				null
 			);
 		
-		AbstractConfigTabPanel paneDebug = new DebugConfigTabPanel();
+		AbstractConfigTabPanel paneDebug = new DebugConfigTabPanel(this);
 		tabbedPane.addTab(
 				labelResource.getProperty("tabDebug", "tabDebug"), 
 				null, 
@@ -99,7 +99,7 @@ public class ConfigFrame
 				null
 			);
 		
-		AbstractConfigTabPanel paneDB = new DBConfigTabPanel();
+		AbstractConfigTabPanel paneDB = new DBConfigTabPanel(this);
 		tabbedPane.addTab(
 				labelResource.getProperty("tabDB", "tabDB"), 
 				null, 
@@ -107,7 +107,7 @@ public class ConfigFrame
 				null
 			);
 		
-		AbstractConfigTabPanel paneTemplates = new TemplateConfigTabPanel();
+		AbstractConfigTabPanel paneTemplates = new TemplateConfigTabPanel(this);
 		tabbedPane.addTab(
 				labelResource.getProperty("tabTemplate", "tabTemplate"), 
 				null, 
@@ -173,6 +173,8 @@ public class ConfigFrame
 	{
 		for( int i=0; i<tabPanels.length; i++ )
 			tabPanels[i].contentSaved();
+		
+		setUnsavedMarker(false);
 	}
 	
 	@Override
@@ -185,6 +187,17 @@ public class ConfigFrame
 	public void saveConfig()
 	{
 		// we don't need the default handling
+	}
+	
+	/**
+	 * setUnsavedMarker
+	 * 
+	 * @param unsaved
+	 */
+	public void setUnsavedMarker(boolean unsaved)
+	{
+		String title = ConfigFrame.markUnsaved(this.getTitle(), unsaved);
+		this.setTitle(title);
 	}
 
 	@Override
