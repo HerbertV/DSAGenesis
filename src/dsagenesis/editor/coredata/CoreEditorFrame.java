@@ -79,7 +79,6 @@ import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -90,6 +89,8 @@ import javax.swing.JTabbedPane;
 
 /**
  * JFrame for the Core Data Editor.
+ * 
+ * opens by default the DB from our config.
  */
 public class CoreEditorFrame 
 		extends AbstractGenesisFrame 
@@ -120,6 +121,7 @@ public class CoreEditorFrame
 	public static final String ACMD_REFRESH = "refresh";
 	
 	public static final String ACMD_NEW = "new";
+	public static final String ACMD_OPEN = "open";
 	public static final String ACMD_BACKUP = "backup";
 	public static final String ACMD_IMPORT = "import";
 	public static final String ACMD_EXPORT = "export";
@@ -466,6 +468,11 @@ public class CoreEditorFrame
 			mntmNew.addActionListener(this);
 			mnFile.add(mntmNew);
 			
+			JMenuItem mntmOpen = new JMenuItem(labelResource.getProperty("mntmOpen", "mntmOpen"));
+			mntmOpen.setActionCommand(ACMD_OPEN);
+			mntmOpen.addActionListener(this);
+			mnFile.add(mntmOpen);
+			
 			mnFile.add(new JPopupMenu.Separator());
 			
 			JMenuItem mntmBackup = new JMenuItem(labelResource.getProperty("mntmBackup", "mntmBackup"));
@@ -580,6 +587,7 @@ public class CoreEditorFrame
 			{
 				String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
 				this.setTitle(title);
+				btnCommitAll.setEnabled(false);
 			}
 						
 		} else {
@@ -808,8 +816,17 @@ public class CoreEditorFrame
 	 */
 	private void actionCommitAll()
 	{
-		// TODO
-System.out.println("TODO actionCommitAll");
+		for( int i=0; i< vecTables.size(); i++ )
+		{
+			if( vecTables.elementAt(i).containsUncommitedData() )
+			{
+				CoreEditorTable table =  vecTables.elementAt(i);
+				Vector<Integer> indices = table.getUncommitedRowIndices();
+				
+				for( int j=0; j<indices.size(); j++ )
+					table.commitRow(indices.elementAt(j));
+			}
+		}
 
 	}
 	
@@ -857,6 +874,15 @@ System.out.println("TODO actionCommitAll");
 	{
 		// TODO
 System.out.println("TODO actionNew");
+	}
+	
+	/**
+	 * actionOpen
+	 */
+	private void actionOpen()
+	{
+		// TODO
+System.out.println("TODO actionOpen");
 	}
 	
 	/**
@@ -965,6 +991,9 @@ System.out.println("TODO actionExport");
 			
 		} else if( ae.getActionCommand().equals(ACMD_NEW) ) {
 			this.actionNew();
+			
+		} else if( ae.getActionCommand().equals(ACMD_OPEN) ) {
+			this.actionOpen();
 			
 		} else if( ae.getActionCommand().equals(ACMD_BACKUP) ) {
 			this.actionBackup();

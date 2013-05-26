@@ -157,6 +157,20 @@ public class CoreEditorTable
 		return false;
 	}
 	
+	public Vector<Integer> getUncommitedRowIndices()
+	{
+		Vector<Integer> indices = new Vector<Integer>();
+		
+		Vector<Boolean> changedRows = btnCommit.getChangedRows();
+		for( int i=0; i<changedRows.size(); i++ )
+		{
+			if( changedRows.elementAt(i) == true )
+				indices.add(i);		
+		}
+		
+		return indices;
+	}
+	
 	/**
 	 * loadData
 	 * 
@@ -290,7 +304,7 @@ public class CoreEditorTable
 		if( deleteOnlyTable )
 			return;
 		
-System.out.println(" TODO CoreEditorTable delete from Table row: "+row);
+System.out.println(" TODO CoreEditorTable delete from "+ sqlTable.getDBTableName()+ " row: "+row);
 		//TODO if the row has no id delete it only from table
 	}
 	
@@ -303,7 +317,7 @@ System.out.println(" TODO CoreEditorTable delete from Table row: "+row);
 	 */
 	public void commitRow(int row)
 	{
-System.out.println(" TODO CoreEditorTable commit "+row);
+System.out.println(" TODO CoreEditorTable commit "+ sqlTable.getDBTableName()+ " row" +row);
 		
 		// TODO
 

@@ -131,18 +131,19 @@ public class GenesisLauncher
 	 */
 	public static void main(String[] args) 
 	{
-		try {
+		try
+		{
 			// Set System L&F
-	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
-	    } catch( UnsupportedLookAndFeelException e ) {
-	       e.printStackTrace();
-	    } catch( ClassNotFoundException e ) {
-	    	e.printStackTrace();
-	    } catch( InstantiationException e ) {
-	    	e.printStackTrace();
-	    } catch( IllegalAccessException e ) {
-	    	e.printStackTrace();
-	    }
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
+		} catch( UnsupportedLookAndFeelException e ) {
+			e.printStackTrace();
+		} catch( ClassNotFoundException e ) {
+			e.printStackTrace();
+		} catch( InstantiationException e ) {
+			e.printStackTrace();
+		} catch( IllegalAccessException e ) {
+			e.printStackTrace();
+		}
 		
 		long time = System.currentTimeMillis();
 		
