@@ -297,8 +297,11 @@ public abstract class AbstractSQLTableModel
 	 * returns all entries sort by ID
 	 * 
 	 * @return
+	 * 
+	 * @throws SQLException
 	 */
 	public ResultSet queryList()
+			throws SQLException
 	{
 		String query= "SELECT ";
 		
@@ -332,8 +335,10 @@ public abstract class AbstractSQLTableModel
 	 * returns all entries sort by ID
 	 * 
 	 * @return
+	 * @throws SQLException
 	 */
 	public Vector<Vector<Object>> queryListAsVector()
+			throws SQLException
 	{
 		ResultSet rs = queryList();
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
@@ -341,23 +346,17 @@ public abstract class AbstractSQLTableModel
 		if( rs == null )
 			return data;
 		
-		try 
+		int colCount = rs.getMetaData().getColumnCount();
+		while( rs.next() )
 		{
-			int colCount = rs.getMetaData().getColumnCount();
-			while( rs.next() )
+			Vector<Object> row = new Vector<Object>();
+			for( int col=1; col <= colCount; col++) 
 			{
-				Vector<Object> row = new Vector<Object>();
-				for( int col=1; col <= colCount; col++) 
-				{
-					row.add(rs.getObject(col));
-				}
-				data.add(row);
+				row.add(rs.getObject(col));
 			}
-			
-		} catch (SQLException e) {
-			ApplicationLogger.logError(e);
+			data.add(row);
 		}
-		
+			
 		return data;
 	}
 	

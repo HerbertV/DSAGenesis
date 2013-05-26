@@ -122,6 +122,7 @@ public class CoreEditorFrame
 	
 	public static final String ACMD_NEW = "new";
 	public static final String ACMD_OPEN = "open";
+	public static final String ACMD_CLOSE = "close";
 	public static final String ACMD_BACKUP = "backup";
 	public static final String ACMD_IMPORT = "import";
 	public static final String ACMD_EXPORT = "export";
@@ -202,28 +203,12 @@ public class CoreEditorFrame
 		}
 		
 		this.statusBar = new StatusBar();
-		this.statusBar.setStatus(
-				labelResource.getProperty("status.init", "status.init"),
+		this.statusBar.setStatus("",
 				StatusBar.STATUS_WORKING
 			);
 		getContentPane().add(this.statusBar, BorderLayout.SOUTH);
 		
-		try 
-		{
-			initDBAndTabs();
-			
-			int tabIdx = GenesisConfig.getInstance().getInt(
-					GenesisConfig.KEY_WIN_CORE_ACTIVE_TAB
-				);
-			tabbedPane.setSelectedIndex(tabIdx);
-			
-			this.stateChanged(null);
-			tabbedPane.addChangeListener(this);
-			
-		} catch (SQLException e) {
-			ApplicationLogger.logError("Cannot init tabs for CoreEditorFrame.");
-			ApplicationLogger.logError(e);
-		}
+		initDBAndTabs(GenesisConfig.getInstance().getDBFile());
 	}
 	
 
@@ -234,79 +219,109 @@ public class CoreEditorFrame
 	/**
 	 * connection to the database
 	 * and initializing tabs
+	 * 
+	 * @param dbfilename
 	 */
-	private void initDBAndTabs()
-			throws SQLException
+	private void initDBAndTabs(String dbfilename)
 	{
-		DBConnector connector = DBConnector.getInstance();
-		connector.openConnection(GenesisConfig.getInstance().getDBFile(),false);
-		
-		//fail save
-		if( connector.getConnection() == null )
-			return;
-		
-		this.setTitle(
-				GenesisConfig.getInstance().getAppTitle()
-					+ " - "
-					+ labelResource.getProperty("title", "title")
-					+ " - "
-					+ connector.getDBFilename()
-			);
-
-		ApplicationLogger.separator();
-		ApplicationLogger.logInfo(
-				"DB Version: "
-					+ TableHelper.getDBVersion() + " "
-					+ TableHelper.getDBLanguage()
-			);
-		
-		
-		vecTables = new Vector<CoreEditorTable>();
-		
-		CoreEditorTable table;
-		
-		// init system Tables
-		{
-			table = new CoreEditorTable(this, new CoreDataVersion());
-			vecTables.add(table);
-			
-			tabbedPane.addTab("CoreDataVersion", new JScrollPane(table)); 
-			tabbedPane.setIconAt(
-					0, 
-					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
-				);
-		}
-		{
-			table = new CoreEditorTable(this, new CoreDataTableIndex());
-			vecTables.add(table);
-			tabbedPane.addTab("CoreDataTableIndex", new JScrollPane(table)); 
-			tabbedPane.setIconAt(
-					1, 
-					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
-				);
-		}
-		{
-			table = new CoreEditorTable(this, new TableColumnLabels());
-			vecTables.add(table);
-			
-			tabbedPane.addTab("TableColumnLabels",	new JScrollPane(table)); 
-			tabbedPane.setIconAt(
-					2, 
-					(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
-				);
-		}
-		
-		// create the rest.
-		String query = "SELECT * FROM CoreDataTableIndex ORDER BY ti_tab_index ASC";
-		ResultSet rs = DBConnector.getInstance().executeQuery(query);
-
-		while( rs.next() )
-			this.initDynamicTab(rs);
-		
 		this.statusBar.setStatus(
-				labelResource.getProperty("status.ready", "status.ready"),
-				StatusBar.STATUS_OK
+				labelResource.getProperty("status.init", "status.init"),
+				StatusBar.STATUS_WORKING
 			);
+		
+		try
+		{
+			DBConnector connector = DBConnector.getInstance();
+			connector.openConnection(dbfilename,false);
+			
+			//fail save
+			if( connector.getConnection() == null )
+				return;
+			
+			this.setTitle(
+					GenesisConfig.getInstance().getAppTitle()
+						+ " - "
+						+ labelResource.getProperty("title", "title")
+						+ " - "
+						+ connector.getDBFilename()
+				);
+	
+			ApplicationLogger.separator();
+			ApplicationLogger.logInfo(
+					"DB Version: "
+						+ TableHelper.getDBVersion() + " "
+						+ TableHelper.getDBLanguage()
+				);
+			
+			
+			vecTables = new Vector<CoreEditorTable>();
+			
+			CoreEditorTable table;
+			
+			// init system Tables
+			{
+				table = new CoreEditorTable(this, new CoreDataVersion());
+				vecTables.add(table);
+				
+				tabbedPane.addTab("CoreDataVersion", new JScrollPane(table)); 
+				tabbedPane.setIconAt(
+						0, 
+						(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+					);
+			}
+			{
+				table = new CoreEditorTable(this, new CoreDataTableIndex());
+				vecTables.add(table);
+				tabbedPane.addTab("CoreDataTableIndex", new JScrollPane(table)); 
+				tabbedPane.setIconAt(
+						1, 
+						(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+					);
+			}
+			{
+				table = new CoreEditorTable(this, new TableColumnLabels());
+				vecTables.add(table);
+				
+				tabbedPane.addTab("TableColumnLabels",	new JScrollPane(table)); 
+				tabbedPane.setIconAt(
+						2, 
+						(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+					);
+			}
+			
+			// create the rest.
+			String query = "SELECT * FROM CoreDataTableIndex ORDER BY ti_tab_index ASC";
+			ResultSet rs = DBConnector.getInstance().executeQuery(query);
+	
+			while( rs.next() )
+				this.initDynamicTab(rs);
+			
+			this.statusBar.setStatus(
+					labelResource.getProperty("status.ready", "status.ready"),
+					StatusBar.STATUS_OK
+				);
+			
+			int tabIdx = GenesisConfig.getInstance().getInt(
+					GenesisConfig.KEY_WIN_CORE_ACTIVE_TAB
+				);
+			if( tabIdx < 0 || tabIdx > tabbedPane.getTabCount() )
+				tabIdx = 0;
+			
+			tabbedPane.setSelectedIndex(tabIdx);
+			
+			this.stateChanged(null);
+			tabbedPane.addChangeListener(this);
+		
+		} catch (SQLException e) {
+			// the rest was logged before.
+			ApplicationLogger.logError("Cannot init tabs for CoreEditorFrame.");
+			ApplicationLogger.logError("Not a DSAGenesis Database or DB is corrupt!");
+			
+			this.statusBar.setStatus(
+					labelResource.getProperty("status.init.error", "status.init.error"),
+					StatusBar.STATUS_ERROR
+				);
+		}
 	}
 	
 	/**
@@ -472,6 +487,13 @@ public class CoreEditorFrame
 			mntmOpen.setActionCommand(ACMD_OPEN);
 			mntmOpen.addActionListener(this);
 			mnFile.add(mntmOpen);
+			
+			mnFile.add(new JPopupMenu.Separator());
+			
+			JMenuItem mntmClose = new JMenuItem(labelResource.getProperty("mntmClose", "mntmClose"));
+			mntmClose.setActionCommand(ACMD_CLOSE);
+			mntmClose.addActionListener(this);
+			mnFile.add(mntmClose);
 			
 			mnFile.add(new JPopupMenu.Separator());
 			
@@ -648,7 +670,7 @@ public class CoreEditorFrame
 	public boolean close( WindowEvent e )
 	{
 		boolean doClose = super.close(e);
-		if( doClose )
+		if( doClose && DBConnector.getInstance().hasConnection() )
 			DBConnector.getInstance().closeConnection();
 		
 		return doClose;
@@ -657,34 +679,40 @@ public class CoreEditorFrame
 	@Override
 	public void dispose()
 	{
-		DBConnector.getInstance().closeConnection();
+		if( DBConnector.getInstance().hasConnection() )
+			DBConnector.getInstance().closeConnection();
 		super.dispose();
 	}
 
 	/**
 	 * called if a tab has changed
 	 * 
-	 * @param e
+	 * @param ce
 	 */
 	@Override
-	public void stateChanged(ChangeEvent e) 
+	public void stateChanged(ChangeEvent ce) 
 	{
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		
 // TODO put this in a task		
 		CoreEditorTable table = vecTables.elementAt(
 				tabbedPane.getSelectedIndex()
 			);
 
-		if( !table.containsUncommitedData() )
-			table.loadData();
-		
-		titleBorder.setTitle(table.getLabel());
-		lblNote.setText(
-				"<html>"
-					+ table.getNote()
-					+ "</html>"
-			);
-		
+		try
+		{
+			if( !table.containsUncommitedData() )
+				table.loadData();
+			
+			titleBorder.setTitle(table.getLabel());
+			lblNote.setText(
+					"<html>"
+						+ table.getNote()
+						+ "</html>"
+				);
+		} catch( SQLException e) {
+			// low level log enough
+		}
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 
@@ -854,16 +882,20 @@ public class CoreEditorFrame
 			return;
 			
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		try
+		{	
+			table.loadData();
+			markUnsavedTabTitle(table,false);
 			
-		table.loadData();
-		markUnsavedTabTitle(table,false);
-		
-		if( !hasContentChanged() )
-		{
-			String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
-			this.setTitle(title);
-			btnCommitAll.setEnabled(false);
-		}	
+			if( !hasContentChanged() )
+			{
+				String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
+				this.setTitle(title);
+				btnCommitAll.setEnabled(false);
+			}
+		} catch( SQLException e) {
+			// low level log enough
+		}
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 	
@@ -881,8 +913,69 @@ System.out.println("TODO actionNew");
 	 */
 	private void actionOpen()
 	{
-		// TODO
-System.out.println("TODO actionOpen");
+		if( this.hasContentChanged() )
+		{
+			int result = PopupDialogFactory.confirmCloseWithUnsavedData(this);
+			if( result != JOptionPane.YES_OPTION )
+				return;
+		}
+		
+		String filepath = GenesisConfig.getInstance().getDBFile();
+		
+		JFileChooser chooser = new JFileChooser();
+		chooser.setMultiSelectionEnabled(false);
+		chooser.setSelectedFile(new File(filepath));
+		chooser.setDialogTitle(labelResource.getProperty("mntmOpen", "mntmOpen"));
+		chooser.setFileFilter(new FileNameExtensionFilter("SQLite3 File", "s3db", "db"));
+		int result = chooser.showOpenDialog(this);
+		
+		if( result != JFileChooser.APPROVE_OPTION )
+			return;
+		
+		String selectedFile = chooser.getCurrentDirectory()
+				+ System.getProperty("file.separator")
+				+ chooser.getSelectedFile().getName();
+		
+		initDBAndTabs(selectedFile);
+	}
+	
+	/**
+	 * actionClose 
+	 * closes only the DB
+	 */
+	private void actionClose()
+	{
+		DBConnector connector = DBConnector.getInstance();
+		
+		//fail save
+		if( connector.getConnection() == null )
+			return;
+		
+		if( this.hasContentChanged() )
+		{
+			int result = PopupDialogFactory.confirmCloseWithUnsavedData(this);
+			if( result != JOptionPane.YES_OPTION )
+				return;
+		}
+		
+		this.setTitle(
+				GenesisConfig.getInstance().getAppTitle()
+					+ " - "
+					+ labelResource.getProperty("title", "title")
+			);
+		tabbedPane.removeChangeListener(this);
+		tabbedPane.removeAll();
+		connector.closeConnection();
+		
+		vecTables = new Vector<CoreEditorTable>();
+		btnCommitAll.setEnabled(false);
+		titleBorder.setTitle("");
+		lblNote.setText("");
+		this.statusBar.setStatus(
+				labelResource.getProperty("status.ready", "status.ready"),
+				StatusBar.STATUS_OK
+			);
+		
 	}
 	
 	/**
@@ -994,6 +1087,9 @@ System.out.println("TODO actionExport");
 			
 		} else if( ae.getActionCommand().equals(ACMD_OPEN) ) {
 			this.actionOpen();
+			
+		}  else if( ae.getActionCommand().equals(ACMD_CLOSE) ) {
+			this.actionClose();
 			
 		} else if( ae.getActionCommand().equals(ACMD_BACKUP) ) {
 			this.actionBackup();

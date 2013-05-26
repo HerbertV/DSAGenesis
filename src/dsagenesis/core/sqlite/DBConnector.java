@@ -235,9 +235,13 @@ public class DBConnector
 	 * executeQuery
 	 * 
 	 * @param query
+	 * 
 	 * @return
+	 * 
+	 * @throws SQLException
 	 */
 	public ResultSet executeQuery(String query)
+			throws SQLException
 	{
 		if( connection == null )
 		{
@@ -260,7 +264,7 @@ public class DBConnector
 		} catch( SQLException e ) {
 			ApplicationLogger.logError(e);
 			ApplicationLogger.logError("Query String was:\n" +query);
-			
+			throw new SQLException(e);
 		}
 		
 		queryTime = System.currentTimeMillis() - startTime;
@@ -371,12 +375,11 @@ public class DBConnector
 	 */
 	public boolean isDBEmpty()
 	{
-		ResultSet rs = this.executeQuery(
-				"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='CoreDataTableIndex'"
-			);
-		
 		try
 		{
+			ResultSet rs = this.executeQuery(
+					"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='CoreDataTableIndex'"
+				);
 			if( rs == null || rs.getInt(1) == 0 )
 				return true;
 			

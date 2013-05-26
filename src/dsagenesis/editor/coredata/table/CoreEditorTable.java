@@ -16,6 +16,7 @@
  */
 package dsagenesis.editor.coredata.table;
 
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.JTable;
@@ -175,9 +176,12 @@ public class CoreEditorTable
 	 * loadData
 	 * 
 	 * updates the whole table for the DB
+	 * 
+	 * @throws SQLException
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadData()
+			throws SQLException
 	{
 		if( sqlTable == null )
 			return;

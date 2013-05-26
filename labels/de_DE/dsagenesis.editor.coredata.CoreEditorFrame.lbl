@@ -12,6 +12,9 @@ refresh=Tabelle Aktualisiern
 
 mnFile=Datei
 mntmNew=Neue Datenbank
+mntmOpen=Datenbank Öffnen
+mntmClose=Datenbak Schließen
+
 mntmBackup=Datenbank Backup
 mntmImport=Import
 mntmExport=Export
@@ -25,6 +28,7 @@ mntmHelp=Hilfe
 
 # Status Messages
 status.init=Initialisiere...
+status.init.error=Fehler beim Initialisieren der Datenbank! Siehe Log Datei.
 status.ready=Bereit.
 
 status.commit.success=Änderung(en) erfolgreich in der Datenbank gespeichert.
