@@ -44,9 +44,17 @@ public class RaceCultureGroups
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-			
+	
 	/**
-	 * Constructor.
+	 * Constructor 1.
+	 */
+	public RaceCultureGroups() 
+	{
+		super();
+	}
+	
+	/**
+	 * Constructor 2.
 	 * 
 	 * @param rs	
 	 * @throws SQLException 
@@ -55,16 +63,20 @@ public class RaceCultureGroups
 			throws SQLException 
 	{
 		super(rs);
-		
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("rcg_name");
-		this.dbColumnNames.addElement("rcg_path");
 	}
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
+
+	@Override
+	protected void setupDBColumns() 
+	{
+		this.dbColumnNames = new Vector<String>();
+		this.dbColumnNames.addElement("ID");
+		this.dbColumnNames.addElement("rcg_name");
+		this.dbColumnNames.addElement("rcg_path");
+	}
 
 	/**
 	 *  
@@ -103,6 +115,12 @@ public class RaceCultureGroups
 		vec.add(String.class);
 		
 		return vec;
+	}
+
+	@Override
+	public void queryReferences() throws SQLException 
+	{
+		// not needed
 	}
 
 }

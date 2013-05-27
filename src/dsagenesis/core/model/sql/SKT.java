@@ -28,7 +28,7 @@ import dsagenesis.core.model.xml.AbstractGenesisModel;
  * SQL Model Class.
  * 
  * this class is only used by Core Data Editor (for generating the JTable), 
- * for accessing the SKT use SKTMatrix. 
+ * for accessing the SKT use SKTMatrix! 
  */
 public class SKT
 		extends AbstractSQLTableModel 
@@ -40,7 +40,7 @@ public class SKT
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-			
+		
 	/**
 	 * Constructor.
 	 * 
@@ -51,7 +51,15 @@ public class SKT
 			throws SQLException 
 	{
 		super(rs);
-		
+	}
+	
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+
+	@Override
+	protected void setupDBColumns() 
+	{
 		this.dbColumnNames = new Vector<String>();
 		this.dbColumnNames.addElement("ID");
 		this.dbColumnNames.addElement("skt_a");
@@ -63,10 +71,6 @@ public class SKT
 		this.dbColumnNames.addElement("skt_g");
 		this.dbColumnNames.addElement("skt_h");
 	}
-	
-	// ============================================================================
-	//  Functions
-	// ============================================================================
 
 	/**
 	 * for accessing the SKT use class SKTMatrix. 
@@ -92,6 +96,12 @@ public class SKT
 		vec.add(Integer.class);
 		
 		return vec;
+	}
+
+	@Override
+	public void queryReferences() throws SQLException 
+	{
+		// not needed
 	}
 
 }

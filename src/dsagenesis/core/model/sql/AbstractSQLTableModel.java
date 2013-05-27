@@ -92,11 +92,11 @@ public abstract class AbstractSQLTableModel
 	/**
 	 * Constructor 1.
 	 * 
-	 * used by system tables
+	 * used by system tables or for cross-references
 	 */
 	public AbstractSQLTableModel()
 	{
-		
+		setupDBColumns();
 	}
 	
 	/**
@@ -121,12 +121,19 @@ public abstract class AbstractSQLTableModel
 		this.isEditable = DBConnector.convertBooleanFromDB(
 				rs.getObject("ti_editable")
 			);
+		
+		setupDBColumns();
 	}
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-		
+	
+	/**
+	 * for setting up the db column names.
+	 */
+	protected abstract void setupDBColumns();
+	
 	/**
 	 * getDBTableName
 	 * 
@@ -303,30 +310,7 @@ public abstract class AbstractSQLTableModel
 	public ResultSet queryList()
 			throws SQLException
 	{
-		String query= "SELECT ";
-		
-		for(int i=0; i< this.dbColumnNames.size(); i++ )
-		{
-			query += this.dbColumnNames.elementAt(i);
-			
-			if( i< (this.dbColumnNames.size()-1) )
-				query += ", ";
-		}
-		
-		query += " FROM "
-				+ getDBTableName()
-				+ " ORDER BY ID ASC";
-		
-		ResultSet rs = DBConnector.getInstance().executeQuery(query);	
-		
-		ApplicationLogger.logInfo(
-					this.getClass().getSimpleName()
-					+ ".queryList time: "
-					+ DBConnector.getInstance().getQueryTime() 
-					+ " ms"
-			);
-		
-		return rs;
+		return queryList(this.dbColumnNames,"ID",true);
 	}
 	
 	/**
@@ -359,6 +343,111 @@ public abstract class AbstractSQLTableModel
 			
 		return data;
 	}
+	
+	/**
+	 * queryList
+	 * 
+	 * returns the selected columns. 
+	 * 
+	 * @param columns
+	 * @param orderby can be null
+	 * @param isAsc
+	 * 
+	 * @return
+	 * 
+	 * @throws SQLException
+	 */
+	public ResultSet queryList(
+			Vector<String> columns, 
+			String orderby, 
+			boolean isAsc 
+		)
+			throws SQLException
+	{
+		String query= "SELECT ";
+		
+		for(int i=0; i< columns.size(); i++ )
+		{
+			query += columns.elementAt(i);
+			
+			if( i< (columns.size()-1) )
+				query += ", ";
+		}
+		
+		query += " FROM " + getDBTableName();
+		
+		if( orderby != null )
+		{
+			query += " ORDER BY " + orderby;
+			
+			if( isAsc )
+				query += " ASC";
+			else
+				query += " DESC";
+		}
+		
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);	
+		
+		ApplicationLogger.logInfo(
+					this.getClass().getSimpleName()
+					+ ".queryList time: "
+					+ DBConnector.getInstance().getQueryTime() 
+					+ " ms"
+			);
+		
+		return rs;
+	}
+	
+	/**
+	 * queryListAsVector
+	 * 
+	 * 
+	 * returns the selected columns. 
+	 * 
+	 * @param columns
+	 * @param orderby can be null
+	 * @param isAsc
+	 * 
+	 * @return
+	 * 
+	 * @throws SQLException
+	 */
+	public Vector<Vector<Object>> queryListAsVector(
+			Vector<String> columns, 
+			String orderby, 
+			boolean isAsc
+		)
+			throws SQLException
+	{
+		ResultSet rs = queryList(columns,orderby,isAsc);
+		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		
+		if( rs == null )
+			return data;
+		
+		int colCount = rs.getMetaData().getColumnCount();
+		while( rs.next() )
+		{
+			Vector<Object> row = new Vector<Object>();
+			for( int col=1; col <= colCount; col++) 
+			{
+				row.add(rs.getObject(col));
+			}
+			data.add(row);
+		}
+			
+		return data;
+	}
+	
+	/**
+	 * queryReferences
+	 * 
+	 * this function is called Core Editor when the table model is loaded.
+	 * it is used to generated for example reference ComboBoxes
+	 * 
+	 *  @throws SQLException
+	 */
+	public abstract void queryReferences() throws SQLException;
 	
 	/**
 	 * getRow

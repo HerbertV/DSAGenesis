@@ -204,6 +204,7 @@ public class DBConnector
 					"jdbc:sqlite:" + dbfile,
 					sqlconf.toProperties()
 				);
+			
 			openDBFilename = dbfile;
 			
 		} catch (SQLException e) {

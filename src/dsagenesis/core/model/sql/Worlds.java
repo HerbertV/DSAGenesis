@@ -41,9 +41,17 @@ public class Worlds
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-			
+	
 	/**
-	 * Constructor.
+	 * Constructor 1.
+	 */
+	public Worlds() 
+	{
+		super();
+	}
+	
+	/**
+	 * Constructor 2.
 	 * 
 	 * @param rs	
 	 * @throws SQLException 
@@ -52,16 +60,20 @@ public class Worlds
 			throws SQLException 
 	{
 		super(rs);
-		
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("w_name");
 	}
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
 
+	@Override
+	protected void setupDBColumns() 
+	{
+		this.dbColumnNames = new Vector<String>();
+		this.dbColumnNames.addElement("ID");
+		this.dbColumnNames.addElement("w_name");
+	}
+	
 	/**
 	 * not needed 
 	 */
@@ -94,6 +106,12 @@ public class Worlds
 		vec.add(String.class);
 		
 		return vec;
+	}
+
+	@Override
+	public void queryReferences() throws SQLException
+	{
+		// not needed
 	}
 
 }

@@ -44,9 +44,17 @@ public class CharacteristicGroups
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-			
+	
 	/**
-	 * Constructor.
+	 * Constructor 1.
+	 */
+	public CharacteristicGroups() 
+	{
+		super();
+	}
+	
+	/**
+	 * Constructor 2.
 	 * 
 	 * @param rs	
 	 * @throws SQLException 
@@ -55,16 +63,20 @@ public class CharacteristicGroups
 			throws SQLException 
 	{
 		super(rs);
-		
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("cg_name");
 	}
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
 
+	@Override
+	protected void setupDBColumns() 
+	{
+		this.dbColumnNames = new Vector<String>();
+		this.dbColumnNames.addElement("ID");
+		this.dbColumnNames.addElement("cg_name");
+	}
+	
 	/**
 	 * not needed 
 	 */
@@ -98,5 +110,13 @@ public class CharacteristicGroups
 		
 		return vec;
 	}
+
+	@Override
+	public void queryReferences() 
+	{
+		// not needed
+	}
+
+	
 
 }

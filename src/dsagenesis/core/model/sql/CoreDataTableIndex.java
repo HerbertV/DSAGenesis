@@ -16,6 +16,7 @@
  */
 package dsagenesis.core.model.sql;
 
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.table.TableColumn;
@@ -51,7 +52,16 @@ public class CoreDataTableIndex
 		
 		this.prefix = "ti_";
 		this.usesPrefix = false;
-		
+	}
+	
+	
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+	
+	@Override
+	protected void setupDBColumns() 
+	{
 		this.dbColumnNames = new Vector<String>();
 		this.dbColumnNames.addElement("ID");
 		this.dbColumnNames.addElement("ti_table_name");
@@ -63,12 +73,7 @@ public class CoreDataTableIndex
 		this.dbColumnNames.addElement("ti_tab_index");
 		this.dbColumnNames.addElement("ti_editable");
 	}
-	
-	
-	// ============================================================================
-	//  Functions
-	// ============================================================================
-		
+
 	/**
 	 * since this is a system table there is no AbstractGenesisModel 
 	 */
@@ -115,6 +120,13 @@ public class CoreDataTableIndex
 		vec.add(Boolean.class);
 		
 		return vec;
+	}
+
+
+	@Override
+	public void queryReferences() throws SQLException
+	{
+		// not needed
 	}
 	
 

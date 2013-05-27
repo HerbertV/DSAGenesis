@@ -16,6 +16,7 @@
  */
 package dsagenesis.core.model.sql;
 
+import java.sql.SQLException;
 import java.util.Vector;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
@@ -48,12 +49,6 @@ public class CoreDataVersion
 		this.prefix = "ver_";
 		this.usesPrefix = false;
 		this.isEditable = true;
-		
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("ver_major");
-		this.dbColumnNames.addElement("ver_minor");
-		this.dbColumnNames.addElement("ver_language");
 	}
 	
 	
@@ -61,6 +56,16 @@ public class CoreDataVersion
 	//  Functions
 	// ============================================================================
 
+	@Override
+	protected void setupDBColumns() 
+	{
+		this.dbColumnNames = new Vector<String>();
+		this.dbColumnNames.addElement("ID");
+		this.dbColumnNames.addElement("ver_major");
+		this.dbColumnNames.addElement("ver_minor");
+		this.dbColumnNames.addElement("ver_language");
+	}
+	
 	/**
 	 * since this is a system table there is no AbstractGenesisModel 
 	 */
@@ -80,5 +85,11 @@ public class CoreDataVersion
 		vec.add(String.class);
 		
 		return vec;
+	}
+
+	@Override
+	public void queryReferences() throws SQLException
+	{
+		// not needed
 	}
 }

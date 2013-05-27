@@ -16,6 +16,7 @@
  */
 package dsagenesis.core.model.sql;
 
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.table.TableColumn;
@@ -53,7 +54,15 @@ public class TableColumnLabels
 		this.prefix = "tcl_";
 		this.usesPrefix = false;
 		this.isEditable = true;
-		
+	}
+	
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+
+	@Override
+	protected void setupDBColumns()
+	{
 		this.dbColumnNames = new Vector<String>();
 		this.dbColumnNames.addElement("ID");
 		this.dbColumnNames.addElement("tcl_table_name");
@@ -61,10 +70,6 @@ public class TableColumnLabels
 		this.dbColumnNames.addElement("tcl_label");
 	}
 	
-	// ============================================================================
-	//  Functions
-	// ============================================================================
-
 	/**
 	 * since this is a system table there is no AbstractGenesisModel 
 	 */
@@ -103,6 +108,12 @@ public class TableColumnLabels
 		vec.add(String.class);
 		
 		return vec;
+	}
+
+	@Override
+	public void queryReferences() throws SQLException
+	{
+		// not needed
 	}
 
 }

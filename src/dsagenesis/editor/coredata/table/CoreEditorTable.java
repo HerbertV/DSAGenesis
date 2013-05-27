@@ -194,6 +194,8 @@ public class CoreEditorTable
 		Vector<Class<?>> classes = 
 				(Vector<Class<?>>) sqlTable.getTableColumnClasses().clone();
 		
+		sqlTable.queryReferences();
+		
 		//if editable fill up cells for commit button
 		if( sqlTable.isEditable() )
 		{
@@ -226,12 +228,6 @@ public class CoreEditorTable
 			
 			currColumn.setCellEditor(this.btnCommit);
 			currColumn.setCellRenderer(this.btnCommit);
-			
-			// TODO add global commit
-			/*
-			currColumn = this.getTableHeader().getColumnModel().getColumn(this.getColumnCount()-1);
-			currColumn.setCellRenderer( );
-			*/
 			
 			// add listener
 			this.getModel().addTableModelListener(this);

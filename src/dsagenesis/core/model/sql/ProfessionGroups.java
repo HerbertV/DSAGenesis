@@ -44,7 +44,15 @@ public class ProfessionGroups
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-			
+	
+	/**
+	 * Constructor 1.
+	 */
+	public ProfessionGroups() 
+	{
+		super();
+	}
+	
 	/**
 	 * Constructor.
 	 * 
@@ -55,16 +63,20 @@ public class ProfessionGroups
 			throws SQLException 
 	{
 		super(rs);
-		
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("pg_name");
-		this.dbColumnNames.addElement("pg_path");
 	}
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
+
+	@Override
+	protected void setupDBColumns() 
+	{
+		this.dbColumnNames = new Vector<String>();
+		this.dbColumnNames.addElement("ID");
+		this.dbColumnNames.addElement("pg_name");
+		this.dbColumnNames.addElement("pg_path");
+	}
 
 	/**
 	 *  not needed 
@@ -102,6 +114,12 @@ public class ProfessionGroups
 		vec.add(String.class);
 		
 		return vec;
+	}
+
+	@Override
+	public void queryReferences() throws SQLException
+	{
+		// not needed
 	}
 
 }

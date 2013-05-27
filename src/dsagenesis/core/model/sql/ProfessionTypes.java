@@ -41,7 +41,16 @@ public class ProfessionTypes
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-			
+
+	/**
+	 * Constructor 1.
+	 * 
+	 */
+	public ProfessionTypes() 
+	{
+		super();
+	}
+
 	/**
 	 * Constructor.
 	 * 
@@ -52,15 +61,19 @@ public class ProfessionTypes
 			throws SQLException 
 	{
 		super(rs);
-		
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("pt_name");
 	}
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
+
+	@Override
+	protected void setupDBColumns() 
+	{
+		this.dbColumnNames = new Vector<String>();
+		this.dbColumnNames.addElement("ID");
+		this.dbColumnNames.addElement("pt_name");
+	}
 
 	/**
 	 *  not needed 
@@ -94,6 +107,12 @@ public class ProfessionTypes
 		vec.add(String.class);
 		
 		return vec;
+	}
+
+	@Override
+	public void queryReferences() throws SQLException 
+	{
+		// not needed
 	}
 
 }

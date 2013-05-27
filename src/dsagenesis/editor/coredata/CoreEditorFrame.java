@@ -513,13 +513,17 @@ public class CoreEditorFrame
 			JMenuItem mntmImport = new JMenuItem(labelResource.getProperty("mntmImport", "mntmImport"));
 			mntmImport.setIcon(irImport.getImageIcon());
 			mntmImport.setActionCommand(ACMD_IMPORT);
-			mntmImport.addActionListener(this);
+// TODO disabled until I get the Extension to work			
+			mntmImport.setEnabled(false);
+			//mntmImport.addActionListener(this);
 			mnFile.add(mntmImport);
 			
 			JMenuItem mntmExport = new JMenuItem(labelResource.getProperty("mntmExport", "mntmExport"));
 			mntmExport.setIcon(irExport.getImageIcon());
 			mntmExport.setActionCommand(ACMD_EXPORT);
-			mntmExport.addActionListener(this);
+// TODO disabled until I get the Extension to work			
+			mntmExport.setEnabled(false);
+			//mntmExport.addActionListener(this);
 			mnFile.add(mntmExport);
 			
 			JMenu mnEdit = new JMenu(labelResource.getProperty("mnEdit", "mnEdit"));
@@ -1147,6 +1151,14 @@ System.out.println("TODO actionImport");
 	 */
 	private void actionExport()
 	{
+		/*
+		try {
+			BackupCommand bcmd = new BackupCommand("core_de_DE", "test.sql");
+			ExtendedCommand.parse("backup 'core_de_DE' to 'test.sql'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		*/
 		// TODO
 System.out.println("TODO actionExport");
 	}

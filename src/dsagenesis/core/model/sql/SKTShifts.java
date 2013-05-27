@@ -40,7 +40,8 @@ public class SKTShifts
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-			
+
+	
 	/**
 	 * Constructor.
 	 * 
@@ -51,7 +52,15 @@ public class SKTShifts
 			throws SQLException 
 	{
 		super(rs);
-		
+	}
+	
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+
+	@Override
+	protected void setupDBColumns() 
+	{
 		this.dbColumnNames = new Vector<String>();
 		this.dbColumnNames.addElement("ID");
 		this.dbColumnNames.addElement("skts_ref_source_ID");
@@ -64,10 +73,6 @@ public class SKTShifts
 		this.dbColumnNames.addElement("skts_is_absolute_shift");
 		this.dbColumnNames.addElement("skts_skt_column");
 	}
-	
-	// ============================================================================
-	//  Functions
-	// ============================================================================
 
 	/**
 	 * for accessing the SKTShifts use class SKTMatrix. 
@@ -94,6 +99,13 @@ public class SKTShifts
 		vec.add(String.class);
 		
 		return vec;
+	}
+
+	@Override
+	public void queryReferences() throws SQLException
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }

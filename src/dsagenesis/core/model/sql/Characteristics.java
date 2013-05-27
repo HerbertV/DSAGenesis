@@ -25,6 +25,7 @@ import javax.swing.table.TableColumn;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.cell.CrossReferenceCellRenderer;
 
 /**
  * Characteristics
@@ -39,13 +40,26 @@ public class Characteristics
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-		
+	
+	/**
+	 * reference data from CharacteristicGroups Table
+	 */
+	private Vector<Vector<Object>> characteristicGroups;
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-			
+	
 	/**
-	 * Constructor.
+	 * Constructor 1.
+	 */
+	public Characteristics() 
+	{
+		super();
+	}
+	
+	/**
+	 * Constructor 2.
 	 * 
 	 * @param rs	
 	 * @throws SQLException 
@@ -54,7 +68,15 @@ public class Characteristics
 			throws SQLException 
 	{
 		super(rs);
-		
+	}
+	
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+
+	@Override
+	protected void setupDBColumns() 
+	{
 		this.dbColumnNames = new Vector<String>();
 		this.dbColumnNames.addElement("ID");
 		this.dbColumnNames.addElement("c_priorty");
@@ -77,11 +99,6 @@ public class Characteristics
 		this.dbColumnNames.addElement("c_f_can_decrease");
 		this.dbColumnNames.addElement("c_f_skt_column");
 	}
-	
-	// ============================================================================
-	//  Functions
-	// ============================================================================
-
 	/**
 	 *  
 	 */
@@ -102,12 +119,15 @@ public class Characteristics
 		
 		TableColumn currColumn;
         
-        //col 3
+        //col 3 name
         currColumn = cetable.getColumnModel().getColumn(3);
         currColumn.setMinWidth(120);
-        //col 4
+        //col 4 ref
         currColumn = cetable.getColumnModel().getColumn(4);
         currColumn.setMinWidth(120);
+        currColumn.setCellRenderer(
+        		new CrossReferenceCellRenderer(this.characteristicGroups)
+        	);
     }
 	
 	@Override
@@ -136,6 +156,22 @@ public class Characteristics
 		vec.add(String.class);
 		
 		return vec;
+	}
+	
+	@Override
+	public void queryReferences() 
+			throws SQLException 
+	{
+		CharacteristicGroups cg = new CharacteristicGroups();
+		Vector<String> columns = new Vector<String>();
+		columns.add("ID");
+		columns.add("cg_name");
+		
+		this.characteristicGroups = cg.queryListAsVector(
+				columns, 
+				"cg_name", 
+				true
+			);
 	}
 
 }
