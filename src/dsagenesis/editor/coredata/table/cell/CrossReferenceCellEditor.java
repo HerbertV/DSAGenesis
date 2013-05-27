@@ -16,89 +16,89 @@
  */
 package dsagenesis.editor.coredata.table.cell;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
+import java.util.Vector;
 
-import javax.swing.AbstractButton;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 
-import dsagenesis.core.sqlite.DBConnector;
 
 /**
- * CheckBoxCellRenderer.
+ * CrossReferenceCellEditor
  * 
- * Renders Booleans as a Checkbox.
+ * edits a 1-n Cross Reference as combo box 
  */
-public class CheckBoxCellRenderer 
-		extends BasicCellRenderer 
+public class CrossReferenceCellEditor 
+		extends DefaultCellEditor 
 {
 	// ============================================================================
 	//  Constants
 	// ============================================================================
-		
+			
 	private static final long serialVersionUID = 1L;
 
-	
 	// ============================================================================
 	//  Variables
 	// ============================================================================
 			
-	private JCheckBox checkBox;
-	private JPanel panel;
+	private Vector<Vector<Object>> idLabelPairs;
 
+	private JComboBox<String> comboBox;
 	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-	
+
 	/**
 	 * Constructor
+	 * 
+	 * @param idLabels
 	 */
-	public CheckBoxCellRenderer()
+	@SuppressWarnings("unchecked")
+	public CrossReferenceCellEditor(Vector<Vector<Object>> idLabels) 
 	{
-		super();
+		super(new JComboBox<String>());
+		this.idLabelPairs = idLabels;
 		
-		checkBox = new JCheckBox();
-		checkBox.setHorizontalAlignment(AbstractButton.CENTER);
-		panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.add(checkBox,BorderLayout.CENTER);
-        checkBox.setBackground(this.getBackground());
-        checkBox.setForeground(this.getForeground());
+		comboBox = (JComboBox<String>)this.getComponent();
+		
+		for(int i=0; i< idLabelPairs.size(); i++ )
+			comboBox.addItem((String)idLabels.get(i).get(1));
+		
+		this.setClickCountToStart(2);
 	}
 
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-		
+
 	@Override
-	public Component getTableCellRendererComponent(
+	public Object getCellEditorValue()
+	{
+		return this.idLabelPairs.get(comboBox.getSelectedIndex()).get(0);
+	}
+
+
+	@Override
+	public Component getTableCellEditorComponent(
 			JTable table, 
-			Object value, 
-			boolean isSelected,
-			boolean hasFocus,
+			Object value,
+			boolean isSelected, 
 			int row, 
 			int column
-		) 
+		)
 	{
-		// call super for coloring
-		super.getTableCellRendererComponent(
-				table,
-				value,
-				isSelected,
-				hasFocus,
-				row,
-				column
-			);
-
-		checkBox.setBackground(this.getBackground());
-		checkBox.setForeground(this.getForeground());
-
-		checkBox.setSelected(
-				DBConnector.convertBooleanFromDB(value)
-			);
-		return panel;
+		Component comp = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+		for (int i=0; i<this.idLabelPairs.size(); i++)
+		{
+			if (value.equals(this.idLabelPairs.get(i).get(0)))
+			{
+				comboBox.setSelectedIndex(i);
+				break;
+			}
+		}
+		return comp;
 	}
+
 }

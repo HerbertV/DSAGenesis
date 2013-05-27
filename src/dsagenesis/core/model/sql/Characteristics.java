@@ -25,6 +25,7 @@ import javax.swing.table.TableColumn;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.cell.CrossReferenceCellEditor;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellRenderer;
 
 /**
@@ -128,6 +129,11 @@ public class Characteristics
         currColumn.setCellRenderer(
         		new CrossReferenceCellRenderer(this.characteristicGroups)
         	);
+        currColumn.setCellEditor(
+        		new CrossReferenceCellEditor(this.characteristicGroups)
+        	);
+        // TODO SKT references
+        // TODO formular
     }
 	
 	@Override
