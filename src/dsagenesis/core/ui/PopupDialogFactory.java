@@ -160,14 +160,33 @@ public class PopupDialogFactory
 					+ " "
 					+ labelResource.getProperty("actionAborted.message","actionAborted.message"),
 				labelResource.getProperty("actionAborted.title","actionAborted.title"),
-				JOptionPane.ERROR_MESSAGE
+				JOptionPane.INFORMATION_MESSAGE
 			);
 	}
 	
 	
-	// TODO save success dialog
-	
-	// TODO save failed dialog
-	
+	/**
+	 * confirmCloseWithUnsavedData
+	 * 
+	 * @param parent
+	 * @return
+	 */
+	public static int confirmOverwriteFile(
+			JFrame parent,
+			String filename
+		)
+	{
+		if( labelResource == null )
+			loadLabels();
+		
+		return JOptionPane.showConfirmDialog(
+				parent,
+				filename
+					+ " "
+					+ labelResource.getProperty("overwriteFile.message","closeUnsaved.message"),
+				labelResource.getProperty("overwriteFile.title","closeUnsaved.title"),
+				JOptionPane.YES_NO_OPTION
+			);
+	}
 	
 }

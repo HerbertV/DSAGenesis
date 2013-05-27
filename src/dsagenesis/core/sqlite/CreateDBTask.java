@@ -42,12 +42,12 @@ public class CreateDBTask
 	/**
 	 * header is printed before the filename.
 	 */
-	private String header;
+	protected String header;
 	
 	/**
 	 * list of SQL files being executed.
 	 */
-	private String[] sqlfiles;
+	protected String[] sqlfiles;
 	
 	
 	// ============================================================================

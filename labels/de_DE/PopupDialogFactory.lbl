@@ -23,3 +23,7 @@ refreshUncommitedTab.message=enthält nicht gespeicherte Änderungen.\nWillst du w
 # action aborted
 actionAborted.title=Aktion Abgebrochen
 actionAborted.message=kann erst durchgeführt werden\nwenn alle Änderungen gesichert wurden.
+
+# Confirm File overwrite
+overwriteFile.title=Datei existiert
+overwriteFile.message=exisiert bereits.\nWillst du sie wirklich überschreiben?

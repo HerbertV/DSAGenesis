@@ -38,3 +38,7 @@ status.readonly.error=Tabelle ist Schreibgeschützt und kann nicht geändert werde
 
 status.backup.success=Backup erfolgreich:
 status.backup.error=Fehler beim Backup! Siehe Log Datei.
+
+status.db.create=Erstelle neue Datenbank:
+status.db.create.error=Fehler beim Erstellen der Datenbank! Siehe Log Datei.
+status.db.create.success=Datenbank bereit.

@@ -522,6 +522,7 @@ public class GenesisLauncher
 					lblDisclaimerAndStatus.setText(
 							labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
 						);
+					lblDisclaimerAndStatus.revalidate();
 				}
 			});
 		

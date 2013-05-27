@@ -22,6 +22,7 @@ import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.core.model.sql.CoreDataTableIndex;
 import dsagenesis.core.model.sql.CoreDataVersion;
 import dsagenesis.core.model.sql.TableColumnLabels;
+import dsagenesis.core.sqlite.CreateDBTaskCoreEditor;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.core.ui.AbstractGenesisFrame;
@@ -59,6 +60,7 @@ import javax.swing.JButton;
 
 import jhv.component.LabelResource;
 import jhv.image.ImageResource;
+import jhv.swing.task.SerialTaskExecutor;
 import jhv.util.debug.logger.ApplicationLogger;
 
 import java.awt.event.ActionListener;
@@ -165,6 +167,11 @@ public class CoreEditorFrame
 	 */
 	private JButton btnCommitAll;
 	
+	/**
+	 * for working the tasks
+	 */
+	private SerialTaskExecutor taskExecutor = new SerialTaskExecutor(false);
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -232,11 +239,9 @@ public class CoreEditorFrame
 		try
 		{
 			DBConnector connector = DBConnector.getInstance();
-			connector.openConnection(dbfilename,false);
 			
-			//fail save
-			if( connector.getConnection() == null )
-				return;
+			if( !connector.hasConnection() )
+				connector.openConnection(dbfilename,false);
 			
 			this.setTitle(
 					GenesisConfig.getInstance().getAppTitle()
@@ -621,6 +626,50 @@ public class CoreEditorFrame
 	}
 	
 	/**
+	 * setupTask
+	 * 
+	 * prepares the task executor before adding tasks with execute.
+	 * 
+	 * @param successMsg
+	 * @param errorMsg
+	 */
+	public void setupTask(
+			final String successMsg, 
+			final String errorMsg
+		)
+	{
+		if( taskExecutor == null )
+			taskExecutor = new SerialTaskExecutor(false);
+		
+		taskExecutor.setFinishedRunnable(new Runnable(){
+				public void run() 
+				{
+					// we are done
+					// set normal cursor
+					CoreEditorFrame.this.setCursor(
+							Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+						);
+					
+					statusBar.setStatus(successMsg,StatusBar.STATUS_OK);
+					statusBar.setProgress(0);
+				}
+			});
+		
+		taskExecutor.setErrorRunnable(new Runnable(){
+			public void run() 
+			{
+				// set normal cursor
+				CoreEditorFrame.this.setCursor(
+						Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+					);
+				
+				statusBar.setStatus(errorMsg,StatusBar.STATUS_ERROR);
+				statusBar.setProgress(0);
+			}
+		});
+	}
+	
+	/**
 	 * markUnsavedTabTitle
 	 * 
 	 * @param table
@@ -904,8 +953,59 @@ public class CoreEditorFrame
 	 */
 	private void actionNew()
 	{
-		// TODO
-System.out.println("TODO actionNew");
+		actionClose();
+	
+		String filepath = GenesisConfig.getInstance().getDBFile();
+		
+		JFileChooser chooser = new JFileChooser();
+		chooser.setMultiSelectionEnabled(false);
+		chooser.setSelectedFile(new File(filepath));
+		chooser.setDialogTitle(labelResource.getProperty("mntmNew", "mntmNew"));
+		chooser.setFileFilter(new FileNameExtensionFilter("SQLite3 File", "s3db", "db"));
+		{
+			int result = chooser.showOpenDialog(this);
+		
+			if( result != JFileChooser.APPROVE_OPTION )
+				return;
+		}
+		
+		final String selectedFile = chooser.getCurrentDirectory()
+				+ System.getProperty("file.separator")
+				+ chooser.getSelectedFile().getName();
+		
+		File f = new File(selectedFile);
+		if( f.exists() )
+		{
+			int result = PopupDialogFactory.confirmOverwriteFile(this, selectedFile);
+			if( result != JOptionPane.YES_OPTION )
+				return;
+			
+			f.delete();
+		}
+		
+		DBConnector.getInstance().openConnection(
+				selectedFile,false
+			);
+		this.statusBar.setStatus(
+				labelResource.getProperty("status.init", "status.init"),
+				StatusBar.STATUS_WORKING
+			);
+		this.setupTask(
+				labelResource.getProperty("status.db.create.success", "status.db.create.success"),
+				labelResource.getProperty("status.db.create.error", "status.db.create.error")
+			);
+		taskExecutor.execute(new CreateDBTaskCoreEditor(
+				statusBar.getStatusLabel(),
+				statusBar.getProgressBar(),
+				labelResource.getProperty("status.db.create","status.db.create")
+			));
+		// add runnable to perform tab init
+		taskExecutor.execute(new Runnable(){
+				public void run() 
+				{
+					initDBAndTabs(selectedFile);
+				}
+			});
 	}
 	
 	/**
@@ -913,12 +1013,7 @@ System.out.println("TODO actionNew");
 	 */
 	private void actionOpen()
 	{
-		if( this.hasContentChanged() )
-		{
-			int result = PopupDialogFactory.confirmCloseWithUnsavedData(this);
-			if( result != JOptionPane.YES_OPTION )
-				return;
-		}
+		actionClose();
 		
 		String filepath = GenesisConfig.getInstance().getDBFile();
 		
@@ -942,6 +1037,7 @@ System.out.println("TODO actionNew");
 	/**
 	 * actionClose 
 	 * closes only the DB
+	 * 
 	 */
 	private void actionClose()
 	{
