@@ -93,9 +93,17 @@ public abstract class AbstractSQLTableModel
 	 * Constructor 1.
 	 * 
 	 * used by system tables or for cross-references
+	 * or for the AbstractGenesisModel
 	 */
 	public AbstractSQLTableModel()
 	{
+		try
+		{
+			this.prefix = TableHelper.getPrefixForTable(this.getDBTableName());
+		} catch( SQLException e ) {
+			ApplicationLogger.logError("cannot aquire prefix for " + this.getDBTableName() );
+			ApplicationLogger.logError(e);
+		}
 		setupDBColumns();
 	}
 	
@@ -252,7 +260,7 @@ public abstract class AbstractSQLTableModel
 		
 		return this.dbColumnNames;
 	}
-	
+		
 	/**
 	 * getNote
 	 * 

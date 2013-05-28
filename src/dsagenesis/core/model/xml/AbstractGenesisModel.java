@@ -65,6 +65,7 @@ public abstract class AbstractGenesisModel
 	 * 
 	 * for creating the model from the database 
 	 * java.sql.ResultSet.
+	 * used by getRow from AbstractSQLTableModel
 	 * 
 	 * @param rs
 	 * @param model
@@ -81,6 +82,7 @@ public abstract class AbstractGenesisModel
 		
 		this.id = rs.getString("ID");
 		this.name = rs.getString(model.getPrefix()+"name");
+		// rest must be set in the extending class.
 	}
 	
 	/**
@@ -94,6 +96,8 @@ public abstract class AbstractGenesisModel
 	public AbstractGenesisModel( Element ele )
 	{
 		this.id = ele.getAttribute("ID");
+		
+		updateFromDB();
 	}
 	
 	

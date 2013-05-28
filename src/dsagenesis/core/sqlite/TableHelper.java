@@ -98,6 +98,31 @@ public class TableHelper
 	}
 	
 	/**
+	 * getTableFromPrefix
+	 * 
+	 * @param stringwithprefix (can be an id or column name or only the prefix)
+	 * 
+	 * @return
+	 * 
+	 * @throws SQLException
+	 */
+	public static String getTableFromPrefix(String stringwithprefix) 
+			throws SQLException
+	{
+		String prefix = stringwithprefix.substring( 0, (stringwithprefix.indexOf("_")+1) );
+		String query = 
+				"SELECT ti_prefix, ti_table_name from CoreDataTableIndex WHERE ti_prefix='"
+					+ prefix+"'";
+		
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);
+		if( rs.next() )
+			return rs.getString("ti_table_name");
+		
+		return "";
+	}
+	
+	
+	/**
 	 * getLabelForTable
 	 * 
 	 * @param tablename
