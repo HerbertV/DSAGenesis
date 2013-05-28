@@ -28,6 +28,7 @@ import javax.swing.table.TableColumn;
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
+import dsagenesis.editor.coredata.table.cell.CheckBoxCellEditor;
 import dsagenesis.editor.coredata.table.cell.CheckBoxCellRenderer;
 import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
 import dsagenesis.editor.coredata.table.cell.IntegerCellRenderer;
@@ -94,10 +95,13 @@ public class CoreEditorTable
 		this.setAutoCreateRowSorter(true);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.getTableHeader().setReorderingAllowed(false);
+		
 		this.setDefaultRenderer(String.class, new BasicCellRenderer());
 		this.setDefaultRenderer(Boolean.class, new CheckBoxCellRenderer());
 		this.setDefaultRenderer(Integer.class, new IntegerCellRenderer());
 		this.setDefaultRenderer(Object.class, new BasicCellRenderer());
+		
+		this.setDefaultEditor(Boolean.class, new CheckBoxCellEditor());
 		
 		this.setRowHeight(22);
 	}
