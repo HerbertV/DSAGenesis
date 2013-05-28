@@ -22,6 +22,7 @@ import java.util.Vector;
 
 import javax.swing.table.TableColumn;
 
+import dsagenesis.core.model.SKTMatrix;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
@@ -46,6 +47,7 @@ public class Characteristics
 	 * reference data from CharacteristicGroups Table
 	 */
 	private Vector<Vector<Object>> characteristicGroups;
+	
 	
 	// ============================================================================
 	//  Constructors
@@ -132,7 +134,26 @@ public class Characteristics
         currColumn.setCellEditor(
         		new CrossReferenceCellEditor(this.characteristicGroups)
         	);
-        // TODO SKT references
+        
+        // SKT references 11 19
+        Vector<Vector<Object>> sktColumns = SKTMatrix.getInstance().getColumnNamesAndLabelsAsObject();
+        currColumn = cetable.getColumnModel().getColumn(11);
+        currColumn.setMinWidth(80);
+        currColumn.setCellRenderer(
+        		new CrossReferenceCellRenderer(sktColumns)
+        	);
+        currColumn.setCellEditor(
+        		new CrossReferenceCellEditor(sktColumns)
+        	);
+        currColumn = cetable.getColumnModel().getColumn(19);
+        currColumn.setMinWidth(80);
+        currColumn.setCellRenderer(
+        		new CrossReferenceCellRenderer(sktColumns)
+        	);
+        currColumn.setCellEditor(
+        		new CrossReferenceCellEditor(sktColumns)
+        	);
+        
         // TODO formular
     }
 	

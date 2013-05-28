@@ -40,9 +40,17 @@ public class SKT
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-		
+
 	/**
-	 * Constructor.
+	 * Constructor 1.
+	 */
+	public SKT() 
+	{
+		super();
+	}
+	
+	/**
+	 * Constructor 2.
 	 * 
 	 * @param rs	
 	 * @throws SQLException 

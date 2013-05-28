@@ -44,7 +44,7 @@ public class CrossReferenceCellEditor
 			
 	private Vector<Vector<Object>> idLabelPairs;
 
-	private JComboBox<String> comboBox;
+	private JComboBox<Object> comboBox;
 	
 	// ============================================================================
 	//  Constructors
@@ -58,14 +58,14 @@ public class CrossReferenceCellEditor
 	@SuppressWarnings("unchecked")
 	public CrossReferenceCellEditor(Vector<Vector<Object>> idLabels) 
 	{
-		super(new JComboBox<String>());
+		super(new JComboBox<Object>());
 		this.idLabelPairs = idLabels;
 		
-		comboBox = (JComboBox<String>)this.getComponent();
+		comboBox = (JComboBox<Object>)this.getComponent();
 		comboBox.setOpaque(false);
 		
 		for(int i=0; i< idLabelPairs.size(); i++ )
-			comboBox.addItem((String)idLabels.get(i).get(1));
+			comboBox.addItem(idLabels.get(i).get(1));
 		
 		this.setClickCountToStart(2);
 	}
