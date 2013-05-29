@@ -63,8 +63,7 @@ public class TableColumnLabels
 	@Override
 	protected void setupDBColumns()
 	{
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
+		super.setupDBColumns();
 		this.dbColumnNames.addElement("tcl_table_name");
 		this.dbColumnNames.addElement("tcl_column_name");
 		this.dbColumnNames.addElement("tcl_label");
@@ -89,7 +88,6 @@ public class TableColumnLabels
 		
 		TableColumn currColumn;
         
-        //name col 1
         currColumn = cetable.getColumnModel().getColumn(1);
         currColumn.setMinWidth(150);
         currColumn = cetable.getColumnModel().getColumn(2);
@@ -101,8 +99,7 @@ public class TableColumnLabels
 	@Override
 	public Vector<Class<?>> getTableColumnClasses()
 	{
-		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
-		vec.add(Integer.class);
+		Vector<Class<?>> vec = super.getTableColumnClasses();
 		vec.add(String.class);
 		vec.add(String.class);
 		vec.add(String.class);

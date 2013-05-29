@@ -18,13 +18,8 @@ package dsagenesis.core.model.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Vector;
-
-import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
-import dsagenesis.editor.coredata.CoreEditorFrame;
-import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
  * Worlds
@@ -32,7 +27,7 @@ import dsagenesis.editor.coredata.table.CoreEditorTable;
  * SQL Model Class.
  */
 public class Worlds
-		extends AbstractSQLTableModel 
+		extends AbstractNamedTableModel 
 {
 	// ============================================================================
 	//  Variables
@@ -66,13 +61,6 @@ public class Worlds
 	//  Functions
 	// ============================================================================
 
-	@Override
-	protected void setupDBColumns() 
-	{
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("w_name");
-	}
 	
 	/**
 	 * not needed 
@@ -82,32 +70,7 @@ public class Worlds
 	{
 		return null;
 	}	
-	
-	@Override
-	public void setupJTableColumnModels(
-			CoreEditorFrame ceframe,
-			CoreEditorTable cetable
-		)
-	{
-		super.setupJTableColumnModels(ceframe, cetable);
 		
-		TableColumn currColumn;
-        
-        //name col 1
-        currColumn = cetable.getColumnModel().getColumn(1);
-        currColumn.setMinWidth(150);
-    }
-	
-	@Override
-	public Vector<Class<?>> getTableColumnClasses()
-	{
-		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
-		vec.add(String.class);
-		vec.add(String.class);
-		
-		return vec;
-	}
-
 	@Override
 	public void queryReferences() throws SQLException
 	{

@@ -43,9 +43,9 @@ DROP TABLE IF EXISTS "Characteristics";
 
 CREATE TABLE "Characteristics" (
 	"ID" VARCHAR(10) PRIMARY KEY NOT NULL,
-	"c_priorty" INTEGER DEFAULT '0' NOT NULL,
-	"c_acronym" VARCHAR(5) NOT NULL,
 	"c_name" TEXT NOT NULL,
+	"c_acronym" VARCHAR(5) NOT NULL,
+	"c_priorty" INTEGER DEFAULT '0' NOT NULL,
 	"c_ref_cg_ID" VARCHAR(10) REFERENCES CharacteristicGroups(ID) NOT NULL,
 	"c_is_used_by_hero" BOOLEAN DEFAULT '1' NOT NULL,
 	"c_h_cp_cost" INTEGER DEFAULT '0' NOT NULL,
@@ -197,9 +197,9 @@ UPDATE "CoreDataTableIndex"
 	Characteristics Entries
 -----------------------------------------------------------------
  	ID,  
- 	c_priorty, 
- 	c_acronym, 
  	c_name,
+ 	c_acronym, 
+ 	c_priorty, 
  	c_ref_cg_ID, 
  	
  	Hero columns:
@@ -224,9 +224,9 @@ UPDATE "CoreDataTableIndex"
 	
 INSERT INTO "Characteristics" VALUES(
 	'c_mu',
-	0,
-	'MU',
 	'Mut',
+	'MU',
+	0,
 	'cg_0',
 	'true',
 	1,	
@@ -246,9 +246,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_kl',
-	1,
-	'KL',
 	'Klugheit',
+	'KL',
+	1,
 	'cg_0',
 	'true',
 	1,
@@ -268,9 +268,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_in',
-	2,
-	'IN',
 	'Intuition',
+	'IN',
+	2,
 	'cg_0',
 	'true',
 	1,
@@ -290,9 +290,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_ch',
-	3,
-	'CH',
 	'Charisma',
+	'CH',
+	3,
 	'cg_0',
 	'true',
 	1,
@@ -312,9 +312,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_ff',
-	4,
-	'FF',
 	'Fingerfertigkeit',
+	'FF',
+	4,
 	'cg_0',
 	'true',
 	1,		
@@ -334,9 +334,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_ge',
-	5,
-	'GE',
 	'Gewandtheit',
+	'GE',
+	5,
 	'cg_0',
 	'true',
 	1,	
@@ -356,9 +356,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_ko',
-	6,
-	'KO',
 	'Konstitution',
+	'KO',
+	6,
 	'cg_0',
 	'true',
 	1,	
@@ -378,9 +378,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_kk',
-	7,
-	'KK',
 	'Körperkraft',
+	'KK',
+	7,
 	'cg_0',
 	'true',
 	1,		
@@ -400,9 +400,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_le',
-	0,
-	'LE',
 	'Lebensenergie',
+	'LE',
+	0,
 	'cg_1',
 	'true',
 	-1,		
@@ -422,9 +422,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_au',
-	1,
-	'AU',
 	'Ausdauer',
+	'AU',
+	1,
 	'cg_1',
 	'true',
 	-1,
@@ -444,9 +444,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_ae',
-	2,
-	'AE',
 	'Astralenergie',
+	'AE',
+	2,
 	'cg_1',
 	'true',
 	-1,		
@@ -466,9 +466,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_ke',
-	3,
-	'KE',
 	'Karmanergie',
+	'KE',
+	3,
 	'cg_1',
 	'true',
 	-1,			
@@ -489,9 +489,9 @@ INSERT INTO "Characteristics" VALUES(
 
 INSERT INTO "Characteristics" VALUES(
 	'c_at',
-	0,
-	'AT',
 	'Attacke',
+	'AT',
+	0,
 	'cg_2',
 	'true',
 	-1,	
@@ -511,9 +511,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_pa',
-	1,
-	'PA',
 	'Parade',
+	'PA',
+	1,
 	'cg_2',
 	'true',
 	-1,			
@@ -533,9 +533,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_aw',
-	2,
-	'AW',
 	'Ausweichen',
+	'AW',
+	2,
 	'cg_2',
 	'true',
 	-1,			
@@ -555,9 +555,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_ini', 
-	3,
-	'INI',
 	'Initiative',
+	'INI',
+	3,
 	'cg_2',
 	'true',
 	-1, 				
@@ -578,9 +578,9 @@ INSERT INTO "Characteristics" VALUES(
 
 INSERT INTO "Characteristics" VALUES(
 	'c_rs',
-	0,
-	'RS',
 	'Rüstungsschutz',
+	'RS',
+	0,
 	'cg_3',
 	'true',
 	-1,				
@@ -600,9 +600,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_rs_z1',
+	'RS Kopf',
+	'RS Kopf',
 	1,
-	'RS Kopf',
-	'RS Kopf',
 	'cg_3',
 	'true',
 	-1,
@@ -622,9 +622,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_rs_z2',
+	'RS Brust',
+	'RS Brust',
 	2,
-	'RS Brust',
-	'RS Brust',
 	'cg_3',
 	'true',
 	-1,			
@@ -644,9 +644,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_rs_z3',
+	'RS Rücken',
+	'RS Rücken',
 	3,
-	'RS Rücken',
-	'RS Rücken',
 	'cg_3',
 	'true',
 	-1,			
@@ -666,9 +666,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_rs_z4',
+	'RS Bauch',
+	'RS Bauch',
 	4,
-	'RS Bauch',
-	'RS Bauch',
 	'cg_3',
 	'true',
 	-1,			
@@ -688,9 +688,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_rs_z5',
-	5,
-	'RS Arm L.',
 	'RS Arm Links',
+	'RS Arm L.',
+	5,
 	'cg_3',
 	'true',
 	-1,				
@@ -710,9 +710,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_rs_z6',
-	6,
-	'RS Arm R.', 	
 	'RS Arm Rechts',
+	'RS Arm R.', 	
+	6,
 	'cg_3',
 	'true',
 	-1,			
@@ -732,9 +732,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_rs_z7',
-	7,
-	'RS Bein L.', 	
 	'RS Bein Links',
+	'RS Bein L.', 	
+	7,
 	'cg_3',
 	'true',
 	-1,		
@@ -754,9 +754,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_rs_z8',
-	8,
-	'RS Bein R.',
 	'RS Bein Rechts',
+	'RS Bein R.',
+	8,
 	'cg_3',
 	'true',
 	-1,		
@@ -777,9 +777,9 @@ INSERT INTO "Characteristics" VALUES(
 
 INSERT INTO "Characteristics" VALUES(
 	'c_so',
-	0,
-	'SO',
 	'Sozialstatus',
+	'SO',
+	0,
 	'cg_4',
 	'true',
 	1,		
@@ -799,9 +799,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_gs',
-	1,
-	'GS',
 	'Geschwindigkeit',
+	'GS',
+	1,
 	'cg_4',
 	'true',
 	-1,
@@ -821,9 +821,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_be',
-	2,
-	'BE',
 	'Behinderung',
+	'BE',
+	2,
 	'cg_4',
 	'true',
 	-1,
@@ -843,9 +843,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_mr',
-	3,
-	'MR',
 	'Magieresistenz',
+	'MR',
+	3,
 	'cg_4',
 	'true',
 	-1,		
@@ -866,9 +866,9 @@ INSERT INTO "Characteristics" VALUES(
 
 INSERT INTO "Characteristics" VALUES(
 	'c_lo',
-	0,
-	'LO',
 	'Loyalitiät',
+	'LO',
+	0,
 	'cg_4',
 	'false',
 	-1,			
@@ -888,9 +888,9 @@ INSERT INTO "Characteristics" VALUES(
 );
 INSERT INTO "Characteristics" VALUES(
 	'c_tp',
-	5,
-	'TP',
 	'Trefferpunkte',
+	'TP',
+	5,
 	'cg_2',
 	'false',
 	-1,		

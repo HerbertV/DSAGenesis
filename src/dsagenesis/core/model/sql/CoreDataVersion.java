@@ -59,13 +59,25 @@ public class CoreDataVersion
 	@Override
 	protected void setupDBColumns() 
 	{
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
+		super.setupDBColumns();
 		this.dbColumnNames.addElement("ver_major");
 		this.dbColumnNames.addElement("ver_minor");
 		this.dbColumnNames.addElement("ver_language");
 	}
 	
+	
+
+	@Override
+	public Vector<Class<?>> getTableColumnClasses()
+	{
+		Vector<Class<?>> vec = super.getTableColumnClasses();
+		vec.add(Integer.class);
+		vec.add(Integer.class);
+		vec.add(String.class);
+		
+		return vec;
+	}
+
 	/**
 	 * since this is a system table there is no AbstractGenesisModel 
 	 */
@@ -74,19 +86,6 @@ public class CoreDataVersion
 	{
 		return null;
 	}
-
-	@Override
-	public Vector<Class<?>> getTableColumnClasses()
-	{
-		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
-		vec.add(Integer.class);
-		vec.add(Integer.class);
-		vec.add(Integer.class);
-		vec.add(String.class);
-		
-		return vec;
-	}
-
 	@Override
 	public void queryReferences() throws SQLException
 	{

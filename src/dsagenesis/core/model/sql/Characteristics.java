@@ -37,7 +37,7 @@ import dsagenesis.editor.coredata.table.cell.CrossReferenceCellRenderer;
  * contains Attributes and anything else that is leveled or calculated
  */
 public class Characteristics
-		extends AbstractSQLTableModel 
+		extends AbstractNamedTableModel 
 {
 	// ============================================================================
 	//  Variables
@@ -80,11 +80,9 @@ public class Characteristics
 	@Override
 	protected void setupDBColumns() 
 	{
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("c_priorty");
+		super.setupDBColumns();
 		this.dbColumnNames.addElement("c_acronym");
-		this.dbColumnNames.addElement("c_name");
+		this.dbColumnNames.addElement("c_priorty");
 		this.dbColumnNames.addElement("c_ref_cg_ID");
 		this.dbColumnNames.addElement("c_is_used_by_hero");
 		this.dbColumnNames.addElement("c_h_cp_cost");
@@ -102,15 +100,6 @@ public class Characteristics
 		this.dbColumnNames.addElement("c_f_can_decrease");
 		this.dbColumnNames.addElement("c_f_skt_column");
 	}
-	/**
-	 *  
-	 */
-	@Override
-	public AbstractGenesisModel getRow(String id) 
-	{
-		// TODO
-		return null;
-	}
 	
 	@Override
 	public void setupJTableColumnModels(
@@ -122,9 +111,6 @@ public class Characteristics
 		
 		TableColumn currColumn;
         
-        //col 3 name
-        currColumn = cetable.getColumnModel().getColumn(3);
-        currColumn.setMinWidth(120);
         //col 4 ref
         currColumn = cetable.getColumnModel().getColumn(4);
         currColumn.setMinWidth(120);
@@ -160,11 +146,9 @@ public class Characteristics
 	@Override
 	public Vector<Class<?>> getTableColumnClasses()
 	{
-		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
+		Vector<Class<?>> vec = super.getTableColumnClasses();
 		vec.add(String.class);
 		vec.add(Integer.class);
-		vec.add(String.class);
-		vec.add(String.class);
 		vec.add(String.class);
 		vec.add(Boolean.class);
 		vec.add(Integer.class);
@@ -183,6 +167,16 @@ public class Characteristics
 		vec.add(String.class);
 		
 		return vec;
+	}
+	
+	/**
+	 *  
+	 */
+	@Override
+	public AbstractGenesisModel getRow(String id) 
+	{
+		// TODO
+		return null;
 	}
 	
 	@Override

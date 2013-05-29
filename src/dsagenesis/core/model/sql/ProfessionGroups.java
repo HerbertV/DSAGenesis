@@ -35,7 +35,7 @@ import dsagenesis.editor.coredata.table.CoreEditorTable;
  * It is also used by the filtering in the hero creation step.
  */
 public class ProfessionGroups
-		extends AbstractSQLTableModel 
+		extends AbstractNamedTableModel 
 {
 	// ============================================================================
 	//  Variables
@@ -72,19 +72,8 @@ public class ProfessionGroups
 	@Override
 	protected void setupDBColumns() 
 	{
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
-		this.dbColumnNames.addElement("pg_name");
+		super.setupDBColumns();
 		this.dbColumnNames.addElement("pg_path");
-	}
-
-	/**
-	 *  not needed 
-	 */
-	@Override
-	public AbstractGenesisModel getRow(String id) 
-	{
-		return null;
 	}	
 	
 	@Override
@@ -97,9 +86,6 @@ public class ProfessionGroups
 		
 		TableColumn currColumn;
         
-        //name col 1
-        currColumn = cetable.getColumnModel().getColumn(1);
-        currColumn.setMinWidth(150);
         //col 2
         currColumn = cetable.getColumnModel().getColumn(2);
         currColumn.setMinWidth(150);
@@ -108,14 +94,21 @@ public class ProfessionGroups
 	@Override
 	public Vector<Class<?>> getTableColumnClasses()
 	{
-		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
-		vec.add(String.class);
-		vec.add(String.class);
+		Vector<Class<?>> vec = super.getTableColumnClasses();
 		vec.add(String.class);
 		
 		return vec;
 	}
 
+	/**
+	 *  not needed 
+	 */
+	@Override
+	public AbstractGenesisModel getRow(String id) 
+	{
+		return null;
+	}
+	
 	@Override
 	public void queryReferences() throws SQLException
 	{

@@ -62,8 +62,7 @@ public class CoreDataTableIndex
 	@Override
 	protected void setupDBColumns() 
 	{
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
+		super.setupDBColumns();
 		this.dbColumnNames.addElement("ti_table_name");
 		this.dbColumnNames.addElement("ti_uses_prefix");
 		this.dbColumnNames.addElement("ti_prefix");
@@ -74,14 +73,6 @@ public class CoreDataTableIndex
 		this.dbColumnNames.addElement("ti_editable");
 	}
 
-	/**
-	 * since this is a system table there is no AbstractGenesisModel 
-	 */
-	public AbstractGenesisModel getRow(String id)
-	{
-		return null;
-	}
-	
 	@Override
 	public void setupJTableColumnModels(
 			CoreEditorFrame ceframe,
@@ -108,8 +99,7 @@ public class CoreDataTableIndex
 	@Override
 	public Vector<Class<?>> getTableColumnClasses()
 	{
-		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
-		vec.add(Integer.class);
+		Vector<Class<?>> vec = super.getTableColumnClasses();
 		vec.add(String.class);
 		vec.add(Boolean.class);
 		vec.add(String.class);
@@ -122,6 +112,14 @@ public class CoreDataTableIndex
 		return vec;
 	}
 
+	/**
+	 * since this is a system table there is no AbstractGenesisModel 
+	 */
+	@Override
+	public AbstractGenesisModel getRow(String id)
+	{
+		return null;
+	}
 
 	@Override
 	public void queryReferences() throws SQLException

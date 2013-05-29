@@ -68,8 +68,7 @@ public class SKT
 	@Override
 	protected void setupDBColumns() 
 	{
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
+		super.setupDBColumns();
 		this.dbColumnNames.addElement("skt_a");
 		this.dbColumnNames.addElement("skt_b");
 		this.dbColumnNames.addElement("skt_c");
@@ -79,21 +78,11 @@ public class SKT
 		this.dbColumnNames.addElement("skt_g");
 		this.dbColumnNames.addElement("skt_h");
 	}
-
-	/**
-	 * for accessing the SKT use class SKTMatrix. 
-	 */
-	@Override
-	public AbstractGenesisModel getRow(String id) 
-	{
-		return null;
-	}	
 	
 	@Override
 	public Vector<Class<?>> getTableColumnClasses()
 	{
-		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
-		vec.add(Integer.class);
+		Vector<Class<?>> vec = super.getTableColumnClasses();
 		vec.add(Integer.class);
 		vec.add(Integer.class);
 		vec.add(Integer.class);
@@ -106,6 +95,15 @@ public class SKT
 		return vec;
 	}
 
+	/**
+	 * for accessing the SKT use class SKTMatrix. 
+	 */
+	@Override
+	public AbstractGenesisModel getRow(String id) 
+	{
+		return null;
+	}	
+	
 	@Override
 	public void queryReferences() throws SQLException 
 	{

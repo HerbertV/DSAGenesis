@@ -27,93 +27,110 @@ import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
- * RaceCultureGroups
+ * AbstractNamedTableModel
  * 
- * SQL Model Class.
- * 
- * RaceCultureGroups is used for getting the sub folders for races and cultures.
- * It is also used by the filtering in the hero creation step.
+ * This an intermediate abstract class for every table
+ * that has a name column.
  */
-public class RaceCultureGroups
-		extends AbstractNamedTableModel 
+public class AbstractNamedTableModel 
+		extends AbstractSQLTableModel 
 {
-	// ============================================================================
-	//  Variables
-	// ============================================================================
-		
-	// ============================================================================
-	//  Constructors
-	// ============================================================================
 	
 	/**
 	 * Constructor 1.
 	 */
-	public RaceCultureGroups() 
+	public AbstractNamedTableModel() 
 	{
 		super();
 	}
-	
+
 	/**
 	 * Constructor 2.
 	 * 
-	 * @param rs	
-	 * @throws SQLException 
+	 * @param rs
+	 * 
+	 * @throws SQLException
 	 */
-	public RaceCultureGroups(ResultSet rs) 
+	public AbstractNamedTableModel(ResultSet rs) 
 			throws SQLException 
 	{
 		super(rs);
 	}
-	
+
 	// ============================================================================
 	//  Functions
 	// ============================================================================
 
+	/**
+	 * setupDBColumns
+	 * 
+	 * for setting up the db column names.
+	 * 
+	 * needs further override!
+	 * and call super.setupDBColumns(); !
+	 */
 	@Override
 	protected void setupDBColumns() 
 	{
 		super.setupDBColumns();
-		this.dbColumnNames.addElement("rcg_path");
+		this.dbColumnNames.addElement(this.prefix+"name");
 	}
-
-	@Override
+	
+	/**
+	 * setupJTableColumnModels
+	 * 
+	 * This function assigns custom renders and editors to each column.
+	 * 
+	 * needs further override!
+	 * and call super.setupJTableColumnModels(...); !
+	 * 
+	 * @param ceframe
+	 * @param cetable
+	 */
 	public void setupJTableColumnModels(
 			CoreEditorFrame ceframe,
 			CoreEditorTable cetable
 		)
 	{
 		super.setupJTableColumnModels(ceframe, cetable);
-		
 		TableColumn currColumn;
         
-        //col 2
-        currColumn = cetable.getColumnModel().getColumn(2);
+        // Name col 1
+		currColumn = cetable.getColumnModel().getColumn(1);
         currColumn.setMinWidth(150);
     }
 	
+	/**
+	 * getTableColumnClasses
+	 * 
+	 * this is for the CoreEditorTableModel
+	 * to get the correct class for each column 
+	 * for cell renderer and editors.
+	 * 
+	 * needs further override!
+	 * and call super.getTableColumnClasses(...); !
+	 *
+	 * @return
+	 */
 	@Override
-	public Vector<Class<?>> getTableColumnClasses()
+	public Vector<Class<?>>getTableColumnClasses()
 	{
 		Vector<Class<?>> vec = super.getTableColumnClasses();
 		vec.add(String.class);
-		
 		return vec;
 	}
-
-	/**
-	 *  
-	 */
-	@Override
-	public AbstractGenesisModel getRow(String id) 
-	{
-		// TODO
-		return null;
-	}	
+	
 	
 	@Override
-	public void queryReferences() throws SQLException 
-	{
-		// not needed
+	public void queryReferences() throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public AbstractGenesisModel getRow(String id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
