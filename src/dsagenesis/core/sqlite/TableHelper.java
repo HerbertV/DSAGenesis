@@ -245,7 +245,7 @@ public class TableHelper
 			ResultSet rs = DBConnector.getInstance().executeQuery(query);
 			
 			if( rs.next() )
-				if( id.equals(rs.getString(0)) )
+				if( id.equals(rs.getString("ID")) )
 					return true;
 			
 		} catch( Exception e ) {
