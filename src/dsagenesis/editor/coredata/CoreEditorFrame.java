@@ -738,6 +738,14 @@ public class CoreEditorFrame
 	}
 
 	/**
+	 * setFocusOnActiveTab
+	 */
+	public void setFocusOnActiveTab() 
+	{
+		int tabidx = tabbedPane.getSelectedIndex();
+		vecTables.get(tabidx).requestFocus();
+	}
+	/**
 	 * called if a tab has changed
 	 * 
 	 * @param ce

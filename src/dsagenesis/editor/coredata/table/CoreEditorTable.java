@@ -107,6 +107,16 @@ public class CoreEditorTable
 	}
 	
 	/**
+	 * getFrame
+	 * 
+	 * @return
+	 */
+	public CoreEditorFrame getFrame()
+	{
+		return jframe;
+	}
+	
+	/**
 	 * getSQLTable
 	 * 
 	 * @return

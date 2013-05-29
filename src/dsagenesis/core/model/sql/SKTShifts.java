@@ -41,9 +41,16 @@ public class SKTShifts
 	//  Constructors
 	// ============================================================================
 
+	/**
+	 * Constructor 1.
+	 */
+	public SKTShifts() 
+	{
+		super();
+	}
 	
 	/**
-	 * Constructor.
+	 * Constructor 2.
 	 * 
 	 * @param rs	
 	 * @throws SQLException 
