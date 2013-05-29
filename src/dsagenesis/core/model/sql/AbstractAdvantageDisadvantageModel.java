@@ -22,98 +22,122 @@ import java.util.Vector;
 
 import javax.swing.table.TableColumn;
 
-import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
- * RaceCultureGroups
+ * AbstractAdvantageDisadvantageModel
  * 
- * SQL Model Class.
+ * This an intermediate abstract class for 
+ * Advantages, Disadvantages, Negative Attributes and Gifts.
  * 
- * RaceCultureGroups is used for getting the sub folders for races and cultures.
- * It is also used by the filtering in the hero creation step.
+ * Since these tables share a lot similarities,
+ * this class does everything all final implementations need.
  */
-public class RaceCultureGroups
+public abstract class AbstractAdvantageDisadvantageModel 
 		extends AbstractNamedTableModel 
 {
-	// ============================================================================
-	//  Variables
-	// ============================================================================
-		
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-	
+		
 	/**
 	 * Constructor 1.
 	 */
-	public RaceCultureGroups() 
+	public AbstractAdvantageDisadvantageModel() 
 	{
 		super();
 	}
-	
+
 	/**
 	 * Constructor 2.
 	 * 
-	 * @param rs	
-	 * @throws SQLException 
+	 * @param rs
+	 * 
+	 * @throws SQLException
 	 */
-	public RaceCultureGroups(ResultSet rs) 
+	public AbstractAdvantageDisadvantageModel(ResultSet rs) 
 			throws SQLException 
 	{
 		super(rs);
 	}
-	
+
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-
+	
+	
+	/**
+	 * setupDBColumns
+	 * 
+	 * for setting up the db column names.
+	 * 
+	 * needs further override!
+	 * and call super.setupDBColumns(); !
+	 */
 	@Override
 	protected void setupDBColumns() 
 	{
 		super.setupDBColumns();
-		this.dbColumnNames.addElement("rcg_path");
+		//TODO
 	}
-
-	@Override
+	
+	/**
+	 * setupJTableColumnModels
+	 * 
+	 * This function assigns custom renders and editors to each column.
+	 * 
+	 * needs further override!
+	 * and call super.setupJTableColumnModels(...); !
+	 * 
+	 * @param ceframe
+	 * @param cetable
+	 */
 	public void setupJTableColumnModels(
 			CoreEditorFrame ceframe,
 			CoreEditorTable cetable
 		)
 	{
 		super.setupJTableColumnModels(ceframe, cetable);
-		
 		TableColumn currColumn;
         
-        //col 2
-        currColumn = cetable.getColumnModel().getColumn(2);
-        currColumn.setMinWidth(150);
+        // TODO
     }
 	
+	/**
+	 * getTableColumnClasses
+	 * 
+	 * this is for the CoreEditorTableModel
+	 * to get the correct class for each column 
+	 * for cell renderer and editors.
+	 * 
+	 * needs further override!
+	 * and call super.getTableColumnClasses(...); !
+	 *
+	 * @return
+	 */
 	@Override
-	public Vector<Class<?>> getTableColumnClasses()
+	public Vector<Class<?>>getTableColumnClasses()
 	{
 		Vector<Class<?>> vec = super.getTableColumnClasses();
-		vec.add(String.class);
+		
+		// TODO
 		
 		return vec;
 	}
-
-	/**
-	 *  
-	 */
-	@Override
-	public AbstractGenesisModel getRow(String id) 
-	{
-		// TODO
-		return null;
-	}	
+	
+	
+	
 	
 	@Override
-	public void queryReferences() throws SQLException 
+	public void queryReferences() 
+			throws SQLException
 	{
-		// not needed
+		// TODO Auto-generated method stub
+
 	}
+
+	
 
 }

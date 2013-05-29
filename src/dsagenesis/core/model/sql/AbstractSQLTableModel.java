@@ -29,7 +29,6 @@ import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
-import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
 
 /**
  * AbstractSQLTableModel
@@ -41,6 +40,7 @@ import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
  * So in most cases the Names of these classes are plural.
  * 
  * The Classes have the same name as their referring database tables.
+ * Also setups everything for the ID column.
  */
 public abstract class AbstractSQLTableModel
 {
@@ -138,9 +138,68 @@ public abstract class AbstractSQLTableModel
 	// ============================================================================
 	
 	/**
+	 * setupDBColumns
+	 * 
 	 * for setting up the db column names.
+	 * 
+	 * needs further override!
+	 * and call super.setupDBColumns(); !
 	 */
-	protected abstract void setupDBColumns();
+	protected void setupDBColumns() 
+	{
+		this.dbColumnNames = new Vector<String>();
+		this.dbColumnNames.addElement("ID");
+	}
+		
+	/**
+	 * setupJTableColumnModels
+	 * 
+	 * This function assigns custom renders and editors to each column.
+	 * 
+	 * needs further override!
+	 * and call super.setupJTableColumnModels(...); !
+	 * 
+	 * @param ceframe
+	 * @param cetable
+	 */
+	public void setupJTableColumnModels(
+			CoreEditorFrame ceframe,
+			CoreEditorTable cetable
+		)
+	{
+		TableColumn currColumn;
+        
+        // ID col 0
+		// ID is always Left aligned
+        currColumn = cetable.getColumnModel().getColumn(0);
+        currColumn.setMinWidth(30);
+        currColumn.setPreferredWidth(50);
+        currColumn.setMaxWidth(100);
+	}
+	
+	/**
+	 * getTableColumnClasses
+	 * 
+	 * this is for the CoreEditorTableModel
+	 * to get the correct class for each column 
+	 * for cell renderer and editors.
+	 * 
+	 * needs further override!
+	 * and call super.getTableColumnClasses(...); !
+	 *
+	 * @return
+	 */
+	public Vector<Class<?>>getTableColumnClasses()
+	{
+		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
+		if( usesPrefix )
+		{
+			vec.add(String.class);
+		} else {
+			vec.add(Integer.class);
+		}
+		return vec;
+	}
 	
 	/**
 	 * getDBTableName
@@ -243,7 +302,7 @@ public abstract class AbstractSQLTableModel
 								+ this.getDBTableName()
 								+ " : "
 								+ row.elementAt(0)
-								+"Not found ! Using internal names now."
+								+" not found ! Using internal name now."
 						);
 					return this.dbColumnNames;
 				}
@@ -279,31 +338,6 @@ public abstract class AbstractSQLTableModel
 	public boolean isEditable()
 	{
 		return isEditable;
-	}
-	
-	/**
-	 * setupJTableColumnModels
-	 * 
-	 * This function assigns custom renders and editors to each column.
-	 * needs override
-	 * 
-	 * @param ceframe
-	 * @param cetable
-	 */
-	public void setupJTableColumnModels(
-			CoreEditorFrame ceframe,
-			CoreEditorTable cetable
-		)
-	{
-		TableColumn currColumn;
-        
-        // ID col 0
-		// ID is always Left aligned
-        currColumn = cetable.getColumnModel().getColumn(0);
-        currColumn.setMinWidth(30);
-        currColumn.setPreferredWidth(50);
-        currColumn.setMaxWidth(100);
-        currColumn.setCellRenderer(new BasicCellRenderer());
 	}
 	
 	/**
@@ -466,15 +500,8 @@ public abstract class AbstractSQLTableModel
 	 */
 	public abstract AbstractGenesisModel getRow(String id);
 	
-	/**
-	 * getTableColumnClasses
-	 * 
-	 * this is for the CoreEditorTableModel
-	 * to get the correct class for each column.
-	 * 
-	 * @return
-	 */
-	public abstract Vector<Class<?>>getTableColumnClasses();
+	
+	
 	
 	
 	/**

@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
+import dsagenesis.editor.coredata.CoreEditorFrame;
+import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
  * SKTShifts
@@ -68,8 +70,7 @@ public class SKTShifts
 	@Override
 	protected void setupDBColumns() 
 	{
-		this.dbColumnNames = new Vector<String>();
-		this.dbColumnNames.addElement("ID");
+		super.setupDBColumns();
 		this.dbColumnNames.addElement("skts_ref_source_ID");
 		this.dbColumnNames.addElement("skts_target_table_name");
 		this.dbColumnNames.addElement("skts_target_column_name");
@@ -81,20 +82,21 @@ public class SKTShifts
 		this.dbColumnNames.addElement("skts_skt_column");
 	}
 
-	/**
-	 * for accessing the SKTShifts use class SKTMatrix. 
-	 */
 	@Override
-	public AbstractGenesisModel getRow(String id) 
+	public void setupJTableColumnModels(
+			CoreEditorFrame ceframe,
+			CoreEditorTable cetable
+		)
 	{
-		return null;
-	}	
+		super.setupJTableColumnModels(ceframe, cetable);
+		
+		// TODO
+	}
 	
 	@Override
 	public Vector<Class<?>> getTableColumnClasses()
 	{
-		Vector<Class<?>> vec = new Vector<Class<?>>(this.dbColumnNames.size());
-		vec.add(String.class);
+		Vector<Class<?>> vec = super.getTableColumnClasses();
 		vec.add(String.class);
 		vec.add(String.class);
 		vec.add(String.class);
@@ -108,6 +110,16 @@ public class SKTShifts
 		return vec;
 	}
 
+	/**
+	 * for accessing the SKTShifts use class SKTMatrix. 
+	 */
+	@Override
+	public AbstractGenesisModel getRow(String id) 
+	{
+		return null;
+	}	
+	
+	
 	@Override
 	public void queryReferences() throws SQLException
 	{
