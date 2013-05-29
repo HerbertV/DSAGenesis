@@ -26,6 +26,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
+import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
 import dsagenesis.editor.coredata.table.cell.CheckBoxCellEditor;
@@ -260,8 +261,9 @@ public class CoreEditorTable
 		Vector<Class<?>> classes = this.sqlTable.getTableColumnClasses();
 		Vector<Object> row = new Vector<Object>();
 		
-		// id is null since we have none yet.
-		row.addElement(null);
+		// generate id
+		row.addElement(TableHelper.createNewID(this.sqlTable.getDBTableName()));
+		
 		for(int i=1; i< classes.size(); i++ )
 		{
 			if( classes.elementAt(i).equals(String.class) )

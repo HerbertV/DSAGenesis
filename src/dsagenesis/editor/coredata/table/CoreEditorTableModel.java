@@ -20,6 +20,8 @@ import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
 
+import dsagenesis.core.sqlite.TableHelper;
+
 /**
  * JTableModel
  * 
@@ -112,15 +114,28 @@ public class CoreEditorTableModel
 	 * overridden to prevent that the id can change by hand.
 	 * 
 	 * @param row
-	 * @param col
+	 * @param column
 	 */
 	@Override
-	public boolean isCellEditable(int row, int col) 
+	public boolean isCellEditable(int row, int column) 
 	{
-		if( 0 == col || isReadonly )
+		if( isReadonly )
 			return false;
-		else
+		
+		if( column != 0 )
 			return true;
+		
+		String tablename = table.getSQLTable().getDBTableName();
+		
+		if( this.getValueAt(row, column) == null )
+			return true;
+		
+		String id = this.getValueAt(row, column).toString();
+		
+		if( TableHelper.idExists(id, tablename) )
+			return false;
+		
+		return true;
 	}
 
 	/**
