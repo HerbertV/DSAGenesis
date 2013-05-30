@@ -20,6 +20,7 @@ import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
@@ -27,7 +28,6 @@ import jhv.component.ILabeledComponent;
 import jhv.component.LabelResource;
 
 import dsagenesis.core.config.GenesisConfig;
-import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.core.ui.StatusBar;
 
 /**
@@ -36,7 +36,7 @@ import dsagenesis.core.ui.StatusBar;
  * Special Cell Editor for IDs 
  * that prevents that the prefix is deleted.
  */
-public class IDCellEditor 
+public class NumericCellEditor 
 		extends DefaultCellEditor 
 		implements ILabeledComponent
 {
@@ -53,9 +53,7 @@ public class IDCellEditor
 
 	private JTextField textField;
 	
-	private String prefix;
-	
-	private String tablename;
+	private Class<? extends Number> cellClass;
 	
 	private static LabelResource labelResource;
 	
@@ -64,25 +62,17 @@ public class IDCellEditor
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param prefix
-	 * @param tablename
-	 * @param sb
-	 */
-	public IDCellEditor(
-			String prefix, 
-			String tablename,
+		
+	public NumericCellEditor(
+			Class<? extends Number> c,
 			StatusBar sb
 		)
 	{
 		super(new JTextField());
 
 		this.textField = (JTextField)this.getComponent();
-		this.prefix = prefix;
-		this.tablename = tablename;
+		this.textField.setHorizontalAlignment(JLabel.RIGHT);
+		this.cellClass = c;
 		this.statusBar = sb;
 		
 		if( labelResource == null )
@@ -102,37 +92,36 @@ public class IDCellEditor
 	@Override
 	public boolean stopCellEditing() 
 	{
-		boolean isValid = false;
+		boolean isValid = true;
 		String value = this.textField.getText().trim();
 		
-		if( !value.startsWith(prefix) )
+		try
 		{
-			isValid = false;
-			statusBar.setStatus(
-					labelResource.getProperty("error.missingPrefix","error.missingPrefix"), 
-					StatusBar.STATUS_ERROR
-				);
-			
-		} else if( TableHelper.idExists(value, tablename) ) {
-			isValid = false;
-			statusBar.setStatus(
-					labelResource.getProperty("error.idExists","error.idExists"), 
-					StatusBar.STATUS_ERROR
-				);
-		} else if( value.length() == prefix.length() ) {
-			isValid = false;
-			statusBar.setStatus(
-					labelResource.getProperty("error.missingSuffix","error.missingSuffix"), 
-					StatusBar.STATUS_ERROR
-				);
-			
-		} else {
-			isValid = true;
+			if( cellClass == Integer.class )
+			{
+				Integer.parseInt(value);
+			} else if( cellClass == Float.class ) {
+				Float.parseFloat(value);
+			}
 			statusBar.setStatus(
 					labelResource.getProperty("ok","ok"), 
 					StatusBar.STATUS_OK
 				);
+		} catch( NumberFormatException e ) {
+			isValid = false;
 			
+			if( cellClass == Integer.class )
+			{
+				statusBar.setStatus(
+						labelResource.getProperty("error.notInteger","error.notInteger"), 
+						StatusBar.STATUS_ERROR
+					);
+			} else if( cellClass == Float.class ) {
+				statusBar.setStatus(
+						labelResource.getProperty("error.notFloat","error.notFloat"), 
+						StatusBar.STATUS_ERROR
+					);
+			}
 		}
 		
 		if( isValid )
@@ -157,10 +146,6 @@ public class IDCellEditor
 				conf.getLanguage(), 
 				"labels"
 			);
-		
 	}
-
-
-	
 
 }

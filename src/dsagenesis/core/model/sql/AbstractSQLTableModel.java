@@ -169,19 +169,19 @@ public abstract class AbstractSQLTableModel
 		)
 	{
 		TableColumn currColumn;
-        
-        // ID col 0
+
+		// ID col 0
 		// ID is always Left aligned
-        currColumn = cetable.getColumnModel().getColumn(0);
-        currColumn.setMinWidth(30);
-        currColumn.setPreferredWidth(50);
-        currColumn.setMaxWidth(100);
-        
-        currColumn.setCellEditor(new IDCellEditor(
-        		cetable.getSQLTable().getPrefix(),
-        		cetable.getSQLTable().getDBTableName(),
-        		ceframe.getStatusBar()
-        	));
+		currColumn = cetable.getColumnModel().getColumn(0);
+		currColumn.setMinWidth(30);
+		currColumn.setPreferredWidth(50);
+		currColumn.setMaxWidth(100);
+
+		currColumn.setCellEditor(new IDCellEditor(
+				cetable.getSQLTable().getPrefix(),
+				cetable.getSQLTable().getDBTableName(),
+				ceframe.getStatusBar()
+			));
 	}
 	
 	/**

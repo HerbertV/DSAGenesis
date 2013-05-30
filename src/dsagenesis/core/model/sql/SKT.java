@@ -20,7 +20,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import javax.swing.table.TableColumn;
+
 import dsagenesis.core.model.xml.AbstractGenesisModel;
+import dsagenesis.editor.coredata.CoreEditorFrame;
+import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
  * SKT
@@ -77,6 +82,58 @@ public class SKT
 		this.dbColumnNames.addElement("skt_f");
 		this.dbColumnNames.addElement("skt_g");
 		this.dbColumnNames.addElement("skt_h");
+	}
+	
+	@Override
+	public void setupJTableColumnModels(
+			CoreEditorFrame ceframe,
+			CoreEditorTable cetable
+		)
+	{
+		super.setupJTableColumnModels(ceframe, cetable);
+		
+		TableColumn currColumn;
+
+		currColumn = cetable.getColumnModel().getColumn(1);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		currColumn = cetable.getColumnModel().getColumn(2);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		currColumn = cetable.getColumnModel().getColumn(3);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		currColumn = cetable.getColumnModel().getColumn(4);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		currColumn = cetable.getColumnModel().getColumn(5);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		currColumn = cetable.getColumnModel().getColumn(6);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		currColumn = cetable.getColumnModel().getColumn(7);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		currColumn = cetable.getColumnModel().getColumn(8);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
 	}
 	
 	@Override

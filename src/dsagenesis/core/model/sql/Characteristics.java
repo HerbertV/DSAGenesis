@@ -28,6 +28,7 @@ import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellEditor;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellRenderer;
+import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
  * Characteristics
@@ -108,39 +109,80 @@ public class Characteristics
 		)
 	{
 		super.setupJTableColumnModels(ceframe, cetable);
-		
+
 		TableColumn currColumn;
-        
-        //col 4 ref
-        currColumn = cetable.getColumnModel().getColumn(4);
-        currColumn.setMinWidth(120);
-        currColumn.setCellRenderer(
-        		new CrossReferenceCellRenderer(this.characteristicGroups)
-        	);
-        currColumn.setCellEditor(
-        		new CrossReferenceCellEditor(this.characteristicGroups)
-        	);
-        
-        // SKT references 11 19
-        Vector<Vector<Object>> sktColumns = SKTMatrix.getInstance().getColumnNamesAndLabelsAsObject();
-        currColumn = cetable.getColumnModel().getColumn(11);
-        currColumn.setMinWidth(80);
-        currColumn.setCellRenderer(
-        		new CrossReferenceCellRenderer(sktColumns)
-        	);
-        currColumn.setCellEditor(
-        		new CrossReferenceCellEditor(sktColumns)
-        	);
-        currColumn = cetable.getColumnModel().getColumn(19);
-        currColumn.setMinWidth(80);
-        currColumn.setCellRenderer(
-        		new CrossReferenceCellRenderer(sktColumns)
-        	);
-        currColumn.setCellEditor(
-        		new CrossReferenceCellEditor(sktColumns)
-        	);
-        
-        // TODO formular
+
+		//col 3
+		currColumn = cetable.getColumnModel().getColumn(3);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+
+		//col 4 ref
+		currColumn = cetable.getColumnModel().getColumn(4);
+		currColumn.setMinWidth(120);
+		currColumn.setCellRenderer(
+				new CrossReferenceCellRenderer(this.characteristicGroups)
+				);
+		currColumn.setCellEditor(
+				new CrossReferenceCellEditor(this.characteristicGroups)
+				);
+
+		//col 6
+		currColumn = cetable.getColumnModel().getColumn(6);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		//col 7
+		currColumn = cetable.getColumnModel().getColumn(7);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		//col 8
+		currColumn = cetable.getColumnModel().getColumn(8);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+
+		// SKT reference col 11 
+		Vector<Vector<Object>> sktColumns = SKTMatrix.getInstance().getColumnNamesAndLabelsAsObject();
+		currColumn = cetable.getColumnModel().getColumn(11);
+		currColumn.setMinWidth(80);
+		currColumn.setCellRenderer(
+				new CrossReferenceCellRenderer(sktColumns)
+			);
+		currColumn.setCellEditor(
+				new CrossReferenceCellEditor(sktColumns)
+			);
+		
+		//col 15
+		currColumn = cetable.getColumnModel().getColumn(15);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		//col 16
+		currColumn = cetable.getColumnModel().getColumn(16);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		
+		// SKT reference col 19 
+		currColumn = cetable.getColumnModel().getColumn(19);
+		currColumn.setMinWidth(80);
+		currColumn.setCellRenderer(
+				new CrossReferenceCellRenderer(sktColumns)
+			);
+		currColumn.setCellEditor(
+				new CrossReferenceCellEditor(sktColumns)
+			);
+
+		// TODO formular
     }
 	
 	@Override

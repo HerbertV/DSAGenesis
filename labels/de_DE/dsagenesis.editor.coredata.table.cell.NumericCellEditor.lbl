@@ -1,0 +1,4 @@
+error.notInteger=Es sind nur Ganzzahlen erlaubt!
+error.notFloat=Es sind nur Flieﬂkommazahlen erlaubt!
+
+ok=Zahl akzeptiert.
