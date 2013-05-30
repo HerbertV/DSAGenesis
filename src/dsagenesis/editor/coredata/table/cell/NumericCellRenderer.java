@@ -19,11 +19,11 @@ package dsagenesis.editor.coredata.table.cell;
 import javax.swing.JLabel;
 
 /**
- * IntegerCellRenderer.
+ * NumericCellRenderer.
  * 
- * renders Integer Right Aligned.
+ * renders numbers right aligned.
  */
-public class IntegerCellRenderer 
+public class NumericCellRenderer 
 		extends BasicCellRenderer 
 {
 	// ============================================================================
@@ -45,7 +45,7 @@ public class IntegerCellRenderer
 	/**
 	 * Constructor
 	 */
-	public IntegerCellRenderer()
+	public NumericCellRenderer()
 	{
 		super();
 		this.setHorizontalAlignment(JLabel.RIGHT);

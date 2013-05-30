@@ -32,7 +32,7 @@ import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
 import dsagenesis.editor.coredata.table.cell.CheckBoxCellEditor;
 import dsagenesis.editor.coredata.table.cell.CheckBoxCellRenderer;
 import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
-import dsagenesis.editor.coredata.table.cell.IntegerCellRenderer;
+import dsagenesis.editor.coredata.table.cell.NumericCellRenderer;
 
 /**
  * CoreEditorTable
@@ -97,11 +97,13 @@ public class CoreEditorTable
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.getTableHeader().setReorderingAllowed(false);
 		
+		// renderer
 		this.setDefaultRenderer(String.class, new BasicCellRenderer());
 		this.setDefaultRenderer(Boolean.class, new CheckBoxCellRenderer());
-		this.setDefaultRenderer(Integer.class, new IntegerCellRenderer());
+		this.setDefaultRenderer(Number.class, new NumericCellRenderer());
 		this.setDefaultRenderer(Object.class, new BasicCellRenderer());
 		
+		// editors
 		this.setDefaultEditor(Boolean.class, new CheckBoxCellEditor());
 		
 		this.setRowHeight(22);

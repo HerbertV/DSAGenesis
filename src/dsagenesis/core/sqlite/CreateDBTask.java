@@ -104,7 +104,7 @@ public class CreateDBTask
 				"sql/01_createSKT.sql",
 				"sql/02_createWorlds.sql",
 				"sql/03_createCharacteristics.sql",
-				"sql/04_metaDataGroups.sql"
+				"sql/04_createMetaDataGroups.sql"
 			};
 		
 		this.maxSteps = this.sqlfiles.length;
