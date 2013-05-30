@@ -1,0 +1,5 @@
+error.missingPrefix=ID Prefix fehlt!
+error.idExists=ID existiert bereits!
+error.missingSuffix=Einzigartiger ID Suffix fehlt (String oder Zahl)!
+
+ok=Neue ID akzeptiert.

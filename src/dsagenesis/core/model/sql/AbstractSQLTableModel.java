@@ -29,6 +29,7 @@ import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.cell.IDCellEditor;
 
 /**
  * AbstractSQLTableModel
@@ -175,6 +176,12 @@ public abstract class AbstractSQLTableModel
         currColumn.setMinWidth(30);
         currColumn.setPreferredWidth(50);
         currColumn.setMaxWidth(100);
+        
+        currColumn.setCellEditor(new IDCellEditor(
+        		cetable.getSQLTable().getPrefix(),
+        		cetable.getSQLTable().getDBTableName(),
+        		ceframe.getStatusBar()
+        	));
 	}
 	
 	/**

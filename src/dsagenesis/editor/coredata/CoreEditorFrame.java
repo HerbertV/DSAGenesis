@@ -630,6 +630,16 @@ public class CoreEditorFrame
 	}
 	
 	/**
+	 * getStatusBar
+	 * 
+	 * @return
+	 */
+	public StatusBar getStatusBar()
+	{
+		return this.statusBar;
+	}
+	
+	/**
 	 * setupTask
 	 * 
 	 * prepares the task executor before adding tasks with execute.
