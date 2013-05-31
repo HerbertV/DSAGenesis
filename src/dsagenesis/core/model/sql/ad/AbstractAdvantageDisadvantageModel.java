@@ -25,6 +25,7 @@ import javax.swing.table.TableColumn;
 import dsagenesis.core.model.sql.AbstractNamedTableModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
  * AbstractAdvantageDisadvantageModel
@@ -64,11 +65,11 @@ public abstract class AbstractAdvantageDisadvantageModel
 		super(rs);
 	}
 
+	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-	
-	
+		
 	/**
 	 * setupDBColumns
 	 * 
@@ -81,7 +82,9 @@ public abstract class AbstractAdvantageDisadvantageModel
 	protected void setupDBColumns() 
 	{
 		super.setupDBColumns();
-		//TODO
+		
+		this.dbColumnNames.addElement(this.prefix+"is_arbitrary");
+		this.dbColumnNames.addElement(this.prefix+"cp_cost");
 	}
 	
 	/**
@@ -102,8 +105,19 @@ public abstract class AbstractAdvantageDisadvantageModel
 	{
 		super.setupJTableColumnModels(ceframe, cetable);
 		TableColumn currColumn;
-        
-        // TODO
+		
+		// col 2
+		currColumn = cetable.getColumnModel().getColumn(2);
+		currColumn.setMinWidth(30);
+		// col 3
+		currColumn = cetable.getColumnModel().getColumn(3);
+		currColumn.setMinWidth(30);
+		currColumn.setCellEditor(new NumericCellEditor(
+				Integer.class,
+				ceframe.getStatusBar()
+			));
+		
+		// TODO add cross reference column
     }
 	
 	/**
@@ -122,9 +136,11 @@ public abstract class AbstractAdvantageDisadvantageModel
 	public Vector<Class<?>>getTableColumnClasses()
 	{
 		Vector<Class<?>> vec = super.getTableColumnClasses();
-		
-		// TODO
-		
+		vec.add(Boolean.class);
+		vec.add(Integer.class);
+	
+		// TODO add cross reference column
+	    
 		return vec;
 	}
 	
