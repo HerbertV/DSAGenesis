@@ -14,7 +14,7 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.core.model.sql;
+package dsagenesis.core.model.sql.ad;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,6 +22,7 @@ import java.util.Vector;
 
 import javax.swing.table.TableColumn;
 
+import dsagenesis.core.model.sql.AbstractNamedTableModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 

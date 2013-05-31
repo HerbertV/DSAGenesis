@@ -14,13 +14,14 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.core.model.sql;
+package dsagenesis.core.model.sql.system;
 
 import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.table.TableColumn;
 
+import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
