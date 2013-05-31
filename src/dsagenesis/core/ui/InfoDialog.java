@@ -98,7 +98,7 @@ public class InfoDialog
 		this.setLocationRelativeTo(this.getParent());
 		
 		//background
-		ImageResource irBackground = new ImageResource("images/info.png",this);
+		ImageResource irBackground = new ImageResource("resources/images/info.png",this);
 		JImagePanel bgPanel = new JImagePanel(irBackground.getImage());
         this.getContentPane().add(bgPanel,0);
         bgPanel.setLayout(null);
@@ -194,7 +194,7 @@ public class InfoDialog
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 

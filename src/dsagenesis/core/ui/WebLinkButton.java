@@ -59,7 +59,7 @@ public class WebLinkButton
 		super();
 		
 		if( icon == null )
-			icon = new ImageResource("images/icons/weblink.gif",this).getImageIcon();
+			icon = new ImageResource("resources/images/icons/weblink.gif",this).getImageIcon();
 		
 		this.setSize(25, 25);
 		this.setActionCommand(url);

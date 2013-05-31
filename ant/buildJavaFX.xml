@@ -201,12 +201,12 @@
 			</fileset>	
 			<fileset dir="${dir.src}">
 				<or>
-					<filename name="images/**/*.png"/>
-					<filename name="images/**/*.gif"/>
-					<filename name="images/**/*.jpg"/>
-					<filename name="labels/**/*.lbl"/>
-					<filename name="sql/**/*.sql"/>
-										
+					<filename name="resources/**/*.png"/>
+					<filename name="resources/**/*.gif"/>
+					<filename name="resources/**/*.jpg"/>
+					<filename name="resources/**/*.lbl"/>
+					<filename name="resources/**/*.sql"/>
+					<filename name="data/scripts/**/*.js"/>
 				</or>
 			</fileset>
 		</fx:jar>

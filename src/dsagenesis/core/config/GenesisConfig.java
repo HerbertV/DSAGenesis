@@ -153,6 +153,13 @@ public class GenesisConfig
 				+ System.getProperty("file.separator");
 	}
 	
+	public String getPathScript()
+	{
+		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_SCRIPT) 
+				+ System.getProperty("file.separator");
+	}
+	
 	public String getDBFile()
 	{
 		return  getPathData() 
@@ -167,7 +174,7 @@ public class GenesisConfig
 	protected void setSystemDefaults() 
 	{
 		// Global defaults
-		this.setSystemProperty(KEY_APPICON, "images/icons/appIcon64.png");
+		this.setSystemProperty(KEY_APPICON, "resources/images/icons/appIcon64.png");
 		this.setSystemProperty(KEY_APPTITLE, "DSA Genesis");
 		this.setSystemProperty(KEY_DEBUG_LEVEL, "2");
 		this.setSystemProperty(KEY_IS_LOGGER_ENABLED, "true");
@@ -199,6 +206,7 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_PATH_CULTURE, "cultures");
 		this.setSystemProperty(KEY_PATH_PROFESSION, "professions");
 		this.setSystemProperty(KEY_PATH_NAME, "names");
+		this.setSystemProperty(KEY_PATH_SCRIPT, "scripts");
 		
 		// database file
 		this.setSystemProperty(KEY_DB_FILE, "core_de_DE.s3db");

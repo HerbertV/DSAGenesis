@@ -43,7 +43,7 @@ public class PopupDialogFactory
 		labelResource = new LabelResource(
 				PopupDialogFactory.class.getSimpleName(),
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 	

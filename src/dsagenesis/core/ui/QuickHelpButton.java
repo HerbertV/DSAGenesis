@@ -63,7 +63,7 @@ public class QuickHelpButton
 		super();
 		
 		if( icon == null )
-			icon = new ImageResource("images/icons/help.gif",this).getImageIcon();
+			icon = new ImageResource("resources/images/icons/help.gif",this).getImageIcon();
 		
 		this.setSize(25, 25);
 		this.setActionCommand(url);

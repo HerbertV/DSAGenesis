@@ -87,10 +87,10 @@ public class HelpDialog
 		toolBar.setFloatable(false);
 		getContentPane().add(toolBar, BorderLayout.NORTH);
 		
-		ImageResource irHome = new ImageResource("images/icons/home.gif",this);
-		ImageResource irBack = new ImageResource("images/icons/arrowLeft.gif",this);
-		ImageResource irForward = new ImageResource("images/icons/arrowRight.gif",this);
-		ImageResource irWiki = new ImageResource("images/icons/wiki.gif",this);
+		ImageResource irHome = new ImageResource("resources/images/icons/home.gif",this);
+		ImageResource irBack = new ImageResource("resources/images/icons/arrowLeft.gif",this);
+		ImageResource irForward = new ImageResource("resources/images/icons/arrowRight.gif",this);
+		ImageResource irWiki = new ImageResource("resources/images/icons/wiki.gif",this);
 				
 		JButton btnHome = new JButton("");
 		btnHome.setToolTipText(labelResource.getProperty("btnHome", "btnHome"));
@@ -197,7 +197,7 @@ public class HelpDialog
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 	

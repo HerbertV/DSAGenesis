@@ -144,7 +144,7 @@ public class NumericCellEditor
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 

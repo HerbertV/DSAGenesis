@@ -64,6 +64,7 @@ public interface IGenesisConfigKeys
 	public static final String KEY_PATH_CULTURE = "path.culture";
 	public static final String KEY_PATH_PROFESSION = "path.profession";
 	public static final String KEY_PATH_NAME = "path.name";
+	public static final String KEY_PATH_SCRIPT = "path.script";
 	
 	/**
 	 * database keys

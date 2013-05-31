@@ -79,8 +79,8 @@ public class CommitButtonCell
 	{
 		if( icon == null )
 		{
-			icon = new ImageResource("images/icons/dbCommit.gif",cet).getImageIcon();
-			iconDisabled = new ImageResource("images/icons/dbCommitDisabled.gif",cet).getImageIcon();
+			icon = new ImageResource("resources/images/icons/dbCommit.gif",cet).getImageIcon();
+			iconDisabled = new ImageResource("resources/images/icons/dbCommitDisabled.gif",cet).getImageIcon();
 		}
 		buttonRender = setupButton();
 		buttonEdit = setupButton();

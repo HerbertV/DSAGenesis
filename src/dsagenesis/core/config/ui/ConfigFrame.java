@@ -154,7 +154,7 @@ public class ConfigFrame
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 	

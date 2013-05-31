@@ -271,7 +271,7 @@ public class CoreEditorFrame
 				tabbedPane.addTab("CoreDataVersion", new JScrollPane(table)); 
 				tabbedPane.setIconAt(
 						0, 
-						(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+						(new ImageResource("resources/images/icons/dbTableSystem.gif",this)).getImageIcon()
 					);
 			}
 			{
@@ -280,7 +280,7 @@ public class CoreEditorFrame
 				tabbedPane.addTab("CoreDataTableIndex", new JScrollPane(table)); 
 				tabbedPane.setIconAt(
 						1, 
-						(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+						(new ImageResource("resources/images/icons/dbTableSystem.gif",this)).getImageIcon()
 					);
 			}
 			{
@@ -290,7 +290,7 @@ public class CoreEditorFrame
 				tabbedPane.addTab("TableColumnLabels",	new JScrollPane(table)); 
 				tabbedPane.setIconAt(
 						2, 
-						(new ImageResource("images/icons/dbTableSystem.gif",this)).getImageIcon()
+						(new ImageResource("resources/images/icons/dbTableSystem.gif",this)).getImageIcon()
 					);
 			}
 			
@@ -393,19 +393,19 @@ public class CoreEditorFrame
 	private void initBars() 
 	{
 		// icons
-		ImageResource irCopy = new ImageResource("images/icons/copy.gif",this);
-		ImageResource irPaste = new ImageResource("images/icons/paste.gif",this);
-		ImageResource irAddRow = new ImageResource("images/icons/dbAddRow.gif",this);
-		ImageResource irDeleteRow = new ImageResource("images/icons/dbRemoveRow.gif",this);
-		ImageResource irCommit = new ImageResource("images/icons/dbCommit.gif",this);
-		ImageResource irRefresh = new ImageResource("images/icons/reload.gif",this);
+		ImageResource irCopy = new ImageResource("resources/images/icons/copy.gif",this);
+		ImageResource irPaste = new ImageResource("resources/images/icons/paste.gif",this);
+		ImageResource irAddRow = new ImageResource("resources/images/icons/dbAddRow.gif",this);
+		ImageResource irDeleteRow = new ImageResource("resources/images/icons/dbRemoveRow.gif",this);
+		ImageResource irCommit = new ImageResource("resources/images/icons/dbCommit.gif",this);
+		ImageResource irRefresh = new ImageResource("resources/images/icons/reload.gif",this);
 		
 		
-		ImageResource irExport = new ImageResource("images/icons/dbExport.gif",this);
-		ImageResource irImport = new ImageResource("images/icons/dbImport.gif",this);
-		ImageResource irBackup = new ImageResource("images/icons/dbBackup.gif",this);
-		ImageResource irInfo = new ImageResource("images/icons/info.gif",this);
-		ImageResource irHelp = new ImageResource("images/icons/help.gif",this);
+		ImageResource irExport = new ImageResource("resources/images/icons/dbExport.gif",this);
+		ImageResource irImport = new ImageResource("resources/images/icons/dbImport.gif",this);
+		ImageResource irBackup = new ImageResource("resources/images/icons/dbBackup.gif",this);
+		ImageResource irInfo = new ImageResource("resources/images/icons/info.gif",this);
+		ImageResource irHelp = new ImageResource("resources/images/icons/help.gif",this);
 		
 		// toolbar
 		{
@@ -725,7 +725,7 @@ public class CoreEditorFrame
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 	

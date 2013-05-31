@@ -92,7 +92,7 @@ public class DBConfigTabPanel
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 

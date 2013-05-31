@@ -113,7 +113,7 @@ public class DebugConfigTabPanel
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 

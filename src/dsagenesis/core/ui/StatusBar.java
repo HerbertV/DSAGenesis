@@ -98,9 +98,9 @@ public class StatusBar
 		
 		if( iconOk == null )
 		{
-			iconOk = new ImageResource("images/icons/statusOk.gif",this).getImageIcon();
-			iconError = new ImageResource("images/icons/statusError.gif",this).getImageIcon();
-			iconWorking = new ImageResource("images/icons/statusWorking.gif",this).getImageIcon();
+			iconOk = new ImageResource("resources/images/icons/statusOk.gif",this).getImageIcon();
+			iconError = new ImageResource("resources/images/icons/statusError.gif",this).getImageIcon();
+			iconWorking = new ImageResource("resources/images/icons/statusWorking.gif",this).getImageIcon();
 		}
 		
 		statusLabel = new JLabel("READY");

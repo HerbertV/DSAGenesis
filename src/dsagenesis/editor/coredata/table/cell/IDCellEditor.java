@@ -155,7 +155,7 @@ public class IDCellEditor
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 		
 	}

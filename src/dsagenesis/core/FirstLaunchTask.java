@@ -94,9 +94,11 @@ public class FirstLaunchTask
 		while( rs.next() )
 			arr.add( pathProfession + rs.getString(1) );
 		
+		// add other pathes
 		arr.add(conf.getPathArchtype());
 		arr.add(conf.getPathHero());
 		arr.add(conf.getPathTemplate());
+		arr.add(conf.getPathScript());
 		
 		String[]a =	arr.toArray(new String[arr.size()]);
 		PathCreator.createPathes(a);

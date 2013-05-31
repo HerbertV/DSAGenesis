@@ -201,7 +201,7 @@ public class GenesisLauncher
 		GenesisLauncher me = new GenesisLauncher(
 				conf.getAppTitle(), 
 				conf.getAppIcon(), 
-				"images/launcher.png"
+				"resources/images/launcher.png"
 			);
 		// set the app icon image for later use
 		GenesisConfig.APP_ICON = me.getIconImage();
@@ -238,7 +238,7 @@ public class GenesisLauncher
 				3, 
 				24, 
 				24, 
-				(new ImageResource("images/icons/winMinimize.gif",this)).getImageIcon(), 
+				(new ImageResource("resources/images/icons/winMinimize.gif",this)).getImageIcon(), 
 				ACMD_MINIMIZE,
 				labelResource.getProperty("btnMinimize", "btnMinimize")
 			);
@@ -249,7 +249,7 @@ public class GenesisLauncher
 				3, 
 				24, 
 				24, 
-				(new ImageResource("images/icons/winClose.gif",this)).getImageIcon(), 
+				(new ImageResource("resources/images/icons/winClose.gif",this)).getImageIcon(), 
 				ACMD_EXIT,
 				labelResource.getProperty("btnClose", "btnClose")
 			);
@@ -330,7 +330,7 @@ public class GenesisLauncher
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 	

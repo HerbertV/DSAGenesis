@@ -167,7 +167,7 @@ public class GeneralConfigTabPanel
 		labelResource = new LabelResource(
 				this,
 				conf.getLanguage(), 
-				"labels"
+				"resources/labels"
 			);
 	}
 

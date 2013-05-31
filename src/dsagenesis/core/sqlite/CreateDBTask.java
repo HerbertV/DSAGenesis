@@ -100,11 +100,11 @@ public class CreateDBTask
 	private void setup()
 	{
 		this.sqlfiles = new String[]{
-				"sql/00_createSystemTables.sql",
-				"sql/01_createSKT.sql",
-				"sql/02_createWorlds.sql",
-				"sql/03_createCharacteristics.sql",
-				"sql/04_createMetaDataGroups.sql"
+				"resources/sql/00_createSystemTables.sql",
+				"resources/sql/01_createSKT.sql",
+				"resources/sql/02_createWorlds.sql",
+				"resources/sql/03_createCharacteristics.sql",
+				"resources/sql/04_createMetaDataGroups.sql"
 			};
 		
 		this.maxSteps = this.sqlfiles.length;
