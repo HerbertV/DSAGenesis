@@ -55,7 +55,7 @@ CREATE TABLE "Characteristics" (
 	"c_h_can_decrease" BOOLEAN DEFAULT '0' NOT NULL,
 	"c_h_skt_column" VARCHAR(10) NULL,
 	"c_h_has_Formular" BOOLEAN DEFAULT '0' NOT NULL,
-	"c_h_formular" TEXT NULL,
+	"c_h_formular" TEXT DEFAULT NULL,
 	"c_is_used_by_familiar" BOOLEAN DEFAULT 'false' NOT NULL,
 	"c_f_min_value" INTEGER NULL,
 	"c_f_max_value" INTEGER NULL,
