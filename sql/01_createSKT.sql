@@ -66,7 +66,7 @@ CREATE TABLE "SKTShifts" (
 	"skts_is_down_shift" BOOLEAN DEFAULT '1' NOT NULL,
 	"skts_is_up_shift" BOOLEAN DEFAULT '0' NOT NULL,
 	"skts_shift_factor" INTEGER DEFAULT '0' NOT NULL,
-	"skts_is_absolute_shift" BOOLEAN DEFAULT 'false' NOT NULL,
+	"skts_is_absolute_shift" BOOLEAN DEFAULT '0' NOT NULL,
 	"skts_skt_column" VARCHAR(10) NULL
 );
 
