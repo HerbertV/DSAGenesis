@@ -46,7 +46,7 @@
 		<xs:sequence>
 			<xs:element ref="advantage" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element ref="disadvantage" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element ref="badAttribute" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="negativeAttribute" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element ref="gift" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -54,13 +54,16 @@
 		<xs:complexContent>
 			<xs:extension base="ctAdvantageDisadvantageStats">
 				<xs:sequence>
-					<xs:element ref="specialAbility" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="talent" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="language" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="script" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="specialAbility" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="magicRepresentation" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="magicTrait" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="ritualKnowledge" minOccurs="0" maxOccurs="unbounded"/>
-					<xs:element ref="spell" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ritual" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="unarmedSkill" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="spell" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="miracle" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
@@ -249,12 +252,12 @@
 														</xs:complexContent>
 													</xs:complexType>
 												</xs:element>
-												<xs:element name="badAttributeSelection">
+												<xs:element name="negativeAttributeSelection">
 													<xs:complexType>
 														<xs:complexContent>
 															<xs:extension base="ctUserSelection">
 																<xs:sequence>
-																	<xs:element ref="badAttribute" maxOccurs="unbounded"/>
+																	<xs:element ref="negativeAttribute" maxOccurs="unbounded"/>
 																</xs:sequence>
 															</xs:extension>
 														</xs:complexContent>
@@ -292,6 +295,17 @@
 														<xs:attribute name="schoolSpellCount" type="xs:int" default="0"/>
 														<xs:attribute name="maximumSpells" type="xs:int" default="0"/>
 														<xs:attribute name="pointsToDistribute" type="xs:int" default="0"/>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="magicTraitSelection">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="ctUserSelection">
+																<xs:sequence>
+																	<xs:element ref="magicTrait" maxOccurs="unbounded"/>
+																</xs:sequence>
+															</xs:extension>
+														</xs:complexContent>
 													</xs:complexType>
 												</xs:element>
 											</xs:choice>
@@ -688,7 +702,7 @@ minValue is only used by metadata</xs:documentation>
 			<xs:attribute ref="isFixed" use="optional"/>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="badAttribute">
+	<xs:element name="negativeAttribute">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="choice" minOccurs="0"/>
@@ -708,17 +722,6 @@ minValue is only used by metadata</xs:documentation>
 			<xs:attribute ref="isFixed" use="optional"/>
 			<xs:attribute ref="startValue" use="optional"/>
 			<xs:attribute ref="maxValue"/>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="specialAbility">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="choice" minOccurs="0"/>
-				<xs:element ref="note" minOccurs="0"/>
-				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
-			<xs:attribute ref="isFixed" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="talent">
@@ -767,6 +770,35 @@ minValue is only used by metadata</xs:documentation>
 			<xs:attribute ref="startValue" use="optional"/>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="specialAbility">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="choice" minOccurs="0"/>
+				<xs:element ref="note" minOccurs="0"/>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="attrgBasicCharacteristicsAndStats"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="magicRepresentation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="magicTrait">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+			<xs:attribute ref="isFixed" use="optional"/>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="ritualKnowledge">
 		<xs:complexType>
 			<xs:sequence>
@@ -777,6 +809,15 @@ minValue is only used by metadata</xs:documentation>
 			<xs:attribute ref="isFixed" use="optional"/>
 			<xs:attribute ref="startValue" use="optional"/>
 			<xs:attribute ref="maxValue" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ritual">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="levelLogEntry" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+			<xs:attribute ref="isFixed" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="spell">
