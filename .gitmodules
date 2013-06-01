@@ -1,3 +1,6 @@
 [submodule "src/jhv"]
 	path = src/jhv
 	url = git@github.com:HerbertV/jhv.git
+[submodule "src/pro/ddopson"]
+	path = src/pro/ddopson
+	url = git@github.com:HerbertV/java-class-enumerator.git
