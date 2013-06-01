@@ -23,6 +23,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import jhv.util.debug.logger.ApplicationLogger;
 
@@ -128,7 +129,11 @@ public class ClipboardCellTransfer
 				Object value = table.getValueAt(rowsselected[i],colsselected[j]);
 				if( value != null && !(value.equals("")) )
 				{
-					sbf.append(value);
+					// indicate value as vector
+					if( value instanceof Vector )
+						sbf.append("Vector");
+					
+					sbf.append(value.toString());
 				} else {
 					sbf.append(" ");
 				}
@@ -187,7 +192,20 @@ public class ClipboardCellTransfer
 					if( startRow+i < table.getRowCount() 
 							&& startCol+j < table.getColumnCount() )
 					{
-						table.setValueAt(value.trim(),startRow+i,startCol+j);
+						if( value.startsWith("Vector[") )
+						{
+							// convert back to vector
+							Vector<Object> vec = new Vector<Object>();
+							String vecstring = value.substring("Vector[".length(), value.length()-1);
+							StringTokenizer st3 = new StringTokenizer(vecstring,", ");
+							while( st3.hasMoreTokens() )
+								vec.add(st3.nextToken());
+							
+							table.setValueAt(vec,startRow+i,startCol+j);
+							
+						} else {
+							table.setValueAt(value.trim(),startRow+i,startCol+j);
+						}
 					}
 				}
 			}
