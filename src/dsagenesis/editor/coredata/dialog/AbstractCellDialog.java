@@ -26,6 +26,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import jhv.component.LabelResource;
+
+import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.ui.AbstractGenesisDialog;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 
@@ -68,29 +71,40 @@ public abstract class AbstractCellDialog
 	 * Constructor
 	 * 
 	 * @param f
+	 * @param width
+	 * @param height
 	 */
-	public AbstractCellDialog(CoreEditorFrame f) 
+	public AbstractCellDialog(
+			CoreEditorFrame f,
+			int width, 
+			int height
+		) 
 	{
 		super(f);
 		
-		BorderLayout thisLayout = new BorderLayout();
-		this.getContentPane().setLayout(thisLayout);
+		this.loadLabels();
+		
+		this.setSize(width, height);
 		this.setResizable(false);
 		this.setModal(true);
-
+		
+		this.getContentPane().setLayout(new BorderLayout());
+		
 		// setup the buttons
 		JPanel btnPanel = new JPanel();
 		btnPanel.setLayout(new FlowLayout());
-		getContentPane().add(btnPanel, BorderLayout.SOUTH);
+		this.getContentPane().add(btnPanel, BorderLayout.SOUTH);
 
 		btnOK = new JButton();
-		btnOK.setText("Ok");
+		btnOK.setText(labelResource.getProperty("btnOk", "btnOk"));
 		btnOK.addActionListener(this);
+		btnPanel.add(btnOK);
 
 		btnCancel = new JButton();
-		btnCancel.setText("Cancel");
+		btnCancel.setText(labelResource.getProperty("btnCancel", "btnCancel"));
 		btnCancel.addActionListener(this);
-		
+		btnPanel.add(btnCancel);
+
 		// window listener
 		this.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent evt) {
@@ -100,13 +114,25 @@ public abstract class AbstractCellDialog
 					f.setFocusOnActiveTab();
 				}
 			});
-    }
+	}
 
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-	    
+
+	@Override
+	public void loadLabels() 
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		labelResource = new LabelResource(
+				this,
+				conf.getLanguage(), 
+				"resources/labels"
+			);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
@@ -117,7 +143,7 @@ public abstract class AbstractCellDialog
 			isChangeOk = false;
 		}
 		setVisible(false);
-		CoreEditorFrame f = (CoreEditorFrame)AbstractCellDialog.this.getOwner();
+		CoreEditorFrame f = (CoreEditorFrame)this.getOwner();
 		f.setFocusOnActiveTab();
 	}
 	
@@ -141,5 +167,12 @@ public abstract class AbstractCellDialog
 	 * @return
 	 */
 	public abstract Object getValue();
+	
+	/**
+	 * setValue
+	 * 
+	 * @param value
+	 */
+	public abstract void setValue(Object value);
 	
 }
