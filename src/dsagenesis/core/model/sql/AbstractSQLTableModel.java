@@ -379,13 +379,13 @@ public abstract class AbstractSQLTableModel
 		if( rs == null )
 			return data;
 		
-		int colCount = rs.getMetaData().getColumnCount();
+		int colCount = dbColumnNames.size();
 		while( rs.next() )
 		{
 			Vector<Object> row = new Vector<Object>();
-			for( int col=1; col <= colCount; col++) 
+			for( int col=0; col < colCount; col++) 
 			{
-				row.add(rs.getObject(col));
+				row.add(rs.getObject(dbColumnNames.elementAt(col)));
 			}
 			data.add(row);
 		}
@@ -474,13 +474,13 @@ public abstract class AbstractSQLTableModel
 		if( rs == null )
 			return data;
 		
-		int colCount = rs.getMetaData().getColumnCount();
+		int colCount = dbColumnNames.size();
 		while( rs.next() )
 		{
 			Vector<Object> row = new Vector<Object>();
-			for( int col=1; col <= colCount; col++) 
+			for( int col=0; col < colCount; col++) 
 			{
-				row.add(rs.getObject(col));
+				row.add(rs.getObject(dbColumnNames.elementAt(col)));
 			}
 			data.add(row);
 		}
