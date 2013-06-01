@@ -125,7 +125,9 @@ public abstract class AbstractDialogCellEditor
 		)
 	{
 		oldValue = value;
-		label.setText(value.toString());
+		if( value != null )
+			label.setText(value.toString());
+		
 		return panel;
 	}
 
@@ -134,11 +136,17 @@ public abstract class AbstractDialogCellEditor
 	{
 		if( e.getButton() == MouseEvent.BUTTON1 )
 		{
-            dialog.setVisible(true);
-            fireEditingStopped();
-        } else {
-            fireEditingCanceled();
-        }
+			dialog.setValue(oldValue);
+			dialog.setLocationRelativeTo(dialog.getParent());
+			dialog.setVisible(true);
+			
+			if( dialog.isChangeOk() )
+            {
+				fireEditingStopped();
+				return;
+            } 
+		} 
+		fireEditingCanceled();
 	}
 
 	@Override

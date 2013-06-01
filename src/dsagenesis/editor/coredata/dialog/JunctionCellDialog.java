@@ -67,6 +67,11 @@ public class JunctionCellDialog
 	
 	private JButton btnRemoveAll;
 	
+	
+	// ============================================================================
+	//  Constructors
+	// ============================================================================
+		
 	/**
 	 * Constructor
 	 * 
@@ -182,7 +187,6 @@ public class JunctionCellDialog
 	//  Functions
 	// ============================================================================
 	
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void setValue(Object value) 
@@ -263,7 +267,9 @@ public class JunctionCellDialog
 	private void actionRemove()
 	{
 		DefaultListModel<Object> model = (DefaultListModel<Object>)list.getModel();
-		model.remove(list.getSelectedIndex());
+		
+		if( list.getSelectedIndex() > -1 )
+			model.remove(list.getSelectedIndex());
 	}
 	
 	/**
