@@ -76,6 +76,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 
@@ -88,6 +89,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTabbedPane;
+
+import pro.ddopson.ClassEnumerator;
 
 /**
  * JFrame for the Core Data Editor.
@@ -297,9 +300,13 @@ public class CoreEditorFrame
 			// create the rest.
 			String query = "SELECT * FROM CoreDataTableIndex ORDER BY ti_tab_index ASC";
 			ResultSet rs = DBConnector.getInstance().executeQuery(query);
-	
+			// get a list of all sql model classes
+			ArrayList<Class<?>> classList =  ClassEnumerator.getClassesForPackage(
+					Package.getPackage("dsagenesis.core.model.sql")
+				);
+			
 			while( rs.next() )
-				this.initDynamicTab(rs);
+				this.initDynamicTab(rs, classList);
 			
 			this.statusBar.setStatus(
 					labelResource.getProperty("status.ready", "status.ready"),
@@ -335,15 +342,35 @@ public class CoreEditorFrame
 	 * creates a tab with its table by class reflection.
 	 * 
 	 * @param rs
+	 * @param modelClasslist
 	 */
-	private void initDynamicTab(ResultSet rs)
+	private void initDynamicTab(
+			ResultSet rs,
+			ArrayList<Class<?>> modelClassList
+		)
 	{
 		try 
 		{
-			Class<?> c = Class.forName(
-					"dsagenesis.core.model.sql."
-						+ rs.getString("ti_table_name")
-				);
+			Class<?> c = null;
+			String tablename = rs.getString("ti_table_name");
+			for( int i=0; i<modelClassList.size(); i++ )
+			{
+				if( modelClassList.get(i).getSimpleName().equals(tablename) )
+				{
+					c = modelClassList.get(i);
+					break;
+				}
+			}
+			
+			if( c == null )
+			{
+				ApplicationLogger.logError(
+						"Class not found: sagenesis.core.model.sql.*."
+							+ tablename
+							+ " !" 
+					);
+				return;
+			}
 			
 			Class<?> parameterTypes[] = new Class[1];
 			parameterTypes[0] = ResultSet.class;
@@ -382,8 +409,8 @@ public class CoreEditorFrame
 			)
 		{
 			ApplicationLogger.logError(e);
-		} catch ( ClassNotFoundException e2 ) {
-			ApplicationLogger.logError(" ClassNotFoundException:"+e2.getMessage());
+		} catch ( RuntimeException e2 ) {
+			ApplicationLogger.logError(e2);
 		}
 	}
 	
