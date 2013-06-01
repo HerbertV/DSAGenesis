@@ -22,6 +22,7 @@ import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.EventObject;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
@@ -106,12 +107,17 @@ public abstract class AbstractDialogCellEditor
 	//  Functions
 	// ============================================================================
 
+	public boolean isCellEditable(EventObject e) 
+    {  
+		if( e instanceof MouseEvent ) 
+			return ((MouseEvent)e).getClickCount() >= 2;
+			
+		return true;  
+    }
+	
 	@Override
 	public Object getCellEditorValue() 
-	{
-		if( dialog.isChangeOk() )
-			return dialog.getValue();
-		
+	{	
 		return oldValue;
 	}
 	
@@ -126,8 +132,11 @@ public abstract class AbstractDialogCellEditor
 	{
 		oldValue = value;
 		if( value != null )
+		{
 			label.setText(value.toString());
-		
+		} else {
+			label.setText("");
+		}
 		return panel;
 	}
 
@@ -142,6 +151,7 @@ public abstract class AbstractDialogCellEditor
 			
 			if( dialog.isChangeOk() )
             {
+				oldValue = dialog.getValue();
 				fireEditingStopped();
 				return;
             } 

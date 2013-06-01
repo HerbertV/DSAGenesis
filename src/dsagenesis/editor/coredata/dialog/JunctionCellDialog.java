@@ -191,12 +191,13 @@ public class JunctionCellDialog
 	@SuppressWarnings("unchecked")
 	public void setValue(Object value) 
 	{
+		DefaultListModel<Object> model = (DefaultListModel<Object>)list.getModel();
+		model.removeAllElements();
+		
 		if( value == null )
 			return;
 		
 		Vector<Object>selectedIds = (Vector<Object>)value;
-		DefaultListModel<Object> model = new DefaultListModel<Object>();
-		
 		for( int i=0; i<selectedIds.size(); i++ )
 		{
 			for( int j=0; j<idLabelPairs.size(); j++ )

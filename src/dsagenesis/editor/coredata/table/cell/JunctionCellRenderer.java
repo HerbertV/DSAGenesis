@@ -22,6 +22,9 @@ import java.util.Vector;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 
+/**
+ * JunctionCellRenderer
+ */
 public class JunctionCellRenderer 
 		extends BasicCellRenderer 
 {
