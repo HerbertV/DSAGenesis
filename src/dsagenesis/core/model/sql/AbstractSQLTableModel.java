@@ -489,6 +489,24 @@ public abstract class AbstractSQLTableModel
 	}
 	
 	/**
+	 * prepareJunctionQueryBeginning
+	 * 
+	 * returns the begin of the select statement.
+	 * where clause must be added.
+	 * 
+	 * @param table1 name of table 1
+	 * @return
+	 */
+	public String prepareJunctionQueryBeginning(String table1)
+	{
+		return "SELECT * from Junct_"
+				+ table1 
+				+ "_"
+				+ this.getDBTableLabel()
+				+ " WHERE ";
+	}
+	
+	/**
 	 * queryReferences
 	 * 
 	 * this function is called Core Editor when the table model is loaded.

@@ -101,14 +101,14 @@ INSERT INTO TableColumnLabels
 	( 'Advantages', 'ada_note', 'Bemerkung');	
 
 /*
-	Crossreference Table 
+	Junction Table 
  */
-DROP TABLE IF EXISTS "CrossRef_Advantages_ProfessionCategories";
+DROP TABLE IF EXISTS "Junct_ProfessionCategories_Advantages";
 
-CREATE TABLE "CrossRef_Advantages_ProfessionCategories" (
+CREATE TABLE "Junct_ProfessionCategories_Advantages" (
 	"ID" INTEGER PRIMARY KEY NOT NULL,
-	"ref_ada_ID" VARCHAR(10) REFERENCES Advantages(ID) NOT NULL,
-	"ref_pc_ID"  VARCHAR(10) REFERENCES ProfessionCategories(ID) NOT NULL
+	"ref_pc_ID"  VARCHAR(10) REFERENCES ProfessionCategories(ID) NOT NULL,
+	"ref_ada_ID" VARCHAR(10) REFERENCES Advantages(ID) NOT NULL
 );
 
 
@@ -225,12 +225,12 @@ INSERT INTO TableColumnLabels
 	( 'Disadvantages', 'add_note', 'Bemerkung');	
 
 /*
-	Crossreference Table 
+	Junction Table 
  */
-DROP TABLE IF EXISTS "CrossRef_Disadvantages_ProfessionCategories";
+DROP TABLE IF EXISTS "Junct_ProfessionCategories_Disadvantages";
 
-CREATE TABLE "CrossRef_Disadvantages_ProfessionCategories" (
+CREATE TABLE "Junct_ProfessionCategories_Disadvantage" (
 	"ID" INTEGER PRIMARY KEY NOT NULL,
-	"ref_add_ID" VARCHAR(10) REFERENCES Disadvantages(ID) NOT NULL,
-	"ref_pc_ID"  VARCHAR(10) REFERENCES ProfessionCategories(ID) NOT NULL
+	"ref_pc_ID"  VARCHAR(10) REFERENCES ProfessionCategories(ID) NOT NULL,
+	"ref_add_ID" VARCHAR(10) REFERENCES Disadvantages(ID) NOT NULL
 );

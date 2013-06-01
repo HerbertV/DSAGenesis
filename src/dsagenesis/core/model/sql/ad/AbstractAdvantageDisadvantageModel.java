@@ -23,9 +23,13 @@ import java.util.Vector;
 import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractNamedTableModel;
+import dsagenesis.core.model.sql.ProfessionCategories;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
+import dsagenesis.editor.coredata.dialog.JunctionCellDialog;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.cell.JunctionCellEditor;
+import dsagenesis.editor.coredata.table.cell.JunctionCellRenderer;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
@@ -40,6 +44,16 @@ import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 public abstract class AbstractAdvantageDisadvantageModel 
 		extends AbstractNamedTableModel 
 {
+
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+	
+	/**
+	 * reference data from ProfessionCategories Table
+	 */
+	private Vector<Vector<Object>> professionCategories;
+	
 	
 	// ============================================================================
 	//  Constructors
@@ -120,7 +134,24 @@ public abstract class AbstractAdvantageDisadvantageModel
 			));
 		// col 4
 		currColumn = cetable.getColumnModel().getColumn(4);
-		currColumn.setMinWidth(80);
+		currColumn.setMinWidth(120);
+		currColumn.setCellRenderer(
+				new JunctionCellRenderer(professionCategories)
+			);
+		try 
+		{
+			currColumn.setCellEditor(new JunctionCellEditor(
+					new JunctionCellDialog(
+							ceframe,
+							TableHelper.getLabelForTable("ProfessionCategories"),
+							professionCategories
+						),
+					professionCategories	
+				));
+		} catch (SQLException e) {
+			// nothing to do
+		}
+		// TODO set renderer and editor
 	}
 	
 	/**
@@ -144,7 +175,8 @@ public abstract class AbstractAdvantageDisadvantageModel
 		// col 3
 		vec.add(Integer.class);
 		// col 4 N:N Cross References Table Column
-		vec.add(String.class);
+		// contains ids as Vector
+		vec.add(Vector.class);
 		
 		return vec;
 	}
@@ -167,10 +199,16 @@ public abstract class AbstractAdvantageDisadvantageModel
 	public void queryReferences() 
 			throws SQLException
 	{
-		// TODO Auto-generated method stub
-
+		ProfessionCategories pc = new ProfessionCategories();
+		Vector<String> columns = new Vector<String>();
+		columns.add("ID");
+		columns.add("pc_name");
+		
+		this.professionCategories = pc.queryListAsVector(
+				columns, 
+				"pc_name", 
+				true
+			);
 	}
-
-	
 
 }

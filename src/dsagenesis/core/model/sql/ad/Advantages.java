@@ -37,7 +37,8 @@ public class Advantages
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-		
+	
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -119,6 +120,13 @@ public class Advantages
 				Integer.class,
 				ceframe.getStatusBar()
 			));
+		
+		currColumn = cetable.getColumnModel().getColumn(11);
+		currColumn.setMinWidth(120);
+		
+		currColumn = cetable.getColumnModel().getColumn(13);
+		currColumn.setMinWidth(120);
+		
     }
 	
 	/**
