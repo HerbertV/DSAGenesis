@@ -365,7 +365,7 @@ public class CoreEditorFrame
 			if( c == null )
 			{
 				ApplicationLogger.logError(
-						"Class not found: sagenesis.core.model.sql.*."
+						"Class not found: dsagenesis.core.model.sql.*."
 							+ tablename
 							+ " !" 
 					);

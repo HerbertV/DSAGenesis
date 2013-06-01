@@ -25,7 +25,7 @@ CREATE TABLE "Advantages" (
 	"ada_has_modifier" BOOLEAN DEFAULT '0' NOT NULL,
 	"ada_modifier_formular" TEXT DEFAULT NULL,
 	"ada_bookmark" TEXT DEFAULT NULL,
-	"ada_note" TEXT DEFAULT NULL,
+	"ada_note" TEXT DEFAULT NULL
 );
 
 /*
@@ -38,7 +38,7 @@ INSERT INTO CoreDataTableIndex
 		1,
 		'ada_', 
 		'Vorteile', 
-		'Beinhaltet alle Vorteile (ausser Gaben) die bei der Heldenerschaffung gewählt werden können.<br>Ist ein Vorteil nicht frei Wählbar kann er nur über eine Rasse,Kultur oder Proffesion erhalten werden.',
+		'Beinhaltet alle Vorteile (ausser Gaben) die bei der Heldenerschaffung gewählt werden können.<br>Ist ein Vorteil nicht frei Wählbar kann er nur über eine Rasse, Kultur oder Profession erhalten werden.',
 		10,
 		1
 	);
@@ -50,7 +50,7 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Advantages', 'ada_isArbitrary', 'frei Wählbar');	
+	( 'Advantages', 'ada_is_arbitrary', 'frei Wählbar');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -130,6 +130,8 @@ CREATE TABLE "Disadvantages" (
 	"add_is_arbitrary" BOOLEAN DEFAULT '1' NOT NULL,
 	"add_cp_cost" INTEGER DEFAULT '0' NOT NULL,
 	"add_name_suffix" TEXT DEFAULT NULL,
+	"add_is_removable" BOOLEAN DEFAULT '0' NOT NULL,
+	"add_remove_ap_cost" INTEGER DEFAULT '0' NOT NULL,
 	"add_has_level" BOOLEAN DEFAULT '0' NOT NULL,
 	"add_step_cp_cost" INTEGER DEFAULT '0' NOT NULL,
 	"add_min_level" INTEGER DEFAULT '0' NOT NULL,
@@ -139,7 +141,7 @@ CREATE TABLE "Disadvantages" (
 	"add_has_modifier" BOOLEAN DEFAULT '0' NOT NULL,
 	"add_modifier_formular" TEXT DEFAULT NULL,
 	"add_bookmark" TEXT DEFAULT NULL,
-	"add_note" TEXT DEFAULT NULL,
+	"add_note" TEXT DEFAULT NULL
 );
 
 /*
@@ -152,7 +154,7 @@ INSERT INTO CoreDataTableIndex
 		1,
 		'add_', 
 		'Nachteile', 
-		'Beinhaltet alle Nachteile (ausser Schlechte Eigenschaften) die bei der Heldenerschaffung gewählt werden können.<br>Ist ein Nachteil nicht frei Wählbar kann er nur über eine Rasse,Kultur oder Proffesion erhalten werden.',
+		'Beinhaltet alle Nachteile (ausser Schlechte Eigenschaften) die bei der Heldenerschaffung gewählt werden können.<br>Ist ein Nachteil nicht frei Wählbar kann er nur über eine Rasse, Kultur oder Profession erhalten werden.',
 		11,
 		1
 	);
@@ -164,7 +166,7 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Disadvantages', 'add_isArbitrary', 'frei Wählbar');	
+	( 'Disadvantages', 'add_is_arbitrary', 'frei Wählbar');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -173,6 +175,14 @@ INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
 	( 'Disadvantages', 'add_name_suffix', 'Name Anhang');	
+INSERT INTO TableColumnLabels
+	( tcl_table_name, tcl_column_name, tcl_label )
+	VALUES
+	( 'Disadvantages', 'add_is_removable', 'Entfernbar');	
+INSERT INTO TableColumnLabels
+	( tcl_table_name, tcl_column_name, tcl_label )
+	VALUES
+	( 'Disadvantages', 'add_remove_ap_cost', 'entf. AP Kosten');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES

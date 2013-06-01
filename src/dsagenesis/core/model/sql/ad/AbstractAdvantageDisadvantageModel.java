@@ -23,6 +23,7 @@ import java.util.Vector;
 import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractNamedTableModel;
+import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
@@ -98,6 +99,7 @@ public abstract class AbstractAdvantageDisadvantageModel
 	 * @param ceframe
 	 * @param cetable
 	 */
+	@Override
 	public void setupJTableColumnModels(
 			CoreEditorFrame ceframe,
 			CoreEditorTable cetable
@@ -116,9 +118,10 @@ public abstract class AbstractAdvantageDisadvantageModel
 				Integer.class,
 				ceframe.getStatusBar()
 			));
-		
-		// TODO add cross reference column
-    }
+		// col 4
+		currColumn = cetable.getColumnModel().getColumn(4);
+		currColumn.setMinWidth(80);
+	}
 	
 	/**
 	 * getTableColumnClasses
@@ -136,16 +139,29 @@ public abstract class AbstractAdvantageDisadvantageModel
 	public Vector<Class<?>>getTableColumnClasses()
 	{
 		Vector<Class<?>> vec = super.getTableColumnClasses();
+		// col 2
 		vec.add(Boolean.class);
+		// col 3
 		vec.add(Integer.class);
-	
-		// TODO add cross reference column
-	    
+		// col 4 N:N Cross References Table Column
+		vec.add(String.class);
+		
 		return vec;
 	}
 	
-	
-	
+	@Override
+	public Vector<String> getColumnLabels() 
+	{
+		Vector<String> vec = super.getColumnLabels();
+		// inject cross reference column
+		try {
+			vec.add(4, TableHelper.getLabelForTable("ProfessionCategories"));
+		} catch (SQLException e) {
+			vec.add(4, "ProfessionCategories");
+		}		
+		
+		return vec;
+	}
 	
 	@Override
 	public void queryReferences() 
