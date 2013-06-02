@@ -143,9 +143,13 @@ public class DBConnector
 	 * 
 	 * @return
 	 */
-	public static int convertBooleanForDB(boolean val)
+	public static int convertBooleanForDB(Object val)
 	{
-		if( val )
+		if( val.equals(1)
+				|| val.equals("1") 
+				|| val.equals("true") 
+				|| val.equals(new Boolean(true))
+			)
 			return 1;
 		
 		return 0;

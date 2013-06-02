@@ -365,7 +365,8 @@ public abstract class AbstractSQLTableModel
 	/**
 	 * queryListAsVector
 	 * 
-	 * returns all entries sort by ID
+	 * returns all entries sort by ID 
+	 * used for creating JTable's.
 	 * 
 	 * @return
 	 * @throws SQLException
@@ -379,12 +380,22 @@ public abstract class AbstractSQLTableModel
 		if( rs == null )
 			return data;
 		
+		Vector<Class <?>> classes = getTableColumnClasses();
+		
 		int colCount = dbColumnNames.size();
 		while( rs.next() )
 		{
 			Vector<Object> row = new Vector<Object>();
 			for( int col=0; col < colCount; col++) 
 			{
+				// skip junctions
+				int junctcount = 0;
+				while( classes.get(col+junctcount) == Vector.class )
+				{
+					row.add(null);
+					junctcount++;
+				}
+				
 				row.add(rs.getObject(dbColumnNames.elementAt(col)));
 			}
 			data.add(row);

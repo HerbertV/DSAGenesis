@@ -113,6 +113,9 @@ public class CoreEditorFrame
 	 */
 	public static final int STATUS_COMMIT_SUCCESS = 0;
 	public static final int STATUS_COMMIT_ERROR = 1;
+	public static final int STATUS_DELETE_SUCCESS = 2;
+	public static final int STATUS_DELETE_ERROR = 3;
+	
 	
 	/**
 	 * action commands for menus.
@@ -631,28 +634,45 @@ public class CoreEditorFrame
 			int row 
 		)
 	{
-		if( status == STATUS_COMMIT_SUCCESS )
+		switch( status )
 		{
-			this.statusBar.setStatus(
-					labelResource.getProperty("status.commit.success", "status.commit.success"),
-					StatusBar.STATUS_OK
-				);
-	
-			if( !table.containsUncommitedData() )
-				markUnsavedTabTitle(table,false);
-			
-			if( !hasContentChanged() )
-			{
-				String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
-				this.setTitle(title);
-				btnCommitAll.setEnabled(false);
-			}
-						
-		} else {
-			this.statusBar.setStatus(
-					labelResource.getProperty("status.commit.error", "status.commit.error"),
-					StatusBar.STATUS_ERROR		
-				);
+			case STATUS_COMMIT_SUCCESS:
+				this.statusBar.setStatus(
+						labelResource.getProperty("status.commit.success", "status.commit.success"),
+						StatusBar.STATUS_OK
+					);
+		
+				if( !table.containsUncommitedData() )
+					markUnsavedTabTitle(table,false);
+				
+				if( !hasContentChanged() )
+				{
+					String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
+					this.setTitle(title);
+					btnCommitAll.setEnabled(false);
+				}
+				break;
+				
+			case STATUS_COMMIT_ERROR:
+				this.statusBar.setStatus(
+						labelResource.getProperty("status.commit.error", "status.commit.error"),
+						StatusBar.STATUS_ERROR		
+					);
+				break;
+				
+			case STATUS_DELETE_SUCCESS:
+				this.statusBar.setStatus(
+						labelResource.getProperty("status.delete.success", "status.delete.success"),
+						StatusBar.STATUS_OK
+					);
+				break;
+				
+			case STATUS_DELETE_ERROR:
+				this.statusBar.setStatus(
+						labelResource.getProperty("status.delete.error", "status.delete.error"),
+						StatusBar.STATUS_ERROR		
+					);
+				break;
 		}
 	}
 	

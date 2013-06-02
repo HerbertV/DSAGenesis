@@ -25,7 +25,10 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 
+import jhv.util.debug.logger.ApplicationLogger;
+
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
+import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
@@ -268,15 +271,20 @@ public class CoreEditorTable
 		
 		for(int i=1; i< classes.size(); i++ )
 		{
-			if( classes.elementAt(i).equals(String.class) )
+			if( classes.elementAt(i).equals(Vector.class) )
 			{
+				row.addElement(new Vector<Object>());
+			} else if( classes.elementAt(i).equals(String.class) ) {
 				row.addElement("");
 				
 			} else if( classes.elementAt(i).equals(Integer.class) ) {
 				row.addElement(0);
 				
+			} else if( classes.elementAt(i).equals(Float.class) ) {
+				row.addElement(1.0);
+				
 			} else if( classes.elementAt(i).equals(Boolean.class) ) {
-				row.addElement(false);
+				row.addElement(0);
 				
 			} else {
 				row.addElement(null);
@@ -297,17 +305,14 @@ public class CoreEditorTable
 	 */
 	public void removeRow(int row)
 	{
-		Object id = ((CoreEditorTableModel)this.getModel()).getValueAt(row, 0);
+		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
+		Object id = model.getValueAt(row, 0);
 		boolean deleteOnlyTable = false;
-		
 		if( id == null )
 		{
 			deleteOnlyTable = true;
-			
-		} else if( this.sqlTable.usesPrefix() ) {
-			// matches only the pre-generated prefix
-			if( this.sqlTable.getPrefix().equals(id) )
-				deleteOnlyTable = true;
+		} else if( !TableHelper.idExists(id.toString(), sqlTable.getDBTableName()) ) {
+			deleteOnlyTable = true;
 		}
 		
 		try
@@ -320,10 +325,158 @@ public class CoreEditorTable
 		btnCommit.deleteRow(row);
 		
 		if( deleteOnlyTable )
+		{
+			jframe.setCommitStatus( 
+					CoreEditorFrame.STATUS_DELETE_SUCCESS, 
+					this, 
+					row 
+				);
 			return;
+		}
 		
-System.out.println(" TODO CoreEditorTable delete from "+ sqlTable.getDBTableName()+ " row: "+row);
-		//TODO if the row has no id delete it only from table
+		String delete = "DELETE FROM "
+				+ sqlTable.getDBTableName()
+				+ " WHERE ID='"+id+"'";
+		
+		try 
+		{
+			DBConnector.getInstance().executeUpdate(delete);
+			long querytime = DBConnector.getInstance().getQueryTime();
+		
+			// TODO junctions
+			//querytime += DBConnector.getInstance().getQueryTime();
+			
+			ApplicationLogger.logInfo("delete time "+querytime+ " ms");
+			
+		} catch( SQLException e ) {
+			jframe.setCommitStatus( 
+					CoreEditorFrame.STATUS_DELETE_ERROR, 
+					this, 
+					row 
+				);
+			return;
+		}
+		
+		jframe.setCommitStatus( 
+				CoreEditorFrame.STATUS_DELETE_SUCCESS, 
+				this, 
+				row 
+			);
+	}
+	
+	/**
+	 * prepareInsertStatement
+	 * 
+	 * @param row
+	 * @return
+	 */
+	private String prepareInsertStatement(int row)
+	{
+		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
+		Vector<String> colNames = sqlTable.getDBColumnNames();
+		Vector<Class<?>> colClasses = sqlTable.getTableColumnClasses();
+		int count = colNames.size();
+
+		String insert = "INSERT INTO "
+				+ sqlTable.getDBTableName()
+				+ " \n( ";
+		
+		for(int i=0; i< count; i++ )
+		{
+			insert += colNames.get(i);
+			
+			if( i < (count-1) )
+				insert += ", ";
+		}
+		
+		insert += ")\n VALUES \n(";
+		
+		int junctcount = 0;
+		for( int i=0; i< count; i++ )
+		{
+			Class<?> c =  colClasses.get(i+junctcount);		
+			Object value = model.getValueAt(row, i+junctcount);
+			
+			if( c == Vector.class ) {
+				// skip junctions
+				junctcount++;
+				c =  colClasses.get(i+junctcount);		
+				value = model.getValueAt(row, i+junctcount);
+			}
+			
+			if( c == Integer.class || c == Float.class )
+			{
+				insert += value.toString();
+			
+			} else if( c == Boolean.class )	{
+				insert += DBConnector.convertBooleanForDB( value );
+				
+			} else {
+				insert += "'"+ value.toString() + "'";
+				
+			}
+			
+			if( i < (count-1) )
+				insert += ", ";
+		}
+		insert += " )";
+		
+		return insert;		
+	}
+	
+	/**
+	 * prepareUpdateStatement
+	 * 
+	 * @param id
+	 * @param row
+	 * @return
+	 */
+	private String prepareUpdateStatement(Object id, int row)
+	{
+		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
+		Vector<String> colNames = sqlTable.getDBColumnNames();
+		Vector<Class<?>> colClasses = sqlTable.getTableColumnClasses();
+		int count = colNames.size();
+
+		String update = "UPDATE "
+				+ sqlTable.getDBTableName()
+				+ " SET \n ";
+		
+		int junctcount = 0;
+		// we start at column 1 since 0 is ID
+		for( int i=1; i< count; i++ )
+		{
+			update += colNames.get(i) +"=";
+			
+			Object value = model.getValueAt(row, i+junctcount);
+			Class<?> c =  colClasses.get(i+junctcount);		
+			
+			if( c == Vector.class )
+			{
+				// skip junctions
+				junctcount++;
+				c =  colClasses.get(i+junctcount);		
+				value = model.getValueAt(row, i+junctcount);
+			} 
+			
+			if( c == Integer.class || c == Float.class )
+			{
+				update += value.toString();
+			
+			} else if( c == Boolean.class )	{
+				update += DBConnector.convertBooleanForDB( value );
+				
+			} else {
+				update += "'"+ value.toString() + "'";
+				
+			}
+			
+			if( i < (count-1) )
+				update += ", ";
+		}
+		update += " \n WHERE ID='"+id.toString()+"'";
+		
+		return update;
 	}
 	
 	/**
@@ -335,13 +488,42 @@ System.out.println(" TODO CoreEditorTable delete from "+ sqlTable.getDBTableName
 	 */
 	public void commitRow(int row)
 	{
-System.out.println(" TODO CoreEditorTable commit "+ sqlTable.getDBTableName()+ " row" +row);
+		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
+		Object id = model.getValueAt(row, 0);
+		String update = null;
+		long querytime = 0;
 		
-		// TODO
+		if( id == null 
+				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName())
+			)
+		{
+			// insert
+			update = prepareInsertStatement(row);
+		} else {
+			// update
+			update = prepareUpdateStatement(id,row);
+		}
 
-		// if success
+		try 
+		{
+			DBConnector.getInstance().executeUpdate(update);
+			querytime = DBConnector.getInstance().getQueryTime();
+			
+			// TODO junctions
+			//querytime += DBConnector.getInstance().getQueryTime();
+			
+			ApplicationLogger.logInfo("update time "+querytime+ " ms");
+			
+		} catch( SQLException e ) {
+			jframe.setCommitStatus( 
+					CoreEditorFrame.STATUS_COMMIT_ERROR, 
+					this, 
+					row 
+				);
+			return;
+		}
+		
 		this.btnCommit.setEnabled(row, false);
-
 		jframe.setCommitStatus( 
 				CoreEditorFrame.STATUS_COMMIT_SUCCESS, 
 				this, 
