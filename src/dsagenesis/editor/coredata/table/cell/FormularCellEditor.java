@@ -79,7 +79,7 @@ public class FormularCellEditor
 		{
 			label.setText("f(x)= undefined");
 		} else {	
-			label.setText("f(x)="+value);
+			label.setText("f(x)= "+value);
 		}
 		return c;
 	}

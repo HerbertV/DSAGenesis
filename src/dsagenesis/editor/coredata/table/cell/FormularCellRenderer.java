@@ -73,7 +73,7 @@ public class FormularCellRenderer
 		{
 			label.setText("f(x)= undefined");
 		} else {	
-			label.setText("f(x)="+value);
+			label.setText("f(x)= "+value);
 		}
 		// TODO label.setToolTipText(tooltip);
 		return label;
