@@ -23,6 +23,7 @@ import java.util.Vector;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 
 /**
  * ScriptTriggers
@@ -111,10 +112,28 @@ public class ScriptTriggers
 	
 	
 	@Override
-	public void queryReferences() throws SQLException
+	public void setupReferences() 
+			throws SQLException
 	{
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
+	}
+	
+	@Override
+	public void queryReferences(CoreEditorTableModel model)
+			throws SQLException
+	{
+		// not needed
+	}
+
+	@Override
+	public void updateReferencesFor(
+			Object id,
+			int row,
+			CoreEditorTableModel model
+		) 
+			throws SQLException 
+	{
+		// not needed
 	}
 
 }

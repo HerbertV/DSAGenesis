@@ -29,6 +29,7 @@ import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.IDCellEditor;
 
 /**
@@ -500,58 +501,113 @@ public abstract class AbstractSQLTableModel
 	}
 	
 	/**
-	 * prepareJunctionQueryBeginning
+	 * getJunctionTableName
 	 * 
-	 * returns the begin of the select statement.
-	 * where clause must be added.
+	 * returns the junction table name
 	 * 
-	 * @param table1 name of table 1
+	 * @param table1
 	 * @return
 	 */
-	public String prepareJunctionQueryBeginning(String table1)
+	public String getJunctionTableName(String table1)
 	{
-		return "SELECT * from Junct_"
+		return "Junct_"
 				+ table1 
 				+ "_"
-				+ this.getDBTableLabel()
-				+ " WHERE ";
+				+ this.getDBTableName(); 
 	}
 	
 	/**
-	 * queryReferences
+	 * prepareJunctionStatements
 	 * 
-	 * this function is called Core Editor when the table model is loaded.
+	 * returns a string with all needed inserts and deletes.
+	 * 
+	 * @param id
+	 * @param tablename
+	 * @param prefix
+	 * @param adds
+	 * @param removes
+	 * 
+	 * @return
+	 */
+	protected String prepareJunctionStatements(
+			String id, 
+			String tablename, 
+			String prefix,
+			Vector<Object> adds, 
+			Vector<Object> removes
+		)
+	{
+		String update = "";
+		
+		// insert Statements
+		for( int i=0; i<adds.size(); i++ )
+			update += "INSERT INTO " + tablename
+					+ " ( ref_" + this.prefix + "ID , ref_" + prefix + "ID )" 
+					+ " VALUES ('"
+					+ id + "', '" + adds.get(i) + "' );\n";
+	
+		// delete Statements
+		for( int i=0; i<removes.size(); i++ )
+			update += "DELETE FROM " + tablename 
+					+ " WHERE ref_"+this.prefix + "ID='"
+					+ id + "' AND ref_" + prefix + "ID='" + removes.get(i) + "';\n";
+		
+		return update;
+	}
+	
+	/**
+	 * setupReferences
+	 * 
+	 * this function is called by Core Editor before the table model is loaded.
 	 * it is used to generated for example reference ComboBoxes
 	 * 
 	 *  @throws SQLException
 	 */
-	public abstract void queryReferences() throws SQLException;
+	public abstract void setupReferences() throws SQLException;
+	
+	/**
+	 * queryReferences
+	 * 
+	 * this function is called by Core Editor as last step of the table model creation
+	 * to load the data from the junction table into the JTableModel.
+	 * this is used by tables with junctions.
+	 * 
+	 * @param model
+	 * 
+	 * @throws SQLException
+	 */
+	public abstract void queryReferences(CoreEditorTableModel model) throws SQLException;
+	
+	/**
+	 * updateReferencesFor
+	 * 
+	 * this function is called by Core Editor if an insert, update or delete
+	 * was done.
+	 * 
+	 * it changes the references (most times junctions).
+	 * 
+	 * @param id
+	 * @param row if -1 all entries need to be deleted.
+	 * @param model
+	 * 
+	 * @throws SQLException
+	 */
+	public abstract void updateReferencesFor(
+			Object id,
+			int row,
+			CoreEditorTableModel model
+		) throws SQLException;
 	
 	/**
 	 * getRow
 	 * 
 	 * returns a single row/entry by it's ID as Abstract GenesisModel.
 	 * 
+	 * @param id
+	 * 
 	 * @return
 	 */
 	public abstract AbstractGenesisModel getRow(String id);
 	
 	
-	
-	
-	
-	/**
-	 * 
-	 */
-	//public void newDBEntry();
-		
-	/**
-	 * 
-	 */
-	//public void deleteDBEntry();
-	
-	/**
-	 * 
-	 */
-	//public void updateDBEntry();
 }

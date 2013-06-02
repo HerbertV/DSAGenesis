@@ -22,7 +22,6 @@ import java.util.Vector;
 
 import javax.swing.table.TableColumn;
 
-import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 
@@ -32,7 +31,7 @@ import dsagenesis.editor.coredata.table.CoreEditorTable;
  * This an intermediate abstract class for every table
  * that has a name column.
  */
-public class AbstractNamedTableModel 
+public abstract class AbstractNamedTableModel 
 		extends AbstractSQLTableModel 
 {
 	
@@ -118,19 +117,6 @@ public class AbstractNamedTableModel
 		Vector<Class<?>> vec = super.getTableColumnClasses();
 		vec.add(String.class);
 		return vec;
-	}
-	
-	
-	@Override
-	public void queryReferences() throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public AbstractGenesisModel getRow(String id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

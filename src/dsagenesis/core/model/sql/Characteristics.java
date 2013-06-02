@@ -26,6 +26,7 @@ import dsagenesis.core.model.SKTMatrix;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellEditor;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellRenderer;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
@@ -247,7 +248,7 @@ public class Characteristics
 	}
 	
 	@Override
-	public void queryReferences() 
+	public void setupReferences() 
 			throws SQLException 
 	{
 		CharacteristicGroups cg = new CharacteristicGroups();
@@ -260,6 +261,24 @@ public class Characteristics
 				"cg_name", 
 				true
 			);
+	}
+	
+	@Override
+	public void queryReferences(CoreEditorTableModel model)
+			throws SQLException
+	{
+		// not needed
+	}
+	
+	@Override
+	public void updateReferencesFor(
+			Object id,
+			int row,
+			CoreEditorTableModel model
+		) 
+			throws SQLException 
+	{
+		// not needed
 	}
 
 }

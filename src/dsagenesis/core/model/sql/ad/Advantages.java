@@ -22,6 +22,7 @@ import java.util.Vector;
 
 import javax.swing.table.TableColumn;
 
+import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
@@ -162,5 +163,12 @@ public class Advantages
 		vec.add(String.class);
 				
 		return vec;
+	}
+
+	@Override
+	public AbstractGenesisModel getRow(String id) 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

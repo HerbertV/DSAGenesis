@@ -214,7 +214,7 @@ public class CoreEditorTable
 		Vector<Class<?>> classes = 
 				(Vector<Class<?>>) sqlTable.getTableColumnClasses().clone();
 		
-		sqlTable.queryReferences();
+		sqlTable.setupReferences();
 		
 		//if editable fill up cells for commit button
 		if( sqlTable.isEditable() )
@@ -234,8 +234,8 @@ public class CoreEditorTable
 			);
 		cetm.setReadOnly(!sqlTable.isEditable());
 		this.setModel(cetm);
-		
-		this.sqlTable.setupJTableColumnModels(jframe, this);
+		sqlTable.setupJTableColumnModels(jframe, this);
+		sqlTable.queryReferences(cetm);
 		
 		if( sqlTable.isEditable() )
 		{
@@ -307,25 +307,20 @@ public class CoreEditorTable
 	{
 		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
 		Object id = model.getValueAt(row, 0);
-		boolean deleteOnlyTable = false;
-		if( id == null )
-		{
-			deleteOnlyTable = true;
-		} else if( !TableHelper.idExists(id.toString(), sqlTable.getDBTableName()) ) {
-			deleteOnlyTable = true;
-		}
 		
-		try
-		{ 
-			((CoreEditorTableModel)this.getModel()).removeRow(row);
-		} catch( IndexOutOfBoundsException e) {
-			// do nothing this is only here
-			// because the default table sorter throws this exception. 
-		}
-		btnCommit.deleteRow(row);
-		
-		if( deleteOnlyTable )
+		if( id == null
+				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName()) 
+			)
 		{
+			try
+			{ 
+				((CoreEditorTableModel)this.getModel()).removeRow(row);
+			} catch( IndexOutOfBoundsException e) {
+				// do nothing this is only here
+				// because the default table sorter throws this exception. 
+			}
+			btnCommit.deleteRow(row);
+			
 			jframe.setCommitStatus( 
 					CoreEditorFrame.STATUS_DELETE_SUCCESS, 
 					this, 
@@ -334,17 +329,18 @@ public class CoreEditorTable
 			return;
 		}
 		
+		// here we need also delete all db entries
 		String delete = "DELETE FROM "
 				+ sqlTable.getDBTableName()
 				+ " WHERE ID='"+id+"'";
 		
 		try 
 		{
-			DBConnector.getInstance().executeUpdate(delete);
+			sqlTable.updateReferencesFor(id,-1,model);
 			long querytime = DBConnector.getInstance().getQueryTime();
-		
-			// TODO junctions
-			//querytime += DBConnector.getInstance().getQueryTime();
+			
+			DBConnector.getInstance().executeUpdate(delete);
+			querytime += DBConnector.getInstance().getQueryTime();
 			
 			ApplicationLogger.logInfo("delete time "+querytime+ " ms");
 			
@@ -356,6 +352,15 @@ public class CoreEditorTable
 				);
 			return;
 		}
+		
+		try
+		{ 
+			((CoreEditorTableModel)this.getModel()).removeRow(row);
+		} catch( IndexOutOfBoundsException e) {
+			// do nothing this is only here
+			// because the default table sorter throws this exception. 
+		}
+		btnCommit.deleteRow(row);
 		
 		jframe.setCommitStatus( 
 				CoreEditorFrame.STATUS_DELETE_SUCCESS, 
@@ -509,10 +514,13 @@ public class CoreEditorTable
 			DBConnector.getInstance().executeUpdate(update);
 			querytime = DBConnector.getInstance().getQueryTime();
 			
-			// TODO junctions
-			//querytime += DBConnector.getInstance().getQueryTime();
+			sqlTable.updateReferencesFor(id, row, model);
+			querytime += DBConnector.getInstance().getQueryTime();
 			
-			ApplicationLogger.logInfo("update time "+querytime+ " ms");
+			ApplicationLogger.logInfo(
+					sqlTable.getDBTableName()
+						+ " update time "+querytime+ " ms"
+				);
 			
 		} catch( SQLException e ) {
 			jframe.setCommitStatus( 
@@ -558,6 +566,9 @@ public class CoreEditorTable
         
         if( this.getCellEditor() != null
         		&&  this.getCellEditor() instanceof CommitButtonCell )
+        	return;
+        
+        if( this.btnCommit == null )
         	return;
         
         // now something changed enable button

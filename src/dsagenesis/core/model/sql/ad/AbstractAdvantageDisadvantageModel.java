@@ -24,10 +24,12 @@ import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractNamedTableModel;
 import dsagenesis.core.model.sql.ProfessionCategories;
+import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.dialog.JunctionCellDialog;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.JunctionCellEditor;
 import dsagenesis.editor.coredata.table.cell.JunctionCellRenderer;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
@@ -196,7 +198,7 @@ public abstract class AbstractAdvantageDisadvantageModel
 	}
 	
 	@Override
-	public void queryReferences() 
+	public void setupReferences() 
 			throws SQLException
 	{
 		ProfessionCategories pc = new ProfessionCategories();
@@ -208,7 +210,82 @@ public abstract class AbstractAdvantageDisadvantageModel
 				columns, 
 				"pc_name", 
 				true
+			);	
+	}
+
+	@Override
+	public void queryReferences(CoreEditorTableModel model)
+			throws SQLException
+	{
+		String junctname = this.getJunctionTableName("ProfessionCategories");
+		String query;
+		Object id;
+		Vector<Object> entries;
+		for( int i=0; i<model.getRowCount(); i++ )
+		{
+			id = model.getValueAt(i, 0);
+			query = "SELECT * FROM "
+					+ junctname
+					+ " WHERE ref_" +this.prefix+ "ID='"
+					+ id + "' ORDER BY ref_pc_ID";
+			
+			ResultSet rs = DBConnector.getInstance().executeQuery(query);
+			entries = new Vector<Object>();
+			while( rs.next() )
+				entries.add(rs.getString("ref_pc_ID"));
+			
+			model.setValueAt(entries, i, 4);
+		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public void updateReferencesFor(
+			Object id,
+			int row,
+			CoreEditorTableModel model
+		) 
+			throws SQLException 
+	{
+		String junctname = this.getJunctionTableName("ProfessionCategories");
+		
+		String query = "SELECT * FROM "
+				+ junctname
+				+ " WHERE ref_" +this.prefix+ "ID='"
+				+ id + "' ORDER BY ref_pc_ID";
+		
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);
+		Vector<Object> oldJunctions = new Vector<Object>();
+		Vector<Object> newJunctions = new Vector<Object>();
+		
+		while( rs.next() )
+			oldJunctions.add(rs.getString("ref_pc_ID"));
+		
+		// if row == -1 delete only
+		if( row > -1 )
+		{
+			newJunctions = (Vector<Object>) ((Vector<Object>)model.getValueAt(row, 4)).clone();
+			for( int i=(oldJunctions.size()-1); i>-1;  i-- )
+			{
+				int idx = newJunctions.indexOf(oldJunctions.get(i));
+				if( idx > -1 )
+				{
+					// nothing changed still there
+					newJunctions.remove(idx);
+					oldJunctions.remove(i);
+				}
+			}
+		}
+		
+		String update = prepareJunctionStatements(
+				id.toString(), 
+				junctname, 
+				"pc_", 
+				newJunctions, 
+				oldJunctions
 			);
+
+		DBConnector.getInstance().executeUpdate(update);
 	}
 
 }

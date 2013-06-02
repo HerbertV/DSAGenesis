@@ -25,6 +25,7 @@ import javax.swing.table.TableColumn;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
@@ -132,10 +133,28 @@ public class SKTShifts
 	
 	
 	@Override
-	public void queryReferences() throws SQLException
+	public void setupReferences()
+			throws SQLException
 	{
 		// TODO Auto-generated method stub
-		
+	}
+	
+	@Override
+	public void queryReferences(CoreEditorTableModel model)
+			throws SQLException
+	{
+		// not needed
+	}
+	
+	@Override
+	public void updateReferencesFor(
+			Object id,
+			int row,
+			CoreEditorTableModel model
+		) 
+			throws SQLException 
+	{
+		// not needed
 	}
 
 }

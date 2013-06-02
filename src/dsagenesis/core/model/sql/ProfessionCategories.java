@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
+import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 
 /**
  * ProfessionCategories
@@ -71,9 +72,27 @@ public class ProfessionCategories
 	}	
 	
 	@Override
-	public void queryReferences() throws SQLException 
+	public void setupReferences()
+			throws SQLException 
+	{
+		// not needed
+	}
+	
+	@Override
+	public void queryReferences(CoreEditorTableModel model)
+			throws SQLException
 	{
 		// not needed
 	}
 
+	@Override
+	public void updateReferencesFor(
+			Object id,
+			int row,
+			CoreEditorTableModel model
+		) 
+			throws SQLException 
+	{
+		// not needed
+	}
 }

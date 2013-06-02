@@ -87,7 +87,6 @@ public class JunctionCellRenderer
 			return label;
 		
 		Vector<Object> ids = (Vector<Object>)value;
-		
 		String str = "";
 		
 		for( int i=0; i<ids.size(); i++ )
@@ -104,7 +103,13 @@ public class JunctionCellRenderer
 				}
 			}
 		}
+		
+		String tooltip = "<html>"
+				+ str.replaceAll(", ", "<br>" )
+				+ "</html>";
+				
 		label.setText(str);
+		label.setToolTipText(tooltip);
 		return label;
     }
 

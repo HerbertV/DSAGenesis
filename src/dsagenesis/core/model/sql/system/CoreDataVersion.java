@@ -25,6 +25,7 @@ import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
@@ -116,9 +117,30 @@ public class CoreDataVersion
 	{
 		return null;
 	}
+
 	@Override
-	public void queryReferences() throws SQLException
+	public void setupReferences() 
+			throws SQLException
 	{
 		// not needed
 	}
+	
+	@Override
+	public void queryReferences(CoreEditorTableModel model)
+			throws SQLException
+	{
+		// not needed
+	}
+	
+	@Override
+	public void updateReferencesFor(
+			Object id,
+			int row,
+			CoreEditorTableModel model
+		) 
+			throws SQLException 
+	{
+		// not needed
+	}
+
 }
