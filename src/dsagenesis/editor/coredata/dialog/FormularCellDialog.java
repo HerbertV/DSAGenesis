@@ -34,7 +34,10 @@ public class FormularCellDialog
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-			
+	
+	private String currentId;
+	
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -43,6 +46,7 @@ public class FormularCellDialog
 	 * Constructor
 	 * 
 	 * @param f
+	 * @param title
 	 */
 	public FormularCellDialog(
 			CoreEditorFrame f, 
@@ -51,16 +55,24 @@ public class FormularCellDialog
 	{
 		super(f, 500, 400);
 		
+		this.setTitle(
+				labelResource.getProperty("title", "title") 
+				+ " "+ title
+			);
 		
-		//this.setTitle(title);
-		
-		// TODO add allowed ids
+		// TODO add allowed inputs
 	}
 
+	
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-		
+	
+	public void setId(String id) 
+	{
+		currentId = id;
+	}
+	
 	@Override
 	public Object getValue() 
 	{

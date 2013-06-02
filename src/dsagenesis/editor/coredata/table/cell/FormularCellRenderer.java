@@ -68,7 +68,6 @@ public class FormularCellRenderer
 				row, 
 				column
 			);
-		
 		if( value == null )
 		{
 			label.setText("f(x)= undefined");

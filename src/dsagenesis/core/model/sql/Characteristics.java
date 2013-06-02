@@ -29,6 +29,8 @@ import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellEditor;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellRenderer;
+import dsagenesis.editor.coredata.table.cell.FormularCellEditor;
+import dsagenesis.editor.coredata.table.cell.FormularCellRenderer;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
@@ -177,7 +179,11 @@ public class Characteristics
 		//col 13
 		currColumn = cetable.getColumnModel().getColumn(13);
 		currColumn.setMinWidth(120);
-		
+		currColumn.setCellEditor(new FormularCellEditor(
+				ceframe, 
+				(String)currColumn.getHeaderValue()
+			));
+		currColumn.setCellRenderer(new FormularCellRenderer());
 		
 		//col 15
 		currColumn = cetable.getColumnModel().getColumn(15);
@@ -188,6 +194,7 @@ public class Characteristics
 				Integer.class,
 				ceframe.getStatusBar()
 			));
+		
 		//col 16
 		currColumn = cetable.getColumnModel().getColumn(16);
 		currColumn.setMinWidth(45);
@@ -207,8 +214,6 @@ public class Characteristics
 		currColumn.setCellEditor(
 				new CrossReferenceCellEditor(sktColumns)
 			);
-
-		// TODO formular
     }
 	
 	@Override

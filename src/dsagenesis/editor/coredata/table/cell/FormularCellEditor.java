@@ -17,6 +17,7 @@
 package dsagenesis.editor.coredata.table.cell;
 
 import java.awt.Component;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JTable;
 
@@ -40,6 +41,8 @@ public class FormularCellEditor
 	//  Variables
 	// ============================================================================
 
+	private String currentId;
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -75,6 +78,8 @@ public class FormularCellEditor
 				column
 			);
 		
+		currentId = (String)table.getValueAt(row,0);
+		
 		if( value == null )
 		{
 			label.setText("f(x)= undefined");
@@ -84,4 +89,23 @@ public class FormularCellEditor
 		return c;
 	}
 	
+	@Override
+	public void mouseClicked(MouseEvent e) 
+	{
+		if( e.getButton() == MouseEvent.BUTTON1 )
+		{
+			((FormularCellDialog)dialog).setId(currentId);
+			dialog.setValue(oldValue);
+			dialog.setLocationRelativeTo(dialog.getParent());
+			dialog.setVisible(true);
+			
+			if( dialog.isChangeOk() )
+            {
+				oldValue = dialog.getValue();
+				fireEditingStopped();
+				return;
+            } 
+		} 
+		fireEditingCanceled();
+	}
 }
