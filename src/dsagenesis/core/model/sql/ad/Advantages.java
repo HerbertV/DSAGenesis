@@ -127,6 +127,9 @@ public class Advantages
 		currColumn = cetable.getColumnModel().getColumn(13);
 		currColumn.setMinWidth(120);
 		
+		currColumn = cetable.getColumnModel().getColumn(15);
+		currColumn.setMinWidth(120);
+		
     }
 	
 	/**

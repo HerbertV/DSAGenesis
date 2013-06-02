@@ -97,7 +97,7 @@ public class AbstractNamedTableModel
         
         // Name col 1
 		currColumn = cetable.getColumnModel().getColumn(1);
-        currColumn.setMinWidth(150);
+        currColumn.setMinWidth(200);
     }
 	
 	/**

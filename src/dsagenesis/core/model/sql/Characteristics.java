@@ -112,6 +112,11 @@ public class Characteristics
 
 		TableColumn currColumn;
 
+		// col 2 acronym 
+		currColumn = cetable.getColumnModel().getColumn(2);
+		currColumn.setMinWidth(40);
+		currColumn.setMaxWidth(40);
+		
 		//col 3
 		currColumn = cetable.getColumnModel().getColumn(3);
 		currColumn.setCellEditor(new NumericCellEditor(
@@ -131,18 +136,27 @@ public class Characteristics
 
 		//col 6
 		currColumn = cetable.getColumnModel().getColumn(6);
+		currColumn.setMinWidth(40);
+		currColumn.setMaxWidth(40);
+		
 		currColumn.setCellEditor(new NumericCellEditor(
 				Integer.class,
 				ceframe.getStatusBar()
 			));
 		//col 7
 		currColumn = cetable.getColumnModel().getColumn(7);
+		currColumn.setMinWidth(45);
+		currColumn.setMaxWidth(45);
+		
 		currColumn.setCellEditor(new NumericCellEditor(
 				Integer.class,
 				ceframe.getStatusBar()
 			));
 		//col 8
 		currColumn = cetable.getColumnModel().getColumn(8);
+		currColumn.setMinWidth(45);
+		currColumn.setMaxWidth(45);
+		
 		currColumn.setCellEditor(new NumericCellEditor(
 				Integer.class,
 				ceframe.getStatusBar()
@@ -159,14 +173,25 @@ public class Characteristics
 				new CrossReferenceCellEditor(sktColumns)
 			);
 		
+		//col 13
+		currColumn = cetable.getColumnModel().getColumn(13);
+		currColumn.setMinWidth(120);
+		
+		
 		//col 15
 		currColumn = cetable.getColumnModel().getColumn(15);
+		currColumn.setMinWidth(45);
+		currColumn.setMaxWidth(45);
+		
 		currColumn.setCellEditor(new NumericCellEditor(
 				Integer.class,
 				ceframe.getStatusBar()
 			));
 		//col 16
 		currColumn = cetable.getColumnModel().getColumn(16);
+		currColumn.setMinWidth(45);
+		currColumn.setMaxWidth(45);
+		
 		currColumn.setCellEditor(new NumericCellEditor(
 				Integer.class,
 				ceframe.getStatusBar()
