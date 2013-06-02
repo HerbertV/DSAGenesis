@@ -122,7 +122,11 @@ public class DBConnector
 	 */
 	public static boolean convertBooleanFromDB(Object val)
 	{
-		if( val.equals(1) || val.equals("true") )
+		if( val.equals(1) 
+				|| val.equals("1") 
+				|| val.equals("true") 
+				|| val.equals(new Boolean(true)) 
+			)
 			return true;
 		
 		return false;

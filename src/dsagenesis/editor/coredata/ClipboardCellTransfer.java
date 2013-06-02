@@ -41,6 +41,15 @@ public class ClipboardCellTransfer
 {
 
 	// ============================================================================
+	//  Constants
+	// ============================================================================
+
+	private static final String PREFIX_VECTOR = "@java.util.Vector";
+	
+	private static final String PREFIX_BOOLEAN = "@java.lang.Boolean";
+	
+	
+	// ============================================================================
 	//  Variables
 	// ============================================================================
 	
@@ -129,9 +138,15 @@ public class ClipboardCellTransfer
 				Object value = table.getValueAt(rowsselected[i],colsselected[j]);
 				if( value != null && !(value.equals("")) )
 				{
+					Class<?> c = table.getColumnClass(colsselected[j]);
+					
 					// indicate value as vector
-					if( value instanceof Vector )
-						sbf.append("Vector");
+					if( c == Vector.class )
+					{
+						sbf.append(PREFIX_VECTOR);
+					} else if ( c == Boolean.class ) {
+						sbf.append(PREFIX_BOOLEAN);
+					}
 					
 					sbf.append(value.toString());
 				} else {
@@ -192,17 +207,26 @@ public class ClipboardCellTransfer
 					if( startRow+i < table.getRowCount() 
 							&& startCol+j < table.getColumnCount() )
 					{
-						if( value.startsWith("Vector[") )
+						if( value.startsWith(PREFIX_VECTOR) )
 						{
 							// convert back to vector
 							Vector<Object> vec = new Vector<Object>();
-							String vecstring = value.substring("Vector[".length(), value.length()-1);
+							String vecstring = value.substring(
+									(PREFIX_VECTOR+"[").length(), 
+									value.length()-1
+								);
 							StringTokenizer st3 = new StringTokenizer(vecstring,", ");
 							while( st3.hasMoreTokens() )
 								vec.add(st3.nextToken());
 							
 							table.setValueAt(vec,startRow+i,startCol+j);
 							
+						} else if( value.startsWith(PREFIX_BOOLEAN) ) {
+							String boolstring = value.substring(
+									PREFIX_BOOLEAN.length(), 
+									value.length()
+								);
+							table.setValueAt(boolstring,startRow+i,startCol+j);
 						} else {
 							table.setValueAt(value.trim(),startRow+i,startCol+j);
 						}

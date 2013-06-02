@@ -92,7 +92,6 @@ public class CheckBoxCellRenderer
 				row,
 				column
 			);
-
 		checkBox.setBackground(this.getBackground());
 		checkBox.setForeground(this.getForeground());
 
