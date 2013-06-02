@@ -102,12 +102,11 @@ public class RaceCultureGroups
 	}
 
 	/**
-	 *  
+	 *  not needed 
 	 */
 	@Override
 	public AbstractGenesisModel getRow(String id) 
 	{
-		// TODO
 		return null;
 	}	
 	

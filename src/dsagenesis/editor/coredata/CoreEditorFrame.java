@@ -802,6 +802,7 @@ public class CoreEditorFrame
 		int tabidx = tabbedPane.getSelectedIndex();
 		vecTables.get(tabidx).requestFocus();
 	}
+	
 	/**
 	 * called if a tab has changed
 	 * 
@@ -1207,7 +1208,7 @@ public class CoreEditorFrame
 	 */
 	private void actionImport()
 	{
-		// TODO
+		// TODO disabled until I get the Extension to work	
 System.out.println("TODO actionImport");
 	}
 	
@@ -1224,7 +1225,7 @@ System.out.println("TODO actionImport");
 			e.printStackTrace();
 		}
 		*/
-		// TODO
+		// TODO disabled until I get the Extension to work	
 System.out.println("TODO actionExport");
 	}
 	

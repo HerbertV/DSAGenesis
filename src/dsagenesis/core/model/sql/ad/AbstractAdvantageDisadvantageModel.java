@@ -153,7 +153,6 @@ public abstract class AbstractAdvantageDisadvantageModel
 		} catch (SQLException e) {
 			// nothing to do
 		}
-		// TODO set renderer and editor
 	}
 	
 	/**

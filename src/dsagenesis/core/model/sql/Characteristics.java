@@ -243,7 +243,7 @@ public class Characteristics
 	@Override
 	public AbstractGenesisModel getRow(String id) 
 	{
-		// TODO
+		// TODO get row for hero editor
 		return null;
 	}
 	

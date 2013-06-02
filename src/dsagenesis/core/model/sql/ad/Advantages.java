@@ -168,7 +168,7 @@ public class Advantages
 	@Override
 	public AbstractGenesisModel getRow(String id) 
 	{
-		// TODO Auto-generated method stub
+		// TODO get row for Hero editor
 		return null;
 	}
 }
