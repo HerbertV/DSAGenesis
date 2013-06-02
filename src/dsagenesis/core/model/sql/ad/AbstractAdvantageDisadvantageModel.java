@@ -27,7 +27,6 @@ import dsagenesis.core.model.sql.ProfessionCategories;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
-import dsagenesis.editor.coredata.dialog.JunctionCellDialog;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.JunctionCellEditor;
@@ -143,12 +142,9 @@ public abstract class AbstractAdvantageDisadvantageModel
 		try 
 		{
 			currColumn.setCellEditor(new JunctionCellEditor(
-					new JunctionCellDialog(
-							ceframe,
-							TableHelper.getLabelForTable("ProfessionCategories"),
-							professionCategories
-						),
-					professionCategories	
+					ceframe,
+					TableHelper.getLabelForTable("ProfessionCategories"),
+					professionCategories
 				));
 		} catch (SQLException e) {
 			// nothing to do

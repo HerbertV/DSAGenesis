@@ -21,7 +21,8 @@ import java.util.Vector;
 
 import javax.swing.JTable;
 
-import dsagenesis.editor.coredata.dialog.AbstractCellDialog;
+import dsagenesis.editor.coredata.CoreEditorFrame;
+import dsagenesis.editor.coredata.dialog.JunctionCellDialog;
 
 /**
  * JunctionCellEditor
@@ -54,11 +55,12 @@ public class JunctionCellEditor
 	 * @param idLabels
 	 */
 	public JunctionCellEditor(
-			AbstractCellDialog dialog,
-			 Vector<Vector<Object>> idLabels
+			CoreEditorFrame f, 
+			String title,
+			Vector<Vector<Object>> idLabels
 		)
 	{
-		super(dialog);
+		super(new JunctionCellDialog(f,title,idLabels));
 		this.idLabelPairs = idLabels;
 	}
 
