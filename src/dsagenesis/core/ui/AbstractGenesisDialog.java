@@ -52,6 +52,7 @@ public abstract class AbstractGenesisDialog
 	{
 		super();
 		
+		this.loadLabels();
 		this.setIconImage(GenesisConfig.APP_ICON);
 	}
 	
@@ -64,6 +65,7 @@ public abstract class AbstractGenesisDialog
 	{
 		super(f);
 		
+		this.loadLabels();
 		this.setIconImage(GenesisConfig.APP_ICON);
 	}
 	
@@ -76,6 +78,24 @@ public abstract class AbstractGenesisDialog
 	{
 		super(w);
 		
+		this.loadLabels();
 		this.setIconImage(GenesisConfig.APP_ICON);
+	}
+	
+	
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+	
+	@Override
+	public void loadLabels() 
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		labelResource = new LabelResource(
+				this,
+				conf.getLanguage(), 
+				"resources/labels"
+			);
 	}
 }

@@ -18,7 +18,6 @@ package dsagenesis.core.ui;
 
 import java.awt.BorderLayout;
 
-import jhv.component.LabelResource;
 import jhv.image.ImageResource;
 import jhv.swing.webView.JFXWebView;
 import jhv.util.debug.logger.ApplicationLogger;
@@ -32,8 +31,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 import javax.swing.Box;
-
-import dsagenesis.core.config.GenesisConfig;
 
 /**
  * Genesis Help Dialog with access to online Wiki.
@@ -75,8 +72,6 @@ public class HelpDialog
 		super();
 		
 		this.getContentPane().setLayout( new BorderLayout());
-		
-		this.loadLabels();
 		
 		this.setTitle(labelResource.getProperty("title", "title"));
 		this.setSize(800, 600);
@@ -135,6 +130,7 @@ public class HelpDialog
 		this.getContentPane().add(webView);		
 	}
 	
+	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
@@ -161,7 +157,6 @@ public class HelpDialog
 	{
 		webView.openURL(url);
 	}
-
 	
 	@Override
 	public void actionPerformed(ActionEvent ae) 
@@ -185,21 +180,5 @@ public class HelpDialog
 			webView.openURL("https://github.com/HerbertV/DSAGenesis/wiki");
 		}
 	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public void loadLabels()
-	{
-		GenesisConfig conf = GenesisConfig.getInstance();
-		
-		labelResource = new LabelResource(
-				this,
-				conf.getLanguage(), 
-				"resources/labels"
-			);
-	}
-	
 
 }

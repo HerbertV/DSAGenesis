@@ -22,7 +22,6 @@ import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.core.model.sql.system.CoreDataTableIndex;
 import dsagenesis.core.model.sql.system.CoreDataVersion;
 import dsagenesis.core.model.sql.system.TableColumnLabels;
-import dsagenesis.core.sqlite.CreateDBTaskCoreEditor;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.core.ui.AbstractGenesisFrame;
@@ -33,6 +32,8 @@ import dsagenesis.core.ui.StatusBar;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
+import dsagenesis.editor.coredata.task.CreateDBTaskCoreEditor;
+import dsagenesis.editor.coredata.task.LoadTableDataTask;
 
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
@@ -58,7 +59,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 
-import jhv.component.LabelResource;
 import jhv.image.ImageResource;
 import jhv.swing.task.SerialTaskExecutor;
 import jhv.util.debug.logger.ApplicationLogger;
@@ -115,7 +115,6 @@ public class CoreEditorFrame
 	public static final int STATUS_COMMIT_ERROR = 1;
 	public static final int STATUS_DELETE_SUCCESS = 2;
 	public static final int STATUS_DELETE_ERROR = 3;
-	
 	
 	/**
 	 * action commands for menus.
@@ -192,7 +191,6 @@ public class CoreEditorFrame
 		borderLayout.setVgap(3);
 		borderLayout.setHgap(3);
 		
-		this.loadLabels();
 		this.setTitle(
 				GenesisConfig.getInstance().getAppTitle()
 					+ " - "
@@ -606,17 +604,21 @@ public class CoreEditorFrame
 		
 	}
 	
-	@Override
-	public void saveConfig() 
+	/**
+	 * markUnsavedTabTitle
+	 * 
+	 * @param table
+	 * @param unsaved
+	 */
+	private void markUnsavedTabTitle(
+			CoreEditorTable table, 
+			boolean unsaved
+		)
 	{
-		GenesisConfig conf = GenesisConfig.getInstance();
-		
-		conf.setUserProperty(
-				GenesisConfig.KEY_WIN_CORE_ACTIVE_TAB, 
-				Integer.toString(tabbedPane.getSelectedIndex())
-			);
-		
-		super.saveConfig();
+		int idx = vecTables.indexOf(table);
+		String title = tabbedPane.getTitleAt(idx);
+		title = CoreEditorFrame.markUnsaved(title, unsaved);
+		tabbedPane.setTitleAt(idx, title);
 	}
 	
 	/**
@@ -690,17 +692,33 @@ public class CoreEditorFrame
 	 * setupTask
 	 * 
 	 * prepares the task executor before adding tasks with execute.
+	 * set messages/handlers for success and error, too.
 	 * 
+	 * returns false if a task is already running
+	 * 
+	 * @param startMsg
 	 * @param successMsg
 	 * @param errorMsg
+	 * 
+	 * @return
 	 */
-	public void setupTask(
+	private boolean setupTask(
+			final String startMsg,
 			final String successMsg, 
 			final String errorMsg
 		)
 	{
 		if( taskExecutor == null )
 			taskExecutor = new SerialTaskExecutor(false);
+		
+		if( taskExecutor.isRunning() )
+			return false;
+		
+		statusBar.setStatus(startMsg,StatusBar.STATUS_WORKING);
+		this.setEnabled(false);
+		CoreEditorFrame.this.setCursor(
+				Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
+			);
 		
 		taskExecutor.setFinishedRunnable(new Runnable(){
 				public void run() 
@@ -713,6 +731,7 @@ public class CoreEditorFrame
 					
 					statusBar.setStatus(successMsg,StatusBar.STATUS_OK);
 					statusBar.setProgress(0);
+					CoreEditorFrame.this.setEnabled(true);
 				}
 			});
 		
@@ -726,27 +745,57 @@ public class CoreEditorFrame
 				
 				statusBar.setStatus(errorMsg,StatusBar.STATUS_ERROR);
 				statusBar.setProgress(0);
+				CoreEditorFrame.this.setEnabled(true);
 			}
 		});
+		return true;
 	}
 	
 	/**
-	 * markUnsavedTabTitle
+	 * startLoadTableDataTask
+	 * 
+	 * starts loading/refreshing the table data with a SwingWorker task
 	 * 
 	 * @param table
-	 * @param unsaved
 	 */
-	private void markUnsavedTabTitle(
-			CoreEditorTable table, 
-			boolean unsaved
-		)
+	private void startLoadTableDataTask(final CoreEditorTable table)
 	{
-		int idx = vecTables.indexOf(table);
-		String title = tabbedPane.getTitleAt(idx);
-		title = CoreEditorFrame.markUnsaved(title, unsaved);
-		tabbedPane.setTitleAt(idx, title);
+		boolean startNewTask = this.setupTask(
+				labelResource.getProperty("status.table.load", "status.table.load"),
+				labelResource.getProperty("status.ready", "status.ready"),
+				labelResource.getProperty("status.table.load.error", "status.table.load.error")
+			);
+		
+		if( !startNewTask )
+			return;
+		
+		taskExecutor.execute(new LoadTableDataTask(
+				statusBar.getStatusLabel(), 
+				statusBar.getProgressBar(),
+				table, 
+				labelResource.getProperty("status.table.load", "status.table.load")
+			));
+		taskExecutor.execute(new Runnable(){
+				public void run() 
+				{
+					titleBorder.setTitle(table.getLabel());
+					lblNote.setText(
+							"<html>"
+								+ table.getNote()
+								+ "</html>"
+						);
+				}
+			});
 	}
 	
+	/**
+	 * setFocusOnActiveTab
+	 */
+	public void setFocusOnActiveTab() 
+	{
+		int tabidx = tabbedPane.getSelectedIndex();
+		vecTables.get(tabidx).requestFocus();
+	}
 	
 	@Override
 	public boolean hasContentChanged() 
@@ -763,17 +812,18 @@ public class CoreEditorFrame
 	{
 		// not used since we have the commit buttons.
 	}
-
+	
 	@Override
-	public void loadLabels()
+	public void saveConfig() 
 	{
 		GenesisConfig conf = GenesisConfig.getInstance();
 		
-		labelResource = new LabelResource(
-				this,
-				conf.getLanguage(), 
-				"resources/labels"
+		conf.setUserProperty(
+				GenesisConfig.KEY_WIN_CORE_ACTIVE_TAB, 
+				Integer.toString(tabbedPane.getSelectedIndex())
 			);
+		
+		super.saveConfig();
 	}
 	
 	@Override
@@ -793,48 +843,6 @@ public class CoreEditorFrame
 			DBConnector.getInstance().closeConnection();
 		super.dispose();
 	}
-
-	/**
-	 * setFocusOnActiveTab
-	 */
-	public void setFocusOnActiveTab() 
-	{
-		int tabidx = tabbedPane.getSelectedIndex();
-		vecTables.get(tabidx).requestFocus();
-	}
-	
-	/**
-	 * called if a tab has changed
-	 * 
-	 * @param ce
-	 */
-	@Override
-	public void stateChanged(ChangeEvent ce) 
-	{
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		
-// TODO put this in a task		
-		CoreEditorTable table = vecTables.elementAt(
-				tabbedPane.getSelectedIndex()
-			);
-
-		try
-		{
-			if( !table.containsUncommitedData() )
-				table.loadData();
-			
-			titleBorder.setTitle(table.getLabel());
-			lblNote.setText(
-					"<html>"
-						+ table.getNote()
-						+ "</html>"
-				);
-		} catch( SQLException e) {
-			// low level log enough
-		}
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	}
-
 	/**
 	 * actionCopy
 	 */
@@ -919,6 +927,7 @@ public class CoreEditorFrame
 	 */
 	private void actionDeleteRow()
 	{
+// TODO put in Task		
 		int idx = this.tabbedPane.getSelectedIndex();
 	    CoreEditorTable table = vecTables.elementAt(idx);
 	    
@@ -963,6 +972,7 @@ public class CoreEditorFrame
 	 */
 	private void actionCommitAll()
 	{
+// TODO put in Task		
 		for( int i=0; i< vecTables.size(); i++ )
 		{
 			if( vecTables.elementAt(i).containsUncommitedData() )
@@ -974,7 +984,6 @@ public class CoreEditorFrame
 					table.commitRow(indices.elementAt(j));
 			}
 		}
-
 	}
 	
 	/**
@@ -985,8 +994,7 @@ public class CoreEditorFrame
 		int idx = tabbedPane.getSelectedIndex();
 		CoreEditorTable table = vecTables.elementAt(idx);
 		boolean refresh = true;
-		
-		
+				
 		if( table.containsUncommitedData() )
 		{
 			int result = PopupDialogFactory.confirmRefreshWithUncommitedData(
@@ -1000,22 +1008,7 @@ public class CoreEditorFrame
 		if( !refresh )
 			return;
 			
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		try
-		{	
-			table.loadData();
-			markUnsavedTabTitle(table,false);
-			
-			if( !hasContentChanged() )
-			{
-				String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
-				this.setTitle(title);
-				btnCommitAll.setEnabled(false);
-			}
-		} catch( SQLException e) {
-			// low level log enough
-		}
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		this.startLoadTableDataTask(table);
 	}
 	
 	/**
@@ -1056,11 +1049,9 @@ public class CoreEditorFrame
 		DBConnector.getInstance().openConnection(
 				selectedFile,false
 			);
-		this.statusBar.setStatus(
-				labelResource.getProperty("status.init", "status.init"),
-				StatusBar.STATUS_WORKING
-			);
+		
 		this.setupTask(
+				labelResource.getProperty("status.init", "status.init"),
 				labelResource.getProperty("status.db.create.success", "status.db.create.success"),
 				labelResource.getProperty("status.db.create.error", "status.db.create.error")
 			);
@@ -1141,7 +1132,6 @@ public class CoreEditorFrame
 				labelResource.getProperty("status.ready", "status.ready"),
 				StatusBar.STATUS_OK
 			);
-		
 	}
 	
 	/**
@@ -1289,9 +1279,12 @@ System.out.println("TODO actionExport");
 			}
 		}
 	}
-
+	
 	/** 
-	 * table data changes 
+	 * tableChanged
+	 * 
+	 * table data changes, so we need to update 
+	 * btnCommitAll and unsaved data marker
 	 * 
 	 * @param e
 	 */
@@ -1326,6 +1319,26 @@ System.out.println("TODO actionExport");
 		String title = CoreEditorFrame.markUnsaved(this.getTitle(), true);
 		this.setTitle(title);
 		btnCommitAll.setEnabled(true);
+	}
+	
+	/**
+	 * stateChanged
+	 * 
+	 * called if a tab has changed
+	 * 
+	 * @param ce
+	 */
+	@Override
+	public void stateChanged(ChangeEvent ce) 
+	{
+		CoreEditorTable table = vecTables.elementAt(
+				tabbedPane.getSelectedIndex()
+			);
+		
+		if( table.containsUncommitedData() )
+			return;
+			
+		this.startLoadTableDataTask(table);
 	}
 	
 }

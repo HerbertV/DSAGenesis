@@ -56,8 +56,8 @@ public class DBConfigTabPanel
 	{
 		super(frame);
 		
-		this.loadLabels();
 		GenesisConfig conf = GenesisConfig.getInstance();
+		this.loadLabels();
 		
 		this.addInfoPanel(
 				labelResource.getProperty("info.title", "info.title"), 
@@ -82,7 +82,6 @@ public class DBConfigTabPanel
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-	
 	
 	@Override
 	public void loadLabels() 
@@ -127,7 +126,6 @@ public class DBConfigTabPanel
 		txtDBName.setText(
 				conf.getString(GenesisConfig.KEY_DB_FILE)
 			);
-		
 	}
 
 }

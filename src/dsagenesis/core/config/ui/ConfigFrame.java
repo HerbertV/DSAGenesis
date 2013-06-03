@@ -28,8 +28,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 
-import jhv.component.LabelResource;
-
 /**
  * SetupFrame for configuring the users presets. 
  */
@@ -69,7 +67,6 @@ public class ConfigFrame
 	{
 		super(IGenesisConfigKeys.KEY_WIN_SETUP);
 		
-		this.loadLabels();
 		this.setTitle(
 				GenesisConfig.getInstance().getAppTitle()
 					+ " - "
@@ -145,18 +142,6 @@ public class ConfigFrame
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-	
-	@Override
-	public void loadLabels() 
-	{
-		GenesisConfig conf = GenesisConfig.getInstance();
-		
-		labelResource = new LabelResource(
-				this,
-				conf.getLanguage(), 
-				"resources/labels"
-			);
-	}
 	
 	@Override
 	public boolean hasContentChanged()

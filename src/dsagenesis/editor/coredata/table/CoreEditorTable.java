@@ -21,6 +21,7 @@ import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
@@ -178,6 +179,11 @@ public class CoreEditorTable
 		return false;
 	}
 	
+	/**
+	 * getUncommitedRowIndices
+	 * 
+	 * @return
+	 */
 	public Vector<Integer> getUncommitedRowIndices()
 	{
 		Vector<Integer> indices = new Vector<Integer>();
@@ -193,50 +199,12 @@ public class CoreEditorTable
 	}
 	
 	/**
-	 * loadData
+	 * initCommitButtonCell
 	 * 
-	 * updates the whole table for the DB
-	 * 
-	 * @throws SQLException
+	 * @param data
 	 */
-	@SuppressWarnings("unchecked")
-	public void loadData()
-			throws SQLException
+	public void initCommitButtonCell(Vector<Vector<Object>> data)
 	{
-		if( sqlTable == null )
-			return;
-			
-		// we need to clone since we don't want to alter the original data.
-		Vector<Vector<Object>> data = 
-				(Vector<Vector<Object>>) sqlTable.queryListAsVector().clone();
-		Vector<String> labels = 
-				(Vector<String>) sqlTable.getColumnLabels().clone();
-		Vector<Class<?>> classes = 
-				(Vector<Class<?>>) sqlTable.getTableColumnClasses().clone();
-		
-		sqlTable.setupReferences();
-		
-		//if editable fill up cells for commit button
-		if( sqlTable.isEditable() )
-		{
-			for( int i=0; i < data.size(); i++ )
-				data.elementAt(i).addElement(null);
-			
-			labels.addElement("");
-			classes.addElement(Object.class);
-		}
-		
-		CoreEditorTableModel cetm = new CoreEditorTableModel(
-				data, 
-				labels,
-				classes,
-				this
-			);
-		cetm.setReadOnly(!sqlTable.isEditable());
-		this.setModel(cetm);
-		sqlTable.setupJTableColumnModels(jframe, this);
-		sqlTable.queryReferences(cetm);
-		
 		if( sqlTable.isEditable() )
 		{
 			// setup commit button and add listener
@@ -299,7 +267,7 @@ public class CoreEditorTable
 	/**
 	 * removeRow
 	 * 
-	 * removes the row from table and the DB!
+	 * removes the row from table and the DB if it exists!
 	 * 
 	 * @param row
 	 */
@@ -312,20 +280,7 @@ public class CoreEditorTable
 				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName()) 
 			)
 		{
-			try
-			{ 
-				((CoreEditorTableModel)this.getModel()).removeRow(row);
-			} catch( IndexOutOfBoundsException e) {
-				// do nothing this is only here
-				// because the default table sorter throws this exception. 
-			}
-			btnCommit.deleteRow(row);
-			
-			jframe.setCommitStatus( 
-					CoreEditorFrame.STATUS_DELETE_SUCCESS, 
-					this, 
-					row 
-				);
+			removeRowFromTable(row);
 			return;
 		}
 		
@@ -353,6 +308,20 @@ public class CoreEditorTable
 			return;
 		}
 		
+		removeRowFromTable(row);
+	}
+	
+	/**
+	 * removeRowFromTable
+	 * 
+	 * called by removeRow 
+	 * 
+	 * removes only the row from the JTable.
+	 * 
+	 * @param row
+	 */
+	private void removeRowFromTable(int row)
+	{
 		try
 		{ 
 			((CoreEditorTableModel)this.getModel()).removeRow(row);
@@ -367,6 +336,12 @@ public class CoreEditorTable
 				this, 
 				row 
 			);
+		
+		while( this.getRowCount() <= row )
+			row--;
+		
+		if( row > -1 )
+			this.setRowSelectionInterval(row,row);
 	}
 	
 	/**
@@ -574,7 +549,12 @@ public class CoreEditorTable
         // now something changed enable button
         this.btnCommit.setEnabled(row, true);
         
-		// to update the icon
-		this.repaint();
+		// to update the icons on the buttons
+        SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run() {
+					CoreEditorTable.this.repaint();
+				}
+			});
 	}
 }

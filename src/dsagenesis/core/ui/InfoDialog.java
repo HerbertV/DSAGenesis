@@ -24,7 +24,6 @@ import javax.swing.JWindow;
 
 import dsagenesis.core.config.GenesisConfig;
 
-import jhv.component.LabelResource;
 import jhv.image.ImageResource;
 import jhv.swing.JImagePanel;
 
@@ -86,8 +85,6 @@ public class InfoDialog
 		int margin = 10;
 		int w = 400;
 		int h = 300;
-		
-		this.loadLabels();
 		
 		this.setTitle(labelResource.getProperty("title", "title"));
 		
@@ -184,18 +181,6 @@ public class InfoDialog
  		btnWiki.setLocation(w-margin-btnWiki.getWidth(), 230);
  		btnWiki.setOpaque(false);
 		bgPanel.add(btnWiki);
-	}
-
-	@Override
-	public void loadLabels() 
-	{
-		GenesisConfig conf = GenesisConfig.getInstance();
-		
-		labelResource = new LabelResource(
-				this,
-				conf.getLanguage(), 
-				"resources/labels"
-			);
 	}
 
 }

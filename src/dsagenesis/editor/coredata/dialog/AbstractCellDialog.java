@@ -26,9 +26,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import jhv.component.LabelResource;
-
-import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.ui.AbstractGenesisDialog;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 
@@ -82,8 +79,6 @@ public abstract class AbstractCellDialog
 	{
 		super(f);
 		
-		this.loadLabels();
-		
 		this.setSize(width, height);
 		this.setResizable(false);
 		this.setModal(true);
@@ -120,18 +115,6 @@ public abstract class AbstractCellDialog
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-
-	@Override
-	public void loadLabels() 
-	{
-		GenesisConfig conf = GenesisConfig.getInstance();
-		
-		labelResource = new LabelResource(
-				this,
-				conf.getLanguage(), 
-				"resources/labels"
-			);
-	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e)

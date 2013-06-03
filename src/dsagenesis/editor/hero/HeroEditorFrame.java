@@ -52,14 +52,7 @@ public class HeroEditorFrame
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-	
-	@Override
-	public void loadLabels() 
-	{
-		// TODO Auto-generated method stub
 		
-	}
-
 	@Override
 	public boolean hasContentChanged() 
 	{

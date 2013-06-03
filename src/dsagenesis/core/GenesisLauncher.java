@@ -29,6 +29,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -198,17 +199,23 @@ public class GenesisLauncher
 		// set now the correct level
 		ApplicationLogger.setLevel(conf.getDebugLevel());
 		
-		GenesisLauncher me = new GenesisLauncher(
-				conf.getAppTitle(), 
-				conf.getAppIcon(), 
-				"resources/images/launcher.png"
-			);
-		// set the app icon image for later use
-		GenesisConfig.APP_ICON = me.getIconImage();
-		me.startFirstLaunch();
-		
-		GenesisLauncher.open();
-		
+		SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run() 
+				{
+					GenesisConfig conf = GenesisConfig.getInstance();
+					GenesisLauncher me = new GenesisLauncher(
+							conf.getAppTitle(), 
+							conf.getAppIcon(), 
+							"resources/images/launcher.png"
+						);
+					// set the app icon image for later use
+					GenesisConfig.APP_ICON = me.getIconImage();
+					me.startFirstLaunch();
+					
+					GenesisLauncher.open();
+				}
+			});
 	}
 	
 	/**
@@ -436,33 +443,32 @@ public class GenesisLauncher
 		} else if( ae.getActionCommand().equals(ACMD_MINIMIZE) ) {
 			this.setExtendedState(ICONIFIED);
 			
-		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_CORE) ) {
-		
-			if( openFrame != null )
-				return;
-			
-			openFrame = new CoreEditorFrame();
-			openFrame.setVisible(true);
-			
-		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_META) ) {
-			if( openFrame != null )
-				return;
-			
-			openFrame = new MetaEditorFrame();
-			openFrame.setVisible(true);
-			
-		} else if( ae.getActionCommand().equals(ACMD_LAUNCH_HERO) ) {
-			if( openFrame != null )
-				return;
-			
-			openFrame = new HeroEditorFrame();
-			openFrame.setVisible(true);
-			
-		} else if( ae.getActionCommand().equals(ACMD_SETUP) ) {
-			if( openFrame != null )
-				return;
-			
-			openFrame = new ConfigFrame();
+		} else {
+			if( ae.getActionCommand().equals(ACMD_LAUNCH_CORE) ) 
+			{
+				if( openFrame != null )
+					return;
+				
+				openFrame = new CoreEditorFrame();
+				
+			} else if( ae.getActionCommand().equals(ACMD_LAUNCH_META) ) {
+				if( openFrame != null )
+					return;
+				
+				openFrame = new MetaEditorFrame();
+				
+			} else if( ae.getActionCommand().equals(ACMD_LAUNCH_HERO) ) {
+				if( openFrame != null )
+					return;
+				
+				openFrame = new HeroEditorFrame();
+				
+			} else if( ae.getActionCommand().equals(ACMD_SETUP) ) {
+				if( openFrame != null )
+					return;
+				
+				openFrame = new ConfigFrame();
+			}
 			openFrame.setVisible(true);
 		}
 	}

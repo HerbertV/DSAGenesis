@@ -71,6 +71,7 @@ public abstract class AbstractGenesisFrame
 	{
 		super();
 		
+		this.loadLabels();
 		this.setIconImage(GenesisConfig.APP_ICON);
 		this.configKey = configkey;
 		
@@ -97,6 +98,7 @@ public abstract class AbstractGenesisFrame
 	{
 		super();
 		
+		this.loadLabels();
 		this.setTitle(title);
 		this.setIconImage(GenesisConfig.APP_ICON);
 		this.configKey = configkey;
@@ -244,4 +246,17 @@ public abstract class AbstractGenesisFrame
 		}
 		return text;
 	}
+	
+	@Override
+	public void loadLabels()
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		labelResource = new LabelResource(
+				this,
+				conf.getLanguage(), 
+				"resources/labels"
+			);
+	}
+	
 }

@@ -50,13 +50,6 @@ public class MetaEditorFrame
 	// ============================================================================
 		
 	@Override
-	public void loadLabels() 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public boolean hasContentChanged() 
 	{
 		// TODO Auto-generated method stub
