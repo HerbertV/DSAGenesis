@@ -16,8 +16,6 @@
  */
 package dsagenesis.editor.coredata.task;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
@@ -31,11 +29,11 @@ import jhv.swing.task.AbstractSerialTask;
 import jhv.util.debug.logger.ApplicationLogger;
 
 /**
- * RemoveTableRowTask
+ * CommitTableRowTask
  * 
- * SwingWorker Task for deleting table rows and junctions
+ * SwingWorker Task for inserting/updating table rows and junctions
  */
-public class RemoveTableRowTask 
+public class CommitTableRowTask 
 		extends AbstractSerialTask 
 {
 
@@ -44,6 +42,8 @@ public class RemoveTableRowTask
 	// ============================================================================
 
 	private CoreEditorTable table;
+	
+	private int row;
 	
 	private String statusMsg;
 	
@@ -58,15 +58,17 @@ public class RemoveTableRowTask
 	 * @param table
 	 * @param msg
 	 */
-	public RemoveTableRowTask(
+	public CommitTableRowTask(
 			JLabel lbl,
 			CoreEditorTable table,
+			int row,
 			String msg
 		) 
 	{
 		super(lbl);
 		this.table = table;
 		this.statusMsg = msg;
+		this.row = row;
 	}
 	
 	
@@ -84,59 +86,46 @@ public class RemoveTableRowTask
 	protected void doNextStep() 
 			throws Exception 
 	{
-		int row = table.getSelectedRow();
 		
 		CoreEditorTableModel model = ((CoreEditorTableModel)table.getModel());
 		Object id = model.getValueAt(row, 0);
-		AbstractSQLTableModel sqlTable =  table.getSQLTable();
+		AbstractSQLTableModel sqlTable = table.getSQLTable();
+		String update = null;
+		long querytime = 0;
 		
-		if( id == null
-				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName()) 
+		if( id == null 
+				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName())
 			)
 		{
-			this.removeRowFromTable(row);
-			return;
+			// insert
+			update = table.prepareInsertStatement(row);
+		} else {
+			// update
+			update = table.prepareUpdateStatement(id,row);
 		}
-		
-		// here we need also delete all db entries
-		String delete = "DELETE FROM "
-				+ sqlTable.getDBTableName()
-				+ " WHERE ID='"+id+"'";
-		
-		sqlTable.updateReferencesFor(id,-1,model);
-		long querytime = DBConnector.getInstance().getQueryTime();
+
+		DBConnector.getInstance().executeUpdate(update);
+		querytime = DBConnector.getInstance().getQueryTime();
 			
-		DBConnector.getInstance().executeUpdate(delete);
+		sqlTable.updateReferencesFor(id, row, model);
 		querytime += DBConnector.getInstance().getQueryTime();
 			
 		ApplicationLogger.logInfo(
-				sqlTable.getDBTableName() 
-					+ " delete time " + querytime + " ms"
+				sqlTable.getDBTableName()
+					+ " update time "+querytime+ " ms"
 			);
-			
-		this.removeRowFromTable(row);
+		
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run() 
+			{
+				table.disableCommitButtonFor(row);
+				table.repaint();
+			}
+		});
+		
 	}
 
-	/**
-	 * removeRowFromTable
-	 * 
-	 * @param row
-	 */
-	protected void removeRowFromTable(final int row) 
-	{
-		// must be done in EDT
-		try
-		{
-			SwingUtilities.invokeAndWait(new Runnable(){
-					public void run() 
-					{
-						table.removeRowFromTable(row);
-					}
-				});
-		} catch (InvocationTargetException | InterruptedException e) {
-			// ignore
-		}
-	}
+	
 	
 
 }

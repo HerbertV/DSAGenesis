@@ -31,9 +31,10 @@ import dsagenesis.core.ui.PopupDialogFactory;
 import dsagenesis.core.ui.StatusBar;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
-import dsagenesis.editor.coredata.table.cell.CommitButtonCell;
+import dsagenesis.editor.coredata.task.CommitTableRowTask;
 import dsagenesis.editor.coredata.task.CreateDBTaskCoreEditor;
 import dsagenesis.editor.coredata.task.LoadTableDataTask;
+import dsagenesis.editor.coredata.task.RemoveTableRowTask;
 
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
@@ -107,14 +108,6 @@ public class CoreEditorFrame
 	// ============================================================================
 			
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * for setCommitStatus
-	 */
-	public static final int STATUS_COMMIT_SUCCESS = 0;
-	public static final int STATUS_COMMIT_ERROR = 1;
-	public static final int STATUS_DELETE_SUCCESS = 2;
-	public static final int STATUS_DELETE_ERROR = 3;
 	
 	/**
 	 * action commands for menus.
@@ -622,63 +615,6 @@ public class CoreEditorFrame
 	}
 	
 	/**
-	 * setStatus
-	 * 
-	 * callback for the CoreEditorTable commitRow
-	 * 
-	 * @param status STATUS_COMMIT_SUCCESS or STATUS_COMMIT_ERROR
-	 * @param table
-	 * @param row
-	 */
-	public void setCommitStatus( 
-			int status, 
-			CoreEditorTable table, 
-			int row 
-		)
-	{
-		switch( status )
-		{
-			case STATUS_COMMIT_SUCCESS:
-				this.statusBar.setStatus(
-						labelResource.getProperty("status.commit.success", "status.commit.success"),
-						StatusBar.STATUS_OK
-					);
-		
-				if( !table.containsUncommitedData() )
-					markUnsavedTabTitle(table,false);
-				
-				if( !hasContentChanged() )
-				{
-					String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
-					this.setTitle(title);
-					btnCommitAll.setEnabled(false);
-				}
-				break;
-				
-			case STATUS_COMMIT_ERROR:
-				this.statusBar.setStatus(
-						labelResource.getProperty("status.commit.error", "status.commit.error"),
-						StatusBar.STATUS_ERROR		
-					);
-				break;
-				
-			case STATUS_DELETE_SUCCESS:
-				this.statusBar.setStatus(
-						labelResource.getProperty("status.delete.success", "status.delete.success"),
-						StatusBar.STATUS_OK
-					);
-				break;
-				
-			case STATUS_DELETE_ERROR:
-				this.statusBar.setStatus(
-						labelResource.getProperty("status.delete.error", "status.delete.error"),
-						StatusBar.STATUS_ERROR		
-					);
-				break;
-		}
-	}
-	
-	/**
 	 * getStatusBar
 	 * 
 	 * @return
@@ -697,7 +633,7 @@ public class CoreEditorFrame
 	 * returns false if a task is already running
 	 * 
 	 * @param startMsg
-	 * @param successMsg
+	 * @param successMsg can be null
 	 * @param errorMsg
 	 * 
 	 * @return
@@ -720,20 +656,22 @@ public class CoreEditorFrame
 				Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
 			);
 		
-		taskExecutor.setFinishedRunnable(new Runnable(){
-				public void run() 
-				{
-					// we are done
-					// set normal cursor
-					CoreEditorFrame.this.setCursor(
-							Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-						);
-					
-					statusBar.setStatus(successMsg,StatusBar.STATUS_OK);
-					statusBar.setProgress(0);
-					CoreEditorFrame.this.setEnabled(true);
-				}
-			});
+		// set default finished runnable
+		if( successMsg != null )
+			taskExecutor.setFinishedRunnable(new Runnable(){
+					public void run() 
+					{
+						// we are done
+						// set normal cursor
+						CoreEditorFrame.this.setCursor(
+								Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+							);
+						
+						statusBar.setStatus(successMsg,StatusBar.STATUS_OK);
+						statusBar.setProgress(0);
+						CoreEditorFrame.this.setEnabled(true);
+					}
+				});
 		
 		taskExecutor.setErrorRunnable(new Runnable(){
 			public void run() 
@@ -786,6 +724,84 @@ public class CoreEditorFrame
 						);
 				}
 			});
+	}
+	
+	/**
+	 * startRemoveTableRowTask
+	 * 
+	 * starts the task for deleting a table row
+	 * 
+	 * @param table
+	 */
+	private void startRemoveTableRowTask(final CoreEditorTable table)
+	{
+		boolean startNewTask = this.setupTask(
+				labelResource.getProperty("status.delete", "status.delete"),
+				labelResource.getProperty("status.delete.success", "status.delete.success"),
+				labelResource.getProperty("status.delete.error", "status.delete.error")
+			);
+		
+		if( !startNewTask )
+			return;
+		
+		taskExecutor.execute(new RemoveTableRowTask(
+				statusBar.getStatusLabel(), 
+				table, 
+				labelResource.getProperty("status.delete", "status.delete")
+			));
+	}
+	
+	/**
+	 * startCommitTableRowTask
+	 * 
+	 * @param table
+	 * @param row
+	 */
+	public void startCommitTableRowTask(
+			final CoreEditorTable table, 
+			int row
+		)
+	{
+		boolean startNewTask = this.setupTask(
+				labelResource.getProperty("status.commit", "status.commit"),
+				null,
+				labelResource.getProperty("status.commit.error", "status.commit.error")
+			);
+		
+		if( !startNewTask )
+			return;
+		
+		// custom finished runnable since we need to update 
+		// the markers
+		taskExecutor.setFinishedRunnable(new Runnable(){
+			public void run() 
+			{
+				// we are done
+				// set normal cursor
+				CoreEditorFrame.this.setCursor(
+						Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+					);
+				
+				statusBar.setStatus(
+						labelResource.getProperty("status.commit.success", "status.commit.success"),
+						StatusBar.STATUS_OK);
+				statusBar.setProgress(0);
+				CoreEditorFrame.this.setEnabled(true);
+				
+				markUnsavedTabTitle(table, table.containsUncommitedData());
+	        	boolean contentChanged = hasContentChanged();
+	        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
+				setTitle(title);
+				btnCommitAll.setEnabled(contentChanged);
+			}
+		});
+		
+		taskExecutor.execute(new CommitTableRowTask(
+				statusBar.getStatusLabel(), 
+				table,
+				row,
+				labelResource.getProperty("status.commit", "status.commit")
+			));
 	}
 	
 	/**
@@ -927,7 +943,6 @@ public class CoreEditorFrame
 	 */
 	private void actionDeleteRow()
 	{
-// TODO put in Task		
 		int idx = this.tabbedPane.getSelectedIndex();
 	    CoreEditorTable table = vecTables.elementAt(idx);
 	    
@@ -953,18 +968,7 @@ public class CoreEditorFrame
 	   
 	    // delete
 	    if( result == JOptionPane.YES_OPTION )
-	    	table.removeRow(rowidx);
-	    
-	    // update marks
-	    if( !table.containsUncommitedData() )
-	    	markUnsavedTabTitle(table,false);
-	    
-	    if( !hasContentChanged() )
-		{
-			String title = CoreEditorFrame.markUnsaved(this.getTitle(), false);
-			this.setTitle(title);
-			btnCommitAll.setEnabled(false);
-		}
+	    	startRemoveTableRowTask(table);
 	}
 	
 	/**
@@ -1283,7 +1287,7 @@ System.out.println("TODO actionExport");
 	/** 
 	 * tableChanged
 	 * 
-	 * table data changes, so we need to update 
+	 * table data changes  so we need to update 
 	 * btnCommitAll and unsaved data marker
 	 * 
 	 * @param e
@@ -1291,34 +1295,30 @@ System.out.println("TODO actionExport");
 	@Override
 	public void tableChanged(TableModelEvent e)
 	{
-		// now we check if the commit button needs to be enabled
-		int row = e.getFirstRow();
 		int column = e.getColumn();
-        
-		// fail saves
-		// that the button is not enabled unnecessarily
-		if( row < 0 || column < 0 )
-			return;
-		
-		if( e.getType() != TableModelEvent.UPDATE )
-			return;
-	
-		CoreEditorTableModel model = ((CoreEditorTableModel)e.getSource());
+        CoreEditorTableModel model = ((CoreEditorTableModel)e.getSource());
 		CoreEditorTable table = model.getTable();
 		
-		if( table.getCellRenderer(row, column) != null
-        		&& table.getCellRenderer(row, column) instanceof CommitButtonCell )
-        	return;
-        
-        if( table.getCellEditor() != null
-        		&&  table.getCellEditor() instanceof CommitButtonCell )
-        	return;
+		// fail saves
+		// that the button is not enabled unnecessarily by clicking commit
+		if( column == (table.getColumnCount()-1)
+				&& (!table.isReadOnly())
+			)
+			return;
 		
-        // refresh unsaved indicators
-        markUnsavedTabTitle(table,true);
-		String title = CoreEditorFrame.markUnsaved(this.getTitle(), true);
-		this.setTitle(title);
-		btnCommitAll.setEnabled(true);
+        if( e.getType() == TableModelEvent.UPDATE
+        		|| e.getType() == TableModelEvent.DELETE
+        		|| e.getType() == TableModelEvent.INSERT
+        	)
+        {
+        	markUnsavedTabTitle(table, table.containsUncommitedData());
+        	
+        	boolean contentChanged = hasContentChanged();
+        	
+        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
+			setTitle(title);
+			btnCommitAll.setEnabled(contentChanged);
+        }
 	}
 	
 	/**

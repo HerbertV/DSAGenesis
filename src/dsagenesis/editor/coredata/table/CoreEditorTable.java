@@ -16,7 +16,6 @@
  */
 package dsagenesis.editor.coredata.table;
 
-import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.JTable;
@@ -25,8 +24,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
-
-import jhv.util.debug.logger.ApplicationLogger;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.core.sqlite.DBConnector;
@@ -96,8 +93,9 @@ public class CoreEditorTable
 		// this is better for larger tables
 		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);	
 		this.setName(sqlTable.getDBTableName());
-				
-		this.setAutoCreateRowSorter(true);
+		
+// FIXME uncommented until addEmptyRow crashes no longer after sorting				
+		//this.setAutoCreateRowSorter(true);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.getTableHeader().setReorderingAllowed(false);
 		
@@ -232,7 +230,8 @@ public class CoreEditorTable
 	public void addEmptyRow()
 	{
 		Vector<Class<?>> classes = this.sqlTable.getTableColumnClasses();
-		Vector<Object> row = new Vector<Object>();
+		final Vector<Object> row = new Vector<Object>();
+		final CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
 		
 		// generate id
 		row.addElement(TableHelper.createNewID(this.sqlTable.getDBTableName()));
@@ -261,66 +260,20 @@ public class CoreEditorTable
 		// commit button cell
 		row.addElement(null);
 		btnCommit.addRow();
-		((CoreEditorTableModel)this.getModel()).addRow(row);
-	}
-	
-	/**
-	 * removeRow
-	 * 
-	 * removes the row from table and the DB if it exists!
-	 * 
-	 * @param row
-	 */
-	public void removeRow(int row)
-	{
-		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
-		Object id = model.getValueAt(row, 0);
 		
-		if( id == null
-				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName()) 
-			)
-		{
-			removeRowFromTable(row);
-			return;
-		}
-		
-		// here we need also delete all db entries
-		String delete = "DELETE FROM "
-				+ sqlTable.getDBTableName()
-				+ " WHERE ID='"+id+"'";
-		
-		try 
-		{
-			sqlTable.updateReferencesFor(id,-1,model);
-			long querytime = DBConnector.getInstance().getQueryTime();
-			
-			DBConnector.getInstance().executeUpdate(delete);
-			querytime += DBConnector.getInstance().getQueryTime();
-			
-			ApplicationLogger.logInfo("delete time "+querytime+ " ms");
-			
-		} catch( SQLException e ) {
-			jframe.setCommitStatus( 
-					CoreEditorFrame.STATUS_DELETE_ERROR, 
-					this, 
-					row 
-				);
-			return;
-		}
-		
-		removeRowFromTable(row);
+		model.addRow(row);
 	}
 	
 	/**
 	 * removeRowFromTable
 	 * 
-	 * called by removeRow 
+	 * called by RemoveTableRowTask
 	 * 
 	 * removes only the row from the JTable.
 	 * 
 	 * @param row
 	 */
-	private void removeRowFromTable(int row)
+	public void removeRowFromTable(int row)
 	{
 		try
 		{ 
@@ -330,12 +283,6 @@ public class CoreEditorTable
 			// because the default table sorter throws this exception. 
 		}
 		btnCommit.deleteRow(row);
-		
-		jframe.setCommitStatus( 
-				CoreEditorFrame.STATUS_DELETE_SUCCESS, 
-				this, 
-				row 
-			);
 		
 		while( this.getRowCount() <= row )
 			row--;
@@ -350,7 +297,7 @@ public class CoreEditorTable
 	 * @param row
 	 * @return
 	 */
-	private String prepareInsertStatement(int row)
+	public String prepareInsertStatement(int row)
 	{
 		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
 		Vector<String> colNames = sqlTable.getDBColumnNames();
@@ -411,7 +358,7 @@ public class CoreEditorTable
 	 * @param row
 	 * @return
 	 */
-	private String prepareUpdateStatement(Object id, int row)
+	public String prepareUpdateStatement(Object id, int row)
 	{
 		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
 		Vector<String> colNames = sqlTable.getDBColumnNames();
@@ -462,56 +409,24 @@ public class CoreEditorTable
 	/**
 	 * commitRow
 	 * 
-	 * commit changes of the row.
+	 * called by the commit button of this row
+	 * starts the commit task
 	 * 
 	 * @param row
 	 */
 	public void commitRow(int row)
 	{
-		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
-		Object id = model.getValueAt(row, 0);
-		String update = null;
-		long querytime = 0;
-		
-		if( id == null 
-				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName())
-			)
-		{
-			// insert
-			update = prepareInsertStatement(row);
-		} else {
-			// update
-			update = prepareUpdateStatement(id,row);
-		}
-
-		try 
-		{
-			DBConnector.getInstance().executeUpdate(update);
-			querytime = DBConnector.getInstance().getQueryTime();
-			
-			sqlTable.updateReferencesFor(id, row, model);
-			querytime += DBConnector.getInstance().getQueryTime();
-			
-			ApplicationLogger.logInfo(
-					sqlTable.getDBTableName()
-						+ " update time "+querytime+ " ms"
-				);
-			
-		} catch( SQLException e ) {
-			jframe.setCommitStatus( 
-					CoreEditorFrame.STATUS_COMMIT_ERROR, 
-					this, 
-					row 
-				);
-			return;
-		}
-		
+		jframe.startCommitTableRowTask(this, row);
+	}
+	
+	/**
+	 * called after successful commit
+	 * 
+	 * @param row
+	 */
+	public void disableCommitButtonFor(int row)
+	{
 		this.btnCommit.setEnabled(row, false);
-		jframe.setCommitStatus( 
-				CoreEditorFrame.STATUS_COMMIT_SUCCESS, 
-				this, 
-				row 
-			);
 	}
 
 	/**
@@ -520,7 +435,6 @@ public class CoreEditorTable
 	@Override
 	public void tableChanged(TableModelEvent e)
 	{
-		// default handling
 		super.tableChanged(e);
 		
 		// now we check if the commit button needs to be enabled

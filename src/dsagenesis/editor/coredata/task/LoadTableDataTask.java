@@ -59,6 +59,14 @@ public class LoadTableDataTask
 	//  Constructors
 	// ============================================================================
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param lbl
+	 * @param pb
+	 * @param table
+	 * @param msg
+	 */
 	public LoadTableDataTask(
 			JLabel lbl,
 			JProgressBar pb,
