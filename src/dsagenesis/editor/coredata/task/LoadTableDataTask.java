@@ -141,31 +141,30 @@ public class LoadTableDataTask
 	
 	/**
 	 * createUI
-	 * 
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
 	 */
 	protected void createUI() 
-			throws InvocationTargetException, 
-				InterruptedException
 	{
 		// must be done in EDT
-		SwingUtilities.invokeAndWait(new Runnable(){
-				public void run() 
-				{
-					coreEditorTableModel = new CoreEditorTableModel(
-							data, 
-							labels,
-							classes,
-							table
-						);
-					AbstractSQLTableModel sqlTable = table.getSQLTable();
-					
-					coreEditorTableModel.setReadOnly(!sqlTable.isEditable());
-					table.setModel(coreEditorTableModel);
-					sqlTable.setupJTableColumnModels(table.getFrame(), table);
-				}
-			});
+		try {
+			SwingUtilities.invokeAndWait(new Runnable(){
+					public void run() 
+					{
+						coreEditorTableModel = new CoreEditorTableModel(
+								data, 
+								labels,
+								classes,
+								table
+							);
+						AbstractSQLTableModel sqlTable = table.getSQLTable();
+						
+						coreEditorTableModel.setReadOnly(!sqlTable.isEditable());
+						table.setModel(coreEditorTableModel);
+						sqlTable.setupJTableColumnModels(table.getFrame(), table);
+					}
+				});
+		} catch( InvocationTargetException | InterruptedException e ) {
+			// ignore it
+		}
 	}
 	
 	/**

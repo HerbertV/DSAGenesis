@@ -23,7 +23,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
@@ -447,15 +446,16 @@ public class CoreEditorTable
 		int row = e.getFirstRow();
 		int column = e.getColumn();
         
-		// fail saves
-		// that the button is not enabled unnecessarily by clicking commit
-		if( column == (this.getColumnCount()-1)
-				&& row > -1 
-				&& this.getValueAt(row, column) == null 
-			)
+		if( e.getType() != TableModelEvent.UPDATE )
 			return;
 		
-		if( e.getType() != TableModelEvent.UPDATE )
+		if ( row == -1 )
+			return;
+		
+		// this occurs if button caused the event
+		if( column == (this.getColumnCount()-1)
+				&& this.getValueAt(row, column) == null 
+			)
 			return;
 		
         if( this.btnCommit == null )
