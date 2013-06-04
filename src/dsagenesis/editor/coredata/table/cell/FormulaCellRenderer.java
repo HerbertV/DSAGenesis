@@ -14,77 +14,70 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.editor.coredata.dialog;
+package dsagenesis.editor.coredata.table.cell;
 
-import dsagenesis.editor.coredata.CoreEditorFrame;
+import java.awt.Component;
+
+import javax.swing.JLabel;
+import javax.swing.JTable;
 
 /**
- * FormularCellDialog
+ * FormulaCellRenderer*
  */
-public class FormularCellDialog 
-		extends AbstractCellDialog 
+public class FormulaCellRenderer
+		extends BasicCellRenderer 
 {
 	// ============================================================================
 	//  Constants
 	// ============================================================================
-			
+				
 	private static final long serialVersionUID = 1L;
 
 	
 	// ============================================================================
 	//  Variables
 	// ============================================================================
-	
-	private String currentId;
-	
-	
+
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
+
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param f
-	 * @param title
-	 */
-	public FormularCellDialog(
-			CoreEditorFrame f, 
-			String title
-		) 
+	public FormulaCellRenderer() 
 	{
-		super(f, 500, 400);
-		
-		this.setTitle(
-				labelResource.getProperty("title", "title") 
-				+ " "+ title
+		super();
+	}
+
+	// ============================================================================
+	//  Functions
+	// ============================================================================
+	
+	@Override
+	public Component getTableCellRendererComponent(
+    		JTable table, 
+    		Object value, 
+    		boolean isSelected,
+    		boolean hasFocus, 
+    		int row, 
+    		int column
+    	)
+    {
+		JLabel label = (JLabel) super.getTableCellRendererComponent(
+				table, 
+				value, 
+				isSelected, 
+				hasFocus, 
+				row, 
+				column
 			);
-		
-		// TODO add allowed inputs
-	}
-
+		if( value == null )
+		{
+			label.setText("f(x)= undefined");
+		} else {	
+			label.setText("f(x)= "+value);
+		}
+		// TODO label.setToolTipText(tooltip);
+		return label;
+    }
 	
-	// ============================================================================
-	//  Variables
-	// ============================================================================
-	
-	public void setId(String id) 
-	{
-		currentId = id;
-	}
-	
-	@Override
-	public Object getValue() 
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setValue(Object value) 
-	{
-		// TODO Auto-generated method stub
-
-	}
-
 }

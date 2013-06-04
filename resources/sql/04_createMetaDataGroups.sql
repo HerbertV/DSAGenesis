@@ -159,7 +159,7 @@ INSERT INTO "ProfessionCategories" VALUES('pc_z', 'Vollzauberer');
 INSERT INTO "ProfessionCategories" VALUES('pc_h', 'Halbzauberer');
 INSERT INTO "ProfessionCategories" VALUES('pc_v', 'Viertelzauberer');
 INSERT INTO "ProfessionCategories" VALUES('pc_s', 'Schamane');
-INSERT INTO "ProfessionCategories" VALUES('pc_b', 'Borbaradianer');
+INSERT INTO "ProfessionCategories" VALUES('pc_zb', 'Borbaradianer');
 INSERT INTO "ProfessionCategories" VALUES('pc_ga', 'Glaube Alvaran');
 INSERT INTO "ProfessionCategories" VALUES('pc_gan', 'Glaube Animismus');
 INSERT INTO "ProfessionCategories" VALUES('pc_gs', 'Glaube Sonstige');

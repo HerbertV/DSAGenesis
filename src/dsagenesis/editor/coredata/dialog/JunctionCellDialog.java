@@ -30,7 +30,9 @@ import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 import dsagenesis.editor.coredata.CoreEditorFrame;
 
@@ -180,6 +182,19 @@ public class JunctionCellDialog
 			}
 		});
 		panel.add(btnRemoveAll, gbc);
+		
+		// footer
+		gbc.gridwidth = 2;
+		
+		gbc.weighty = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 7;
+		panel.add(new JPanel(),gbc);
+		gbc.weighty = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 8;
+		JSeparator s = new JSeparator(SwingConstants.HORIZONTAL);
+		panel.add(s,gbc);
 	}
 
 	

@@ -21,9 +21,9 @@ CREATE TABLE "Advantages" (
 	"ada_min_level" INTEGER DEFAULT '0' NOT NULL,
 	"ada_max_level" INTEGER DEFAULT '0' NOT NULL,
 	"ada_has_choice" BOOLEAN DEFAULT '0' NOT NULL,
-	"ada_choice_formular" TEXT DEFAULT NULL,
+	"ada_choice_formula" TEXT DEFAULT NULL,
 	"ada_has_modifier" BOOLEAN DEFAULT '0' NOT NULL,
-	"ada_modifier_formular" TEXT DEFAULT NULL,
+	"ada_modifier_formula" TEXT DEFAULT NULL,
 	"ada_bookmark" TEXT DEFAULT NULL,
 	"ada_note" TEXT DEFAULT NULL
 );
@@ -82,7 +82,7 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Advantages', 'ada_choice_formular', 'Auswahl Formel');	
+	( 'Advantages', 'ada_choice_formula', 'Auswahl Formel');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -90,7 +90,7 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Advantages', 'ada_modifier_formular', 'Modifikator Formel');	
+	( 'Advantages', 'ada_modifier_formula', 'Modifikator Formel');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -137,9 +137,9 @@ CREATE TABLE "Disadvantages" (
 	"add_min_level" INTEGER DEFAULT '0' NOT NULL,
 	"add_max_level" INTEGER DEFAULT '0' NOT NULL,
 	"add_has_choice" BOOLEAN DEFAULT '0' NOT NULL,
-	"add_choice_formular" TEXT DEFAULT NULL,
+	"add_choice_formula" TEXT DEFAULT NULL,
 	"add_has_modifier" BOOLEAN DEFAULT '0' NOT NULL,
-	"add_modifier_formular" TEXT DEFAULT NULL,
+	"add_modifier_formula" TEXT DEFAULT NULL,
 	"add_bookmark" TEXT DEFAULT NULL,
 	"add_note" TEXT DEFAULT NULL
 );
@@ -206,7 +206,7 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Disadvantages', 'add_choice_formular', 'Auswahl Formel');	
+	( 'Disadvantages', 'add_choice_formula', 'Auswahl Formel');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -214,7 +214,7 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Disadvantages', 'add_modifier_formular', 'Modifikator Formel');	
+	( 'Disadvantages', 'add_modifier_formula', 'Modifikator Formel');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES

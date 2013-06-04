@@ -1,0 +1,15 @@
+title=Formel Editor -
+
+btnOk=Übernehmen
+btnCancel=Abbrechen
+
+lblTable=Tabelle:
+lblEntry=Eintrag:
+
+lblUsedArguments=Script Parameter:
+lblScript=Script Code:
+lblOutput=Testergebnis:
+
+btnAddArgument=Hinzufügen
+btnRemoveArgument=Entfernen
+btnTest=Testen

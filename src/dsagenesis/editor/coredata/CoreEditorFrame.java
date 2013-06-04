@@ -754,6 +754,10 @@ public class CoreEditorFrame
 	/**
 	 * startCommitTableRowTask
 	 * 
+	 * is used for single and multi commits.
+	 * 
+	 * if table is null row is -1 then everything is commited.
+	 * 
 	 * @param table
 	 * @param row
 	 */
@@ -771,37 +775,90 @@ public class CoreEditorFrame
 		if( !startNewTask )
 			return;
 		
-		// custom finished runnable since we need to update 
-		// the markers
-		taskExecutor.setFinishedRunnable(new Runnable(){
-			public void run() 
+		if( table == null ||  row > -1 )
+		{
+			// commit single row
+			
+			// custom finished runnable since we need to update 
+			// the markers
+			taskExecutor.setFinishedRunnable(new Runnable(){
+					public void run() 
+					{
+						// we are done
+						// set normal cursor
+						CoreEditorFrame.this.setCursor(
+								Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+							);
+						
+						statusBar.setStatus(
+								labelResource.getProperty("status.commit.success", "status.commit.success"),
+								StatusBar.STATUS_OK);
+						statusBar.setProgress(0);
+						CoreEditorFrame.this.setEnabled(true);
+						
+						markUnsavedTabTitle(table, table.containsUncommitedData());
+			        	boolean contentChanged = hasContentChanged();
+			        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
+						setTitle(title);
+						btnCommitAll.setEnabled(contentChanged);
+					}
+				});
+			
+			taskExecutor.execute(new CommitTableRowTask(
+					statusBar.getStatusLabel(), 
+					table,
+					row,
+					labelResource.getProperty("status.commit", "status.commit")
+				));
+		} else {
+			// commit all
+			taskExecutor.setFinishedRunnable(new Runnable(){
+					public void run() 
+					{
+						// we are done
+						// set normal cursor
+						CoreEditorFrame.this.setCursor(
+								Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+							);
+						
+						statusBar.setStatus(
+								labelResource.getProperty("status.commit.success", "status.commit.success"),
+								StatusBar.STATUS_OK);
+						statusBar.setProgress(0);
+						CoreEditorFrame.this.setEnabled(true);
+						
+						for( int i=0; i< vecTables.size(); i++ )
+						{
+							markUnsavedTabTitle(
+									vecTables.elementAt(i), 
+									vecTables.elementAt(i).containsUncommitedData()
+								);
+						}
+			        	boolean contentChanged = hasContentChanged();
+			        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
+						setTitle(title);
+						btnCommitAll.setEnabled(contentChanged);
+					}
+				});
+			
+			for( int i=0; i< vecTables.size(); i++ )
 			{
-				// we are done
-				// set normal cursor
-				CoreEditorFrame.this.setCursor(
-						Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-					);
-				
-				statusBar.setStatus(
-						labelResource.getProperty("status.commit.success", "status.commit.success"),
-						StatusBar.STATUS_OK);
-				statusBar.setProgress(0);
-				CoreEditorFrame.this.setEnabled(true);
-				
-				markUnsavedTabTitle(table, table.containsUncommitedData());
-	        	boolean contentChanged = hasContentChanged();
-	        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
-				setTitle(title);
-				btnCommitAll.setEnabled(contentChanged);
+				if( vecTables.elementAt(i).containsUncommitedData() )
+				{
+					final CoreEditorTable t =  vecTables.elementAt(i);
+					Vector<Integer> indices = t.getUncommitedRowIndices();
+					
+					for( int j=0; j<indices.size(); j++ )
+						taskExecutor.execute(new CommitTableRowTask(
+								statusBar.getStatusLabel(), 
+								t,
+								indices.elementAt(j),
+								labelResource.getProperty("status.commit", "status.commit")
+									+ " " + t.getSQLTable().getDBTableLabel()
+							));
+				}
 			}
-		});
-		
-		taskExecutor.execute(new CommitTableRowTask(
-				statusBar.getStatusLabel(), 
-				table,
-				row,
-				labelResource.getProperty("status.commit", "status.commit")
-			));
+		}
 	}
 	
 	/**
@@ -976,18 +1033,7 @@ public class CoreEditorFrame
 	 */
 	private void actionCommitAll()
 	{
-// TODO put in Task		
-		for( int i=0; i< vecTables.size(); i++ )
-		{
-			if( vecTables.elementAt(i).containsUncommitedData() )
-			{
-				CoreEditorTable table =  vecTables.elementAt(i);
-				Vector<Integer> indices = table.getUncommitedRowIndices();
-				
-				for( int j=0; j<indices.size(); j++ )
-					table.commitRow(indices.elementAt(j));
-			}
-		}
+		startCommitTableRowTask(null,-1);
 	}
 	
 	/**

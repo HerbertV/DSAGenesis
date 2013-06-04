@@ -29,8 +29,8 @@ import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellEditor;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellRenderer;
-import dsagenesis.editor.coredata.table.cell.FormularCellEditor;
-import dsagenesis.editor.coredata.table.cell.FormularCellRenderer;
+import dsagenesis.editor.coredata.table.cell.FormulaCellEditor;
+import dsagenesis.editor.coredata.table.cell.FormulaCellRenderer;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
@@ -95,8 +95,8 @@ public class Characteristics
 		this.dbColumnNames.addElement("c_h_can_increase");
 		this.dbColumnNames.addElement("c_h_can_decrease");
 		this.dbColumnNames.addElement("c_h_skt_column");
-		this.dbColumnNames.addElement("c_h_has_Formular");
-		this.dbColumnNames.addElement("c_h_formular");
+		this.dbColumnNames.addElement("c_h_has_formula");
+		this.dbColumnNames.addElement("c_h_formula");
 		this.dbColumnNames.addElement("c_is_used_by_familiar");
 		this.dbColumnNames.addElement("c_f_min_value");
 		this.dbColumnNames.addElement("c_f_max_value");
@@ -179,11 +179,20 @@ public class Characteristics
 		//col 13
 		currColumn = cetable.getColumnModel().getColumn(13);
 		currColumn.setMinWidth(120);
-		currColumn.setCellEditor(new FormularCellEditor(
+		
+		Vector<Vector<String>> tables = new Vector<Vector<String>>();
+		Vector<String> t = new Vector<String>();
+		t.add(this.getDBTableName());
+		t.add(this.getDBTableLabel());
+		t.add("c_acronym");
+		tables.add(t);
+		
+		currColumn.setCellEditor(new FormulaCellEditor(
 				ceframe, 
-				(String)currColumn.getHeaderValue()
+				(String)currColumn.getHeaderValue(),
+				tables
 			));
-		currColumn.setCellRenderer(new FormularCellRenderer());
+		currColumn.setCellRenderer(new FormulaCellRenderer());
 		
 		//col 15
 		currColumn = cetable.getColumnModel().getColumn(15);

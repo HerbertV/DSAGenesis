@@ -23,6 +23,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
@@ -93,9 +94,8 @@ public class CoreEditorTable
 		// this is better for larger tables
 		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);	
 		this.setName(sqlTable.getDBTableName());
-		
-// FIXME uncommented until addEmptyRow crashes no longer after sorting				
-		//this.setAutoCreateRowSorter(true);
+					
+		this.setAutoCreateRowSorter(true);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.getTableHeader().setReorderingAllowed(false);
 		
@@ -261,7 +261,12 @@ public class CoreEditorTable
 		row.addElement(null);
 		btnCommit.addRow();
 		
+		// sorter needs to be disable otherwise a NullPointer is fired.
+		this.setAutoCreateRowSorter(false);
+		this.setRowSorter(null);
 		model.addRow(row);
+		setAutoCreateRowSorter(true);
+		
 	}
 	
 	/**
@@ -275,13 +280,12 @@ public class CoreEditorTable
 	 */
 	public void removeRowFromTable(int row)
 	{
-		try
-		{ 
-			((CoreEditorTableModel)this.getModel()).removeRow(row);
-		} catch( IndexOutOfBoundsException e) {
-			// do nothing this is only here
-			// because the default table sorter throws this exception. 
-		}
+		// sorter needs to be disable otherwise a NullPointer is fired.
+		this.setAutoCreateRowSorter(false);
+		this.setRowSorter(null);
+		((CoreEditorTableModel)this.getModel()).removeRow(row);
+		setAutoCreateRowSorter(true);
+		
 		btnCommit.deleteRow(row);
 		
 		while( this.getRowCount() <= row )
@@ -410,7 +414,7 @@ public class CoreEditorTable
 	 * commitRow
 	 * 
 	 * called by the commit button of this row
-	 * starts the commit task
+	 * starts the commit task in our frame
 	 * 
 	 * @param row
 	 */
@@ -420,7 +424,9 @@ public class CoreEditorTable
 	}
 	
 	/**
-	 * called after successful commit
+	 * disableCommitButtonFor
+	 * 
+	 * called after a successful commit
 	 * 
 	 * @param row
 	 */
@@ -442,21 +448,16 @@ public class CoreEditorTable
 		int column = e.getColumn();
         
 		// fail saves
-		// that the button is not enabled unnecessarily
-		if( row < 0 || column < 0 )
+		// that the button is not enabled unnecessarily by clicking commit
+		if( column == (this.getColumnCount()-1)
+				&& row > -1 
+				&& this.getValueAt(row, column) == null 
+			)
 			return;
 		
 		if( e.getType() != TableModelEvent.UPDATE )
 			return;
 		
-		if( this.getCellRenderer(row, column) != null
-        		&&  this.getCellRenderer(row, column) instanceof CommitButtonCell )
-        	return;
-        
-        if( this.getCellEditor() != null
-        		&&  this.getCellEditor() instanceof CommitButtonCell )
-        	return;
-        
         if( this.btnCommit == null )
         	return;
         

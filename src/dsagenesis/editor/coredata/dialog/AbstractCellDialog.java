@@ -89,7 +89,7 @@ public abstract class AbstractCellDialog
 		JPanel btnPanel = new JPanel();
 		btnPanel.setLayout(new FlowLayout());
 		this.getContentPane().add(btnPanel, BorderLayout.SOUTH);
-
+		
 		btnOK = new JButton();
 		btnOK.setText(labelResource.getProperty("btnOk", "btnOk"));
 		btnOK.addActionListener(this);
@@ -115,6 +115,7 @@ public abstract class AbstractCellDialog
 	// ============================================================================
 	//  Functions
 	// ============================================================================
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e)

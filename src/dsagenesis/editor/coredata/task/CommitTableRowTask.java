@@ -86,10 +86,9 @@ public class CommitTableRowTask
 	protected void doNextStep() 
 			throws Exception 
 	{
-		
-		CoreEditorTableModel model = ((CoreEditorTableModel)table.getModel());
-		Object id = model.getValueAt(row, 0);
-		AbstractSQLTableModel sqlTable = table.getSQLTable();
+		final CoreEditorTableModel model = ((CoreEditorTableModel)table.getModel());
+		final Object id = model.getValueAt(row, 0);
+		final AbstractSQLTableModel sqlTable = table.getSQLTable();
 		String update = null;
 		long querytime = 0;
 		
@@ -106,7 +105,7 @@ public class CommitTableRowTask
 
 		DBConnector.getInstance().executeUpdate(update);
 		querytime = DBConnector.getInstance().getQueryTime();
-			
+		
 		sqlTable.updateReferencesFor(id, row, model);
 		querytime += DBConnector.getInstance().getQueryTime();
 			
@@ -122,10 +121,6 @@ public class CommitTableRowTask
 				table.repaint();
 			}
 		});
-		
 	}
-
-	
-	
 
 }

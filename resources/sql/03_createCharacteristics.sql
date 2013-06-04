@@ -36,8 +36,8 @@ CREATE TABLE "CharacteristicGroups" (
 		...can_decrease: is allowed to decrease (e.g. Sozialstatus)
 		...skt_column: reference to skt column 
 			if null the cost is free or calculated otherwise.
-		...has_Formular:
-		...formular:		
+		...has_Formula:
+		...formula:		
 */
 DROP TABLE IF EXISTS "Characteristics";
 
@@ -54,8 +54,8 @@ CREATE TABLE "Characteristics" (
 	"c_h_can_increase" BOOLEAN DEFAULT '0' NOT NULL,
 	"c_h_can_decrease" BOOLEAN DEFAULT '0' NOT NULL,
 	"c_h_skt_column" VARCHAR(10) NULL,
-	"c_h_has_Formular" BOOLEAN DEFAULT '0' NOT NULL,
-	"c_h_formular" TEXT DEFAULT NULL,
+	"c_h_has_formula" BOOLEAN DEFAULT '0' NOT NULL,
+	"c_h_formula" TEXT DEFAULT NULL,
 	"c_is_used_by_familiar" BOOLEAN DEFAULT 'false' NOT NULL,
 	"c_f_min_value" INTEGER NULL,
 	"c_f_max_value" INTEGER NULL,
@@ -147,11 +147,11 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Characteristics', 'c_h_has_Formular', 'hat Formel(H)');
+	( 'Characteristics', 'c_h_has_formula', 'hat Formel(H)');
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Characteristics', 'c_h_formular', 'Berechnungsformel(H)');
+	( 'Characteristics', 'c_h_formula', 'Berechnungsformel(H)');
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -210,8 +210,8 @@ UPDATE "CoreDataTableIndex"
  	c_h_can_increase,
  	c_h_can_decrease,
  	c_h_skt_column,
- 	c_h_has_Formular,
- 	c_h_formular
+ 	c_h_has_Formula,
+ 	c_h_formula
  	
  	Familiar columns:
  	c_is_used_by_familiar,
@@ -910,5 +910,5 @@ INSERT INTO "Characteristics" VALUES(
 );
 
 /*
- TODO insert formulars
+ TODO insert formulae
 */

@@ -17,12 +17,19 @@
 package dsagenesis.editor.coredata.table.cell;
 
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.util.Vector;
 
-import javax.swing.JLabel;
 import javax.swing.JTable;
 
-public class FormularCellRenderer
-		extends BasicCellRenderer 
+import dsagenesis.editor.coredata.CoreEditorFrame;
+import dsagenesis.editor.coredata.dialog.FormulaCellDialog;
+
+/**
+ * FormulaCellEditor
+ */
+public class FormulaCellEditor 
+		extends AbstractDialogCellEditor 
 {
 	// ============================================================================
 	//  Constants
@@ -35,47 +42,88 @@ public class FormularCellRenderer
 	//  Variables
 	// ============================================================================
 
+	private String rowId;
+	private String rowName;
+	
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
 
-	
-	public FormularCellRenderer() 
+	/**
+	 * Constructor
+	 * 
+	 * @param f
+	 * @param title
+	 * @param allowedTables format:
+	 * 						[0] db tablename
+	 * 						[1] table label
+	 * 						[2] column used as label for entries
+	 */
+	public FormulaCellEditor(
+			CoreEditorFrame f, 
+			String title,
+			Vector<Vector<String>> allowedTables
+		) 
 	{
-		super();
-		// TODO
+		super(new FormulaCellDialog(
+				f,
+				title,
+				allowedTables
+			));
 	}
 
+	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
 	
 	@Override
-	public Component getTableCellRendererComponent(
-    		JTable table, 
-    		Object value, 
-    		boolean isSelected,
-    		boolean hasFocus, 
-    		int row, 
-    		int column
-    	)
-    {
-		JLabel label = (JLabel) super.getTableCellRendererComponent(
+	public Component getTableCellEditorComponent(
+			JTable table, 
+			Object value,
+			boolean isSelected, 
+			int row, 
+			int column
+		)
+	{
+		Component c = super.getTableCellEditorComponent(
 				table, 
 				value, 
 				isSelected, 
-				hasFocus, 
 				row, 
 				column
 			);
+		
+		rowId = (String)table.getValueAt(row,0);
+		rowName = (String)table.getValueAt(row,1);
+		
 		if( value == null )
 		{
 			label.setText("f(x)= undefined");
 		} else {	
 			label.setText("f(x)= "+value);
 		}
-		// TODO label.setToolTipText(tooltip);
-		return label;
-    }
+		return c;
+	}
 	
+	@Override
+	public void mouseClicked(MouseEvent e) 
+	{
+		if( e.getButton() == MouseEvent.BUTTON1 )
+		{
+			((FormulaCellDialog)dialog).setRowParams(rowId, rowName);
+			dialog.setValue(oldValue);
+			dialog.setLocationRelativeTo(dialog.getParent());
+			dialog.setVisible(true);
+			
+			if( dialog.isChangeOk() )
+            {
+				oldValue = dialog.getValue();
+				fireEditingStopped();
+				return;
+            } 
+		} 
+		fireEditingCanceled();
+	}
 }
