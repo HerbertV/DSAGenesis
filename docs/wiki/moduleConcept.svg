@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="ModulKonzept.svg">
+   sodipodi:docname="modulConcept.svg">
   <defs
      id="defs4">
     <marker
@@ -54,8 +54,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="264.65147"
-     inkscape:cy="324.52541"
+     inkscape:cx="261"
+     inkscape:cy="311.20743"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -113,12 +113,12 @@
          x="374.26367"
          style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
          xml:space="preserve"><tspan
-           style="text-align:center;text-anchor:middle"
+           style="text-align:center;text-anchor:middle;-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
            y="220.36218"
            x="374.26367"
            id="tspan3785"
            sodipodi:role="line">sqlite</tspan><tspan
-           style="text-align:center;text-anchor:middle"
+           style="text-align:center;text-anchor:middle;-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
            id="tspan3787"
            y="270.36218"
            x="374.26367"
@@ -160,8 +160,9 @@
            y="349.36218"
            x="84"
            id="tspan3812"
-           sodipodi:role="line">&gt;<tspan
-   style="font-size:32px"
+           sodipodi:role="line"
+           style="-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">&gt;<tspan
+   style="font-size:32px;-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
    id="tspan3848">XML</tspan></tspan></text>
     </g>
     <g
@@ -182,8 +183,9 @@
            y="349.36218"
            x="84"
            id="tspan3812-9"
-           sodipodi:role="line">&gt;<tspan
-   style="font-size:32px"
+           sodipodi:role="line"
+           style="-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">&gt;<tspan
+   style="font-size:32px;-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
    id="tspan3846">HTML</tspan></tspan></text>
     </g>
     <g
@@ -258,8 +260,9 @@
            y="349.36218"
            x="84"
            id="tspan3812-2"
-           sodipodi:role="line">&gt;<tspan
-   style="font-size:32px"
+           sodipodi:role="line"
+           style="-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">&gt;<tspan
+   style="font-size:32px;-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
    id="tspan3848-7">XML</tspan></tspan></text>
     </g>
     <g
@@ -280,8 +283,9 @@
            y="349.36218"
            x="84"
            id="tspan3812-3"
-           sodipodi:role="line">&gt;<tspan
-   style="font-size:32px"
+           sodipodi:role="line"
+           style="-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">&gt;<tspan
+   style="font-size:32px;-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
    id="tspan3848-2">XML</tspan></tspan></text>
     </g>
     <g
@@ -302,8 +306,9 @@
            y="349.36218"
            x="84"
            id="tspan3812-5"
-           sodipodi:role="line">&gt;<tspan
-   style="font-size:32px"
+           sodipodi:role="line"
+           style="-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">&gt;<tspan
+   style="font-size:32px;-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
    id="tspan3848-76">XML</tspan></tspan></text>
     </g>
     <g
@@ -324,13 +329,14 @@
            y="349.36218"
            x="84"
            id="tspan3812-95"
-           sodipodi:role="line">&gt;<tspan
-   style="font-size:32px"
+           sodipodi:role="line"
+           style="-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">&gt;<tspan
+   style="font-size:32px;-inkscape-font-specification:Arial Bold;font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal"
    id="tspan3848-4">XML</tspan></tspan></text>
     </g>
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        x="309"
        y="644.36218"
        id="text3971"
@@ -338,19 +344,23 @@
          sodipodi:role="line"
          id="tspan3973"
          x="309"
-         y="644.36218">MetaData XMLs</tspan><tspan
+         y="644.36218"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">MetaData XMLs</tspan><tspan
          sodipodi:role="line"
          x="309"
          y="659.36218"
-         id="tspan3975">Rassen,</tspan><tspan
+         id="tspan3975"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">Rassen,</tspan><tspan
          sodipodi:role="line"
          x="309"
          y="674.36218"
-         id="tspan3977">Kulturen,</tspan><tspan
+         id="tspan3977"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">Kulturen,</tspan><tspan
          sodipodi:role="line"
          x="309"
          y="689.36218"
-         id="tspan3979">Professionen</tspan></text>
+         id="tspan3979"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">Professionen</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -361,19 +371,23 @@
          sodipodi:role="line"
          id="tspan3983"
          x="478"
-         y="644.36218">Hero.xml</tspan><tspan
+         y="644.36218"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">Hero.xml</tspan><tspan
          sodipodi:role="line"
          x="478"
          y="659.36218"
-         id="tspan3985">Helden,</tspan><tspan
+         id="tspan3985"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">Helden,</tspan><tspan
          sodipodi:role="line"
          x="478"
          y="674.36218"
-         id="tspan3987">NPCs</tspan><tspan
+         id="tspan3987"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">NPCs</tspan><tspan
          sodipodi:role="line"
          x="478"
          y="689.36218"
-         id="tspan3989">Archetypen</tspan></text>
+         id="tspan3989"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">Archetypen</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -384,14 +398,17 @@
          sodipodi:role="line"
          id="tspan3993"
          x="594"
-         y="644.36218">HeroDoc.html</tspan></text>
+         y="644.36218"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px">HeroDoc.html</tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.90717119;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.81434233, 0.90717116;stroke-dashoffset:0"
        id="rect3995"
        width="193.09282"
        height="255.09282"
        x="243.95358"
-       y="42.315765" />
+       y="42.315765"
+       rx="6"
+       ry="6" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -405,7 +422,7 @@
          y="192.36218">Launcher</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="249"
        y="35.362183"
        id="text4001"
@@ -424,7 +441,8 @@
          sodipodi:role="line"
          id="tspan3999-1"
          x="99.441406"
-         y="355.58679">CoreDataEditor</tspan></text>
+         y="355.58679"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">CoreDataEditor</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -435,7 +453,8 @@
          sodipodi:role="line"
          id="tspan3999-1-3"
          x="292.23438"
-         y="354.6571">MetaDataEditor</tspan></text>
+         y="354.6571"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">MetaDataEditor</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -446,7 +465,8 @@
          sodipodi:role="line"
          id="tspan3999-1-3-4"
          x="483.75977"
-         y="355.58679">HeroEditor</tspan></text>
+         y="355.58679"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">HeroEditor</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend)"
        d="m 297,117.36218 -163,0 0,220"
@@ -463,34 +483,23 @@
          sodipodi:role="line"
          x="-268.0907"
          y="130.17773"
-         id="tspan5264">Erstellen und Berabeiten</tspan><tspan
+         id="tspan5264"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Erstellen und Berabeiten</tspan><tspan
          sodipodi:role="line"
          x="-268.0907"
          y="145.17773"
-         id="tspan5268">der Basis Daten</tspan></text>
-    <g
-       id="g5272">
-      <path
-         inkscape:connector-curvature="0"
-         id="path4072"
-         d="m 345,290.36218 0,47"
-         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path4074"
-         d="m 189,337.36218 0,-19 306,0 0,18"
-         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend)" />
-      <path
-         transform="translate(-6,-7)"
-         d="m 358,323.86218 c 0,3.03757 -2.91015,5.5 -6.5,5.5 -3.58985,0 -6.5,-2.46243 -6.5,-5.5 0,-3.03756 2.91015,-5.5 6.5,-5.5 3.58985,0 6.5,2.46244 6.5,5.5 z"
-         sodipodi:ry="5.5"
-         sodipodi:rx="6.5"
-         sodipodi:cy="323.86218"
-         sodipodi:cx="351.5"
-         id="path5270"
-         style="fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2, 1;stroke-dashoffset:0"
-         sodipodi:type="arc" />
-    </g>
+         id="tspan5268"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">der Basis Daten</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 345,290.36218 0,47"
+       id="path4072"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend)"
+       d="m 189,337.36218 0,-19 306,0 0,18"
+       id="path4074"
+       inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend)"
        d="m 346,451.36218 0,51"
@@ -511,7 +520,8 @@
          sodipodi:role="line"
          id="tspan5835"
          x="234"
-         y="479.36218">Erstellen/Bearbeiten</tspan></text>
+         y="479.36218"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Erstellen/Bearbeiten</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
        d="m 387,108.36218 136,0 0,229"
@@ -524,7 +534,7 @@
        inkscape:connector-curvature="0" />
     <path
        sodipodi:type="arc"
-       style="fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2, 1;stroke-dashoffset:0"
+       style="fill:#000000;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2, 1;stroke-dashoffset:0"
        id="path6209"
        sodipodi:cx="599.5"
        sodipodi:cy="214.86218"
@@ -543,7 +553,8 @@
          sodipodi:role="line"
          id="tspan6213"
          x="-250.84265"
-         y="519.07617">Referenzieren</tspan></text>
+         y="519.07617"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Referenzieren</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -554,7 +565,8 @@
          sodipodi:role="line"
          id="tspan6213-1"
          x="379.22168"
-         y="476.66003">Referenzieren</tspan></text>
+         y="476.66003"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Referenzieren</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend)"
        d="m 524,452.36218 0,49"
@@ -575,11 +587,13 @@
          sodipodi:role="line"
          id="tspan5835-8"
          x="527.85938"
-         y="471.6571">Erstellen/</tspan><tspan
+         y="471.6571"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Erstellen/</tspan><tspan
          sodipodi:role="line"
          x="527.85938"
          y="486.6571"
-         id="tspan6997">Bearbeiten</tspan></text>
+         id="tspan6997"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Bearbeiten</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -590,6 +604,17 @@
          sodipodi:role="line"
          id="tspan7001"
          x="625"
-         y="472.36218">Export</tspan></text>
+         y="472.36218"
+         style="-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Export</tspan></text>
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2, 1;stroke-dashoffset:0"
+       id="path6209-1"
+       sodipodi:cx="599.5"
+       sodipodi:cy="214.86218"
+       sodipodi:rx="4.5"
+       sodipodi:ry="4.5"
+       d="m 604,214.86218 a 4.5,4.5 0 1 1 -9,0 4.5,4.5 0 1 1 9,0 z"
+       transform="translate(-254.5,103.27539)" />
   </g>
 </svg>
