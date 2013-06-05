@@ -17,6 +17,8 @@
 package dsagenesis.editor.coredata.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -24,17 +26,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
-import javax.swing.DefaultListModel;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import dsagenesis.editor.coredata.CoreEditorFrame;
@@ -87,7 +87,7 @@ public class FormulaCellDialog
 	
 	private JTextField txtTestOutput;
 	
-	private JList<Object> listUsedArguments;
+	private JPanel paneArgumentList;
 	
 	
 	// ============================================================================
@@ -204,15 +204,28 @@ public class FormulaCellDialog
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		// TODO Custom model with id label, label label and test value input
-		listUsedArguments = new JList<Object>(new DefaultListModel<Object>());
-		listUsedArguments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listUsedArguments.setVisibleRowCount(5);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		
+		paneArgumentList = new JPanel();
+		paneArgumentList.setLayout(null);
+		paneArgumentList.setPreferredSize(new Dimension(400,27*5 +3));
+		// TEST
+		for( int i=0; i<5; i++ )
 		{
-			JScrollPane scrollPane = new JScrollPane(listUsedArguments);
+			ArgumentLine line = new ArgumentLine("id"+i,"name"+i);
+			line.setLocation(1, (27*i)+1);
+			paneArgumentList.add(line);
+		}
+		{
+			JScrollPane scrollPane = new JScrollPane();
+			scrollPane.setViewportView(paneArgumentList);
+			scrollPane.setPreferredSize(new Dimension( 400, 100) );
 			panel.add(scrollPane, gbc);
 		}
-		
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weighty = 0.0;		
 		gbc.weightx = 0.1;
 		gbc.gridwidth = 1;
 		gbc.gridx = 2;
@@ -242,6 +255,9 @@ public class FormulaCellDialog
 		
 		gbc.gridx = 0;
 		gbc.gridy = 6;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
 		txtCode = new JTextArea(3,1);
 		{
 			JScrollPane scrollPane = new JScrollPane(txtCode);
@@ -251,6 +267,10 @@ public class FormulaCellDialog
 		gbc.gridwidth = 1;
 		gbc.gridx = 0;
 		gbc.gridy = 7;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weighty = 0.0;		
+		gbc.weightx = 0.8;
+		
 		{	
 			JLabel lbl = new JLabel(
 					labelResource.getProperty("lblOutput", "lblOutput")
@@ -347,5 +367,48 @@ public class FormulaCellDialog
 	private void actionTest()
 	{
 		// TODO
+	}
+	
+	
+	private class ArgumentLine 
+		extends JPanel
+	{
+		
+		private static final long serialVersionUID = 1L;
+
+		JLabel lblId;
+		
+		JLabel lblName;
+		
+		JLabel lblValue;
+		
+		JTextField txtValue;
+		
+		private ArgumentLine(String id, String name)
+		{
+			super();
+			this.setSize(430, 28);
+			this.setLayout(null);
+			this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+			
+			lblId = new JLabel(id);
+			lblId.setBounds(10,1,30, 26);
+			this.add(lblId);
+			
+			lblName = new JLabel(name);
+			lblName.setBounds(45, 1,150, 26);
+			this.add(lblName);
+			
+			lblValue = new JLabel("Test Value:");
+			lblValue.setHorizontalAlignment(JLabel.RIGHT);
+			lblValue.setBounds(200,1, 100, 26);
+			this.add(lblValue);
+			
+			txtValue = new JTextField("0");
+			txtValue.setHorizontalAlignment(JTextField.CENTER);
+			txtValue.setBounds(305, 2, 50, 24);
+			this.add(txtValue);
+		}
+		
 	}
 }
