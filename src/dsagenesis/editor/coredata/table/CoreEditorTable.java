@@ -26,7 +26,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
-import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
@@ -292,121 +291,6 @@ public class CoreEditorTable
 		
 		if( row > -1 )
 			this.setRowSelectionInterval(row,row);
-	}
-	
-	/**
-	 * prepareInsertStatement
-	 * 
-	 * @param row
-	 * @return
-	 */
-	public String prepareInsertStatement(int row)
-	{
-		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
-		Vector<String> colNames = sqlTable.getDBColumnNames();
-		Vector<Class<?>> colClasses = sqlTable.getTableColumnClasses();
-		int count = colNames.size();
-
-		String insert = "INSERT INTO "
-				+ sqlTable.getDBTableName()
-				+ " \n( ";
-		
-		for(int i=0; i< count; i++ )
-		{
-			insert += colNames.get(i);
-			
-			if( i < (count-1) )
-				insert += ", ";
-		}
-		
-		insert += ")\n VALUES \n(";
-		
-		int junctcount = 0;
-		for( int i=0; i< count; i++ )
-		{
-			Class<?> c =  colClasses.get(i+junctcount);		
-			Object value = model.getValueAt(row, i+junctcount);
-			
-			if( c == Vector.class ) {
-				// skip junctions
-				junctcount++;
-				c =  colClasses.get(i+junctcount);		
-				value = model.getValueAt(row, i+junctcount);
-			}
-			
-			if( c == Integer.class || c == Float.class )
-			{
-				insert += value.toString();
-			
-			} else if( c == Boolean.class )	{
-				insert += DBConnector.convertBooleanForDB( value );
-				
-			} else {
-				insert += "'"+ value.toString() + "'";
-				
-			}
-			
-			if( i < (count-1) )
-				insert += ", ";
-		}
-		insert += " )";
-		
-		return insert;		
-	}
-	
-	/**
-	 * prepareUpdateStatement
-	 * 
-	 * @param id
-	 * @param row
-	 * @return
-	 */
-	public String prepareUpdateStatement(Object id, int row)
-	{
-		CoreEditorTableModel model = ((CoreEditorTableModel)this.getModel());
-		Vector<String> colNames = sqlTable.getDBColumnNames();
-		Vector<Class<?>> colClasses = sqlTable.getTableColumnClasses();
-		int count = colNames.size();
-
-		String update = "UPDATE "
-				+ sqlTable.getDBTableName()
-				+ " SET \n ";
-		
-		int junctcount = 0;
-		// we start at column 1 since 0 is ID
-		for( int i=1; i< count; i++ )
-		{
-			update += colNames.get(i) +"=";
-			
-			Object value = model.getValueAt(row, i+junctcount);
-			Class<?> c =  colClasses.get(i+junctcount);		
-			
-			if( c == Vector.class )
-			{
-				// skip junctions
-				junctcount++;
-				c =  colClasses.get(i+junctcount);		
-				value = model.getValueAt(row, i+junctcount);
-			} 
-			
-			if( c == Integer.class || c == Float.class )
-			{
-				update += value.toString();
-			
-			} else if( c == Boolean.class )	{
-				update += DBConnector.convertBooleanForDB( value );
-				
-			} else {
-				update += "'"+ value.toString() + "'";
-				
-			}
-			
-			if( i < (count-1) )
-				update += ", ";
-		}
-		update += " \n WHERE ID='"+id.toString()+"'";
-		
-		return update;
 	}
 	
 	/**

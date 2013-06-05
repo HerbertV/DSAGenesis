@@ -18,6 +18,7 @@ package dsagenesis.core.model.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
@@ -90,12 +91,10 @@ public class CharacteristicGroups
 	}
 
 	@Override
-	public void updateReferencesFor(
-			Object id,
-			int row,
-			CoreEditorTableModel model
-		) 
-			throws SQLException 
+	protected void updateReferencesFor(
+			String id,
+			Vector<Object> rowData
+		) throws SQLException
 	{
 		// not needed
 	}

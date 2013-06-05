@@ -27,6 +27,7 @@ import jhv.util.debug.logger.ApplicationLogger;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
+import dsagenesis.core.util.logic.Formula;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
@@ -382,13 +383,23 @@ public abstract class AbstractSQLTableModel
 			return data;
 		
 		Vector<Class <?>> classes = getTableColumnClasses();
-		
 		int colCount = dbColumnNames.size();
+		
 		while( rs.next() )
 		{
 			Vector<Object> row = new Vector<Object>();
 			for( int col=0; col < colCount; col++) 
 			{
+				Object value = rs.getObject(dbColumnNames.elementAt(col));
+				
+				// add formula
+				if( classes.get(col) == Formula.class 
+						&& value != null 
+					)
+				{
+					row.add(new Formula(value.toString()));
+					continue;
+				}
 				// skip junctions
 				int junctcount = 0;
 				while( classes.get(col+junctcount) == Vector.class )
@@ -396,8 +407,8 @@ public abstract class AbstractSQLTableModel
 					row.add(null);
 					junctcount++;
 				}
-				
-				row.add(rs.getObject(dbColumnNames.elementAt(col)));
+				// default
+				row.add(value);
 			}
 			data.add(row);
 		}
@@ -462,7 +473,6 @@ public abstract class AbstractSQLTableModel
 	/**
 	 * queryListAsVector
 	 * 
-	 * 
 	 * returns the selected columns. 
 	 * 
 	 * @param columns
@@ -470,7 +480,6 @@ public abstract class AbstractSQLTableModel
 	 * @param isAsc
 	 * 
 	 * @return
-	 * 
 	 * @throws SQLException
 	 */
 	public Vector<Vector<Object>> queryListAsVector(
@@ -486,18 +495,103 @@ public abstract class AbstractSQLTableModel
 		if( rs == null )
 			return data;
 		
+		Vector<Class <?>> classes = getTableColumnClasses();
 		int colCount = dbColumnNames.size();
+		
 		while( rs.next() )
 		{
 			Vector<Object> row = new Vector<Object>();
 			for( int col=0; col < colCount; col++) 
 			{
-				row.add(rs.getObject(dbColumnNames.elementAt(col)));
+				Object value = rs.getObject(dbColumnNames.elementAt(col));
+				
+				// add formula
+				if( classes.get(col) == Formula.class 
+						&& value != null 
+					)
+				{
+					row.add(new Formula(value.toString()));
+					continue;
+				}
+				// skip junctions
+				int junctcount = 0;
+				while( classes.get(col+junctcount) == Vector.class )
+				{
+					row.add(null);
+					junctcount++;
+				}
+				// default
+				row.add(value);
 			}
 			data.add(row);
 		}
 			
 		return data;
+	}
+	
+	/**
+	 * commitRow
+	 * 
+	 * inserts or updates a row in DB
+	 * 
+	 * @param rowData
+	 * @throws SQLException
+	 */
+	public void commitRow(Vector<Object> rowData)
+			throws SQLException
+	{
+		Object id = rowData.get(0);
+		
+		String statement = null;
+		long querytime = 0;
+		
+		if( id == null 
+				|| !TableHelper.idExists(id.toString(), getDBTableName())
+			)
+		{
+			// insert
+			statement = prepareInsertStatement(rowData);
+		} else {
+			// update
+			statement = prepareUpdateStatement(rowData);
+		}
+
+		DBConnector.getInstance().executeUpdate(statement);
+		querytime = DBConnector.getInstance().getQueryTime();
+		
+		updateReferencesFor((String)id,rowData);
+		querytime += DBConnector.getInstance().getQueryTime();
+			
+		ApplicationLogger.logInfo(
+				this.getClass().getSimpleName()
+					+ ".commitRow time: "+querytime+ " ms"
+			);
+	}
+	
+	/**
+	 * deleteRow
+	 * 
+	 * @param id
+	 * @throws SQLException
+	 */
+	public void deleteRow(String id)
+			throws SQLException
+	{
+		// here we need also delete all db entries
+		String delete = "DELETE FROM "
+				+ getDBTableName()
+				+ " WHERE ID='"+id+"'";
+				
+		updateReferencesFor(id,null);
+		long querytime = DBConnector.getInstance().getQueryTime();
+					
+		DBConnector.getInstance().executeUpdate(delete);
+		querytime += DBConnector.getInstance().getQueryTime();
+					
+		ApplicationLogger.logInfo(
+				this.getClass().getSimpleName()
+					+ ".deleteRow time: " + querytime + " ms"
+			);
 	}
 	
 	/**
@@ -556,6 +650,124 @@ public abstract class AbstractSQLTableModel
 	}
 	
 	/**
+	 * prepareInsertStatement
+	 * 
+	 * @param rowData
+	 * 
+	 * @return
+	 */
+	protected String prepareInsertStatement(
+			Vector<Object> rowData
+		)
+	{
+		Vector<Class<?>> colClasses = getTableColumnClasses();
+		int count = dbColumnNames.size();
+		String insert = "INSERT INTO "
+				+ getDBTableName()
+				+ " \n( ";
+		
+		for(int i=0; i< count; i++ )
+		{
+			insert += dbColumnNames.get(i);
+			
+			if( i < (count-1) )
+				insert += ", ";
+		}
+		
+		insert += ")\n VALUES \n(";
+		
+		int junctcount = 0;
+		for( int i=0; i< count; i++ )
+		{
+			Class<?> c = colClasses.get(i+junctcount);		
+			Object value = rowData.get(i+junctcount);
+			
+// TODO Cleanup and Formula handling			
+			if( c == Vector.class )
+			{
+				// skip junctions
+				junctcount++;
+				c =  colClasses.get(i+junctcount);		
+				value = rowData.get(i+junctcount);
+			}
+			
+			if( c == Integer.class || c == Float.class )
+			{
+				insert += value.toString();
+			
+			} else if( c == Boolean.class )	{
+				insert += DBConnector.convertBooleanForDB( value );
+				
+			} else {
+				insert += "'"+ value.toString() + "'";
+				
+			}
+			
+			if( i < (count-1) )
+				insert += ", ";
+		}
+		insert += " )";
+		
+		return insert;		
+	}
+	
+	/**
+	 * prepareUpdateStatement
+	 * 
+	 * @param rowData
+	 * 
+	 * @return
+	 */
+	protected String prepareUpdateStatement(
+			Vector<Object> rowData
+		)
+	{
+		Vector<Class<?>> colClasses = getTableColumnClasses();
+		int count = dbColumnNames.size();
+
+		String update = "UPDATE "
+				+ getDBTableName()
+				+ " SET \n ";
+		
+		int junctcount = 0;
+		// we start at column 1 since 0 is ID
+		for( int i=1; i< count; i++ )
+		{
+			update += dbColumnNames.get(i) +"=";
+			
+			Object value = rowData.get(i+junctcount);
+			Class<?> c = colClasses.get(i+junctcount);		
+// TODO Cleanup and Formula handling			
+			if( c == Vector.class )
+			{
+				// skip junctions
+				junctcount++;
+				c =  colClasses.get(i+junctcount);		
+				value = rowData.get(i+junctcount);
+			} 
+			
+			if( c == Integer.class || c == Float.class )
+			{
+				update += value.toString();
+			
+			} else if( c == Boolean.class )	{
+				update += DBConnector.convertBooleanForDB( value );
+				
+			} else {
+				update += "'"+ value.toString() + "'";
+				
+			}
+			
+			if( i < (count-1) )
+				update += ", ";
+		}
+		update += " \n WHERE ID='"+rowData.get(0).toString()+"'";
+		
+		return update;
+	}
+	
+	
+	/**
 	 * setupReferences
 	 * 
 	 * this function is called by Core Editor before the table model is loaded.
@@ -592,10 +804,9 @@ public abstract class AbstractSQLTableModel
 	 * 
 	 * @throws SQLException
 	 */
-	public abstract void updateReferencesFor(
-			Object id,
-			int row,
-			CoreEditorTableModel model
+	protected abstract void updateReferencesFor(
+			String id,
+			Vector<Object> rowData
 		) throws SQLException;
 	
 	/**

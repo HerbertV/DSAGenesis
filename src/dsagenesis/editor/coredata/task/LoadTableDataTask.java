@@ -145,7 +145,8 @@ public class LoadTableDataTask
 	protected void createUI() 
 	{
 		// must be done in EDT
-		try {
+		try
+		{
 			SwingUtilities.invokeAndWait(new Runnable(){
 					public void run() 
 					{

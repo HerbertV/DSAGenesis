@@ -266,6 +266,13 @@ public class Formula
 		this.scriptcode = scriptcode;
 	}
 	
+	/**
+	 * toString
+	 */
+	public String toString()
+	{
+		return this.getStringForCell();
+	}
 
 	
 }

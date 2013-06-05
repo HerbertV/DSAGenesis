@@ -125,12 +125,10 @@ public class ProfessionGroups
 	}
 	
 	@Override
-	public void updateReferencesFor(
-			Object id,
-			int row,
-			CoreEditorTableModel model
-		) 
-			throws SQLException 
+	protected void updateReferencesFor(
+			String id,
+			Vector<Object> rowData
+		) throws SQLException
 	{
 		// not needed
 	}

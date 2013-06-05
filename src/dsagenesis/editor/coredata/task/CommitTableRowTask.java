@@ -16,17 +16,15 @@
  */
 package dsagenesis.editor.coredata.task;
 
+import java.util.Vector;
+
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-import dsagenesis.core.model.sql.AbstractSQLTableModel;
-import dsagenesis.core.sqlite.DBConnector;
-import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 
 import jhv.swing.task.AbstractSerialTask;
-import jhv.util.debug.logger.ApplicationLogger;
 
 /**
  * CommitTableRowTask
@@ -83,36 +81,12 @@ public class CommitTableRowTask
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void doNextStep() 
 			throws Exception 
 	{
-		final CoreEditorTableModel model = ((CoreEditorTableModel)table.getModel());
-		final Object id = model.getValueAt(row, 0);
-		final AbstractSQLTableModel sqlTable = table.getSQLTable();
-		String update = null;
-		long querytime = 0;
-		
-		if( id == null 
-				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName())
-			)
-		{
-			// insert
-			update = table.prepareInsertStatement(row);
-		} else {
-			// update
-			update = table.prepareUpdateStatement(id,row);
-		}
-
-		DBConnector.getInstance().executeUpdate(update);
-		querytime = DBConnector.getInstance().getQueryTime();
-		
-		sqlTable.updateReferencesFor(id, row, model);
-		querytime += DBConnector.getInstance().getQueryTime();
-			
-		ApplicationLogger.logInfo(
-				sqlTable.getDBTableName()
-					+ " update time "+querytime+ " ms"
-			);
+		CoreEditorTableModel model = ((CoreEditorTableModel)table.getModel());
+		table.getSQLTable().commitRow((Vector<Object>) model.getDataVector().get(row));
 		
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run() 

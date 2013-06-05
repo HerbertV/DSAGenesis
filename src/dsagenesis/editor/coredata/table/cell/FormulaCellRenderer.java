@@ -72,9 +72,9 @@ public class FormulaCellRenderer
 			);
 		if( value == null )
 		{
-			label.setText("f(x)= undefined");
+			label.setText("f(x):{}");
 		} else {	
-			label.setText("f(x)= "+value);
+			label.setText(value.toString());
 		}
 		// TODO label.setToolTipText(tooltip);
 		return label;

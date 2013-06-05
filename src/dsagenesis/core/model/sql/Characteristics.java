@@ -24,6 +24,7 @@ import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.SKTMatrix;
 import dsagenesis.core.model.xml.AbstractGenesisModel;
+import dsagenesis.core.util.logic.Formula;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
@@ -176,7 +177,7 @@ public class Characteristics
 				new CrossReferenceCellEditor(sktColumns)
 			);
 		
-		//col 13
+		//col 13 formula
 		currColumn = cetable.getColumnModel().getColumn(13);
 		currColumn.setMinWidth(120);
 		
@@ -240,7 +241,7 @@ public class Characteristics
 		vec.add(Boolean.class);
 		vec.add(String.class);
 		vec.add(Boolean.class);
-		vec.add(String.class);
+		vec.add(Formula.class);
 		vec.add(Boolean.class);
 		vec.add(Integer.class);
 		vec.add(Integer.class);
@@ -285,12 +286,10 @@ public class Characteristics
 	}
 	
 	@Override
-	public void updateReferencesFor(
-			Object id,
-			int row,
-			CoreEditorTableModel model
-		) 
-			throws SQLException 
+	protected void updateReferencesFor(
+			String id,
+			Vector<Object> rowData
+		) throws SQLException
 	{
 		// not needed
 	}

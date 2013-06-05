@@ -236,9 +236,8 @@ public abstract class AbstractAdvantageDisadvantageModel
 	@Override
 	@SuppressWarnings("unchecked")
 	public void updateReferencesFor(
-			Object id,
-			int row,
-			CoreEditorTableModel model
+			String id,
+			Vector<Object> rowData
 		) 
 			throws SQLException 
 	{
@@ -256,10 +255,10 @@ public abstract class AbstractAdvantageDisadvantageModel
 		while( rs.next() )
 			oldJunctions.add(rs.getString("ref_pc_ID"));
 		
-		// if row == -1 delete only
-		if( row > -1 )
+		// if rowData == null delete only
+		if( rowData != null )
 		{
-			newJunctions = (Vector<Object>) ((Vector<Object>)model.getValueAt(row, 4)).clone();
+			newJunctions = (Vector<Object>) ((Vector<Object>)rowData.get(4)).clone();
 			for( int i=(oldJunctions.size()-1); i>-1;  i-- )
 			{
 				int idx = newJunctions.indexOf(oldJunctions.get(i));

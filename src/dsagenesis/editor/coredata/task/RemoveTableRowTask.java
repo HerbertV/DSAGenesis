@@ -22,13 +22,11 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
-import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 
 import jhv.swing.task.AbstractSerialTask;
-import jhv.util.debug.logger.ApplicationLogger;
 
 /**
  * RemoveTableRowTask
@@ -88,7 +86,7 @@ public class RemoveTableRowTask
 		
 		CoreEditorTableModel model = ((CoreEditorTableModel)table.getModel());
 		Object id = model.getValueAt(row, 0);
-		AbstractSQLTableModel sqlTable =  table.getSQLTable();
+		AbstractSQLTableModel sqlTable = table.getSQLTable();
 		
 		if( id == null
 				|| !TableHelper.idExists(id.toString(), sqlTable.getDBTableName()) 
@@ -98,27 +96,14 @@ public class RemoveTableRowTask
 			return;
 		}
 		
-		// here we need also delete all db entries
-		String delete = "DELETE FROM "
-				+ sqlTable.getDBTableName()
-				+ " WHERE ID='"+id+"'";
-		
-		sqlTable.updateReferencesFor(id,-1,model);
-		long querytime = DBConnector.getInstance().getQueryTime();
-			
-		DBConnector.getInstance().executeUpdate(delete);
-		querytime += DBConnector.getInstance().getQueryTime();
-			
-		ApplicationLogger.logInfo(
-				sqlTable.getDBTableName() 
-					+ " delete time " + querytime + " ms"
-			);
-			
+		sqlTable.deleteRow(id.toString());
 		this.removeRowFromTable(row);
 	}
 
 	/**
 	 * removeRowFromTable
+	 * 
+	 * removes the row form our jtable
 	 * 
 	 * @param row
 	 */
@@ -137,6 +122,5 @@ public class RemoveTableRowTask
 			// ignore
 		}
 	}
-	
 
 }
