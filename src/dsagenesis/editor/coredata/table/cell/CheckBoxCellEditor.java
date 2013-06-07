@@ -18,7 +18,6 @@ package dsagenesis.editor.coredata.table.cell;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.SystemColor;
 
 import javax.swing.AbstractButton;
 import javax.swing.DefaultCellEditor;
@@ -27,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 
 import dsagenesis.core.sqlite.DBConnector;
+import dsagenesis.core.ui.Colors;
 
 /**
  * CheckBoxCellEditor
@@ -93,7 +93,7 @@ public class CheckBoxCellEditor
 		) 
 	{
 		boolean b = DBConnector.convertBooleanFromDB(value);
-		checkBox.setBackground(SystemColor.BLUE);
+		checkBox.setBackground(Colors.colorTableCellActive);
 		checkBox.setSelected(b);
 		
 		return panel;

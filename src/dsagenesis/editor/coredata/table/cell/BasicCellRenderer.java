@@ -16,12 +16,13 @@
  */
 package dsagenesis.editor.coredata.table.cell;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.SystemColor;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+
+import dsagenesis.core.ui.Colors;
 
 /**
  * CoreEditorTableCellRenderer
@@ -102,11 +103,11 @@ public class BasicCellRenderer
 		    // selection Color
 			if( table.isCellEditable(row,column) )
 			{
-				this.setBackground(SystemColor.BLUE);
+				this.setBackground(Colors.colorTableCellActive);
 				this.setForeground(SystemColor.textHighlightText);
 			} else {
 				// read only 
-		        this.setBackground(SystemColor.RED);
+		        this.setBackground(Colors.colorTableCellActiveReadonly);
 		        this.setForeground(SystemColor.textHighlightText);
 		    }
 			
@@ -114,22 +115,22 @@ public class BasicCellRenderer
 		    // active row
 			if( table.isCellEditable(row,column) ) 
 			{
-				this.setBackground(SystemColor.textHighlight);
+				this.setBackground(Colors.colorTableRowActive);
 				this.setForeground(SystemColor.textHighlightText);
 			
 			} else {
 				// read only
-		        this.setBackground(SystemColor.GRAY);
+		        this.setBackground(Colors.colorTableRowActiveReadonly);
 		        this.setForeground(SystemColor.textHighlightText);
 		    }
 		} else {
 		    // inactive
 			if( row%2 == 0 )
 			{
-				this.setBackground(SystemColor.text);
+				this.setBackground(Colors.colorTableRowInactive2);
 				this.setForeground(SystemColor.textText);
 			} else {
-				this.setBackground(new Color(240,240,240));
+				this.setBackground(Colors.colorTableRowInactive1);
 				this.setForeground(SystemColor.textText);
 				
 			}
