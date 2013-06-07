@@ -18,9 +18,9 @@ package dsagenesis.core.config.ui;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 
 import jhv.component.LabelResource;
+import jhv.swing.gridbag.GridBagConstraintsFactory;
 import dsagenesis.core.config.GenesisConfig;
 
 /**
@@ -50,7 +50,7 @@ public class DebugConfigTabPanel
 	// ============================================================================
 	
 	private JCheckBox cbxLoggerEnabled;
-	private JComboBox<String> comboDebugLevel;
+	private JComboBox<Object> comboDebugLevel;
 	
 	
 	// ============================================================================
@@ -62,42 +62,53 @@ public class DebugConfigTabPanel
 	 * 
 	 * @param frame
 	 */
-	@SuppressWarnings("unchecked")
 	public DebugConfigTabPanel(ConfigFrame frame) 
 	{
 		super(frame);
 		
-		this.loadLabels();
-		
 		GenesisConfig conf = GenesisConfig.getInstance();
+		this.loadLabels();
+		this.gbcFactory = new GridBagConstraintsFactory(this, this.gbc, 2);
 		
-		this.addInfoPanel(
+		this.gbcFactory.addInfoPanel(
 				labelResource.getProperty("info.title", "info.title"), 
 				labelResource.getProperty("info.message", "info.message"), 
-				0, 
 				0
 			);
 		
-		cbxLoggerEnabled = this.addCheckbox(
+		this.gbcFactory.nextLine();
+		
+		cbxLoggerEnabled = this.gbcFactory.addCheckbox(
 				labelResource.getProperty("cbxLoggerEnabled", "cbxLoggerEnabled"), 
 				conf.getBoolean(GenesisConfig.KEY_IS_LOGGER_ENABLED), 
-				0, 
-				1
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.USE_FULL_WIDTH
 			);
 		cbxLoggerEnabled.addItemListener(this);
 		
-		JComponent[] comps = this.addLabeledComboBox(
-				labelResource.getProperty("comboDebugLevel", "comboDebugLevel"), 
-				debugLevelStrings, 
-				0, 
-				2, 
-				debugLevelStrings[conf.getInt(GenesisConfig.KEY_DEBUG_LEVEL)] 
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
+				labelResource.getProperty("comboDebugLevel", "comboDebugLevel"),
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				1
 			);
 		
-		comboDebugLevel = (JComboBox<String>)comps[1];
+		this.gbcFactory.nextX();
+		
+		comboDebugLevel = this.gbcFactory.addComboBox(
+				debugLevelStrings, 
+				debugLevelStrings[conf.getInt(GenesisConfig.KEY_DEBUG_LEVEL)], 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT
+			);
+		
 		comboDebugLevel.addItemListener(this);
 		
-		this.addEmptyPanel(3);
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addEmptyPanel(GridBagConstraintsFactory.CURRENT);
 	}
 
 	// ============================================================================

@@ -16,11 +16,11 @@
  */
 package dsagenesis.core.config.ui;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 
 import jhv.component.LabelResource;
+import jhv.swing.gridbag.GridBagConstraintsFactory;
 import dsagenesis.core.config.GenesisConfig;
 
 /**
@@ -62,96 +62,152 @@ public class GeneralConfigTabPanel
 	{
 		super(frame);
 		
-		this.loadLabels();
-		
 		GenesisConfig conf = GenesisConfig.getInstance();
+		this.loadLabels();
+		this.gbcFactory = new GridBagConstraintsFactory(this, this.gbc, 2);
 		
-		this.addInfoPanel(
+		this.gbcFactory.addInfoPanel(
 				labelResource.getProperty("info.title", "info.title"), 
 				labelResource.getProperty("info.message", "info.message"), 
-				0, 
 				0
 			);
 		
-		JComponent comps[] = this.addLabeledNumericSpinner(
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
 				labelResource.getProperty("lblDefaultStartCP", "lblDefaultStartCP"), 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
+			);
+		this.gbcFactory.nextX();
+		spinStartCP = this.gbcFactory.addNumericSpinner(
 				conf.getInt(GenesisConfig.KEY_DEFAULT_START_CP), 
 				0, 
 				200, 
 				1, 
-				0, 
-				1
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
 			);
-		spinStartCP = (JSpinner)comps[1];
 		spinStartCP.addChangeListener(this);
-		
-		comps = this.addLabeledNumericSpinner(
+				
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
 				labelResource.getProperty("lblDefaultMaxAttributeCP", "lblDefaultMaxAttributeCP"), 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
+			);
+		this.gbcFactory.nextX();
+		spinMaxAttributeCP = this.gbcFactory.addNumericSpinner(
 				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_ATTRIBUTE_CP), 
 				0, 
 				200, 
 				1, 
-				0, 
-				2
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
 			);
-		spinMaxAttributeCP = (JSpinner)comps[1];
 		spinMaxAttributeCP.addChangeListener(this);
 		
-		comps = this.addLabeledNumericSpinner(
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
 				labelResource.getProperty("lblDefaultMaxDisadvantageCP", "lblDefaultMaxDisadvantageCP"), 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
+			);
+		this.gbcFactory.nextX();
+		spinMaxDisadvantageCP = this.gbcFactory.addNumericSpinner(
 				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_DISADVANTAGE_CP), 
 				0, 
 				200, 
 				1, 
-				0, 
-				3
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
 			);
-		spinMaxDisadvantageCP = (JSpinner)comps[1];
 		spinMaxDisadvantageCP.addChangeListener(this);
 		
-		comps = this.addLabeledNumericSpinner(
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
 				labelResource.getProperty("lblDefaultMaxNegativeAttributeCP", "lblDefaultMaxNegativeAttributeCP"), 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
+			);
+		this.gbcFactory.nextX();
+		spinMaxNegativeAttributeCP = this.gbcFactory.addNumericSpinner(
 				conf.getInt(GenesisConfig.KEY_DEFAULT_MAX_NEGATIVEATTRIBUTE_CP), 
 				0, 
 				200, 
 				1, 
-				0, 
-				4
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
 			);
-		spinMaxNegativeAttributeCP = (JSpinner)comps[1];
 		spinMaxNegativeAttributeCP.addChangeListener(this);
 		
-		comps = this.addLabeledColorPicker(
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addInfoPanel(
+				labelResource.getProperty("colors.title", "colors.title"), 
+				labelResource.getProperty("colors.message", "colors.message"), 
+				GridBagConstraintsFactory.CURRENT
+			);
+		
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
 				labelResource.getProperty("lblColorPostive", "lblColorPostive"), 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
+			);
+		this.gbcFactory.nextX();
+		colorPickerPositive = this.gbcFactory.addColorPicker(
 				labelResource.getProperty("dlgTitlePostive", "dlgTitlePostive"), 
 				conf.getColor(GenesisConfig.KEY_COLOR_POSITIVE), 
-				0, 
-				5
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
 			);
-		colorPickerPositive = (JPanel)comps[1];
 		colorPickerPositive.addPropertyChangeListener("background", this);
 		
-		comps = this.addLabeledColorPicker(
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
 				labelResource.getProperty("lblColorNegative", "lblColorNegative"), 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
+			);
+		this.gbcFactory.nextX();
+		colorPickerNegative = this.gbcFactory.addColorPicker(
 				labelResource.getProperty("dlgTitleNegative", "dlgTitleNegative"), 
 				conf.getColor(GenesisConfig.KEY_COLOR_NEGATIVE), 
-				0, 
-				6
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
 			);
-		colorPickerNegative = (JPanel)comps[1];
 		colorPickerNegative.addPropertyChangeListener("background", this);
 		
-		comps = this.addLabeledColorPicker(
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
 				labelResource.getProperty("lblColorComment", "lblColorComment"), 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
+			);
+		this.gbcFactory.nextX();
+		colorPickerComment = this.gbcFactory.addColorPicker(
 				labelResource.getProperty("dlgTitleComment", "dlgTitleComment"), 
 				conf.getColor(GenesisConfig.KEY_COLOR_COMMENT), 
-				0, 
-				7
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.CURRENT
 			);
-		colorPickerComment = (JPanel)comps[1];
 		colorPickerComment.addPropertyChangeListener("background", this);
 		
-		this.addEmptyPanel(8);
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addEmptyPanel(GridBagConstraintsFactory.CURRENT);
 	}
 
 	// ============================================================================

@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import jhv.component.LabelResource;
+import jhv.swing.gridbag.GridBagConstraintsFactory;
 import dsagenesis.core.config.GenesisConfig;
 
 /**
@@ -58,25 +59,35 @@ public class DBConfigTabPanel
 		
 		GenesisConfig conf = GenesisConfig.getInstance();
 		this.loadLabels();
+		this.gbcFactory = new GridBagConstraintsFactory(this, this.gbc, 3);
 		
-		this.addInfoPanel(
+		this.gbcFactory.addInfoPanel(
 				labelResource.getProperty("info.title", "info.title"), 
 				labelResource.getProperty("info.message", "info.message"), 
-				0, 
 				0
 			);
-		JComponent[] comps = this.addLabeledFileChooser(
+		
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addLabel(
 				labelResource.getProperty("lblChooser", "lblChooser"), 
-				conf.getString(GenesisConfig.KEY_DB_FILE), 
-				0, 
-				1, 
-				conf.getDBFile(), 
-				new FileNameExtensionFilter("SQLite3 File", "s3db", "db") 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT
 			);
-		txtDBName = (JTextField)comps[1];
+		this.gbcFactory.nextX();
+		
+		JComponent[] comps = this.gbcFactory.addFileChooser(
+				conf.getString(GenesisConfig.KEY_DB_FILE), 
+				conf.getDBFile(), 
+				new FileNameExtensionFilter("SQLite3 File", "s3db", "db"),
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT
+			);
+		txtDBName = (JTextField)comps[0];
 		txtDBName.getDocument().addDocumentListener(this);
 		
-		this.addEmptyPanel(3);
+		this.gbcFactory.nextLine();
+		this.gbcFactory.addEmptyPanel(GridBagConstraintsFactory.CURRENT);
 	}
 
 	// ============================================================================

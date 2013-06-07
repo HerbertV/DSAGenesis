@@ -34,14 +34,14 @@ import javax.swing.event.DocumentListener;
 import jhv.component.IChangeableContentComponent;
 import jhv.component.ILabeledComponent;
 import jhv.component.LabelResource;
-import jhv.swing.AbstractGridBagPanel;
+import jhv.swing.gridbag.GridBagPanel;
 
 /**
  * Abstract base for all Panels used in our SetupFrame.
  * 
  */
 public abstract class AbstractConfigTabPanel 
-		extends AbstractGridBagPanel 
+		extends GridBagPanel 
 		implements ILabeledComponent,
 			IChangeableContentComponent,
 			PropertyChangeListener,

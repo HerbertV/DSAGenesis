@@ -72,7 +72,7 @@ public class ConfigFrame
 					+ " - "
 					+ labelResource.getProperty("title", "title")
 			);
-		this.setSize(500, 400);
+		this.setResizable(false);
 		
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -136,6 +136,8 @@ public class ConfigFrame
 		btnSave.setActionCommand(ACMD_SAVE);
 		btnSave.addActionListener(this);
 		paneButtons.add(btnSave);
+		
+		pack();
 	}
 
 	

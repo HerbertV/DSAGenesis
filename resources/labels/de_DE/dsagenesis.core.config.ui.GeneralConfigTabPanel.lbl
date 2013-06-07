@@ -7,6 +7,11 @@ lblDefaultMaxAttributeCP=Max. Eigenschafts GP:
 lblDefaultMaxDisadvantageCP=Max. Nachteile GP:
 lblDefaultMaxNegativeAttributeCP=Max. Schlechte Eig. GP:
 
+colors.title=Textfarben
+
+colors.message=<html>Diese Farben werden für Hinweistexte im Hero Editor verwendet.</html>
+
+
 lblColorPostive=Farbe für positive Hinweise:
 lblColorNegative=Farbe für negative Hinweise:
 lblColorComment=Farbe für Kommentare:

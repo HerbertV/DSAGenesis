@@ -17,6 +17,7 @@
 package dsagenesis.core.config.ui;
 
 import jhv.component.LabelResource;
+import jhv.swing.gridbag.GridBagConstraintsFactory;
 import dsagenesis.core.config.GenesisConfig;
 
 /**
@@ -51,17 +52,21 @@ public class TemplateConfigTabPanel
 	{
 		super(frame);
 		
-		this.loadLabels();
 		GenesisConfig conf = GenesisConfig.getInstance();
+		this.loadLabels();
+		this.gbcFactory = new GridBagConstraintsFactory(this, this.gbc, 2);
 		
-		this.addInfoPanel(
+		this.gbcFactory.addInfoPanel(
 				labelResource.getProperty("info.title", "info.title"), 
 				labelResource.getProperty("info.message", "info.message"), 
-				0, 
 				0
 			);
-			
-		this.addEmptyPanel(1);
+		
+		// TODO insert ui elements for template setup
+		
+		
+		this.gbcFactory.nextLine();	
+		this.gbcFactory.addEmptyPanel(GridBagConstraintsFactory.CURRENT);
 	}
 
 	// ============================================================================
