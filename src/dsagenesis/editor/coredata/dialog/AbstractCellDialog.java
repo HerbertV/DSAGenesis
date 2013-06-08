@@ -115,8 +115,7 @@ public abstract class AbstractCellDialog
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-	
-	
+		
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{

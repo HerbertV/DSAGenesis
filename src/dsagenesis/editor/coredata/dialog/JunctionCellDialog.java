@@ -18,8 +18,6 @@ package dsagenesis.editor.coredata.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -28,11 +26,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
+
+import jhv.swing.gridbag.GridBagConstraintsFactory;
+import jhv.swing.gridbag.GridBagPanel;
 
 import dsagenesis.editor.coredata.CoreEditorFrame;
 
@@ -95,47 +93,45 @@ public class JunctionCellDialog
 			);
 		this.idLabelPairs = idLabels;
 		
-		JPanel panel = new JPanel();
+		GridBagPanel panel = new GridBagPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
-		panel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = panel.getConstraints();
+		GridBagConstraintsFactory gbcf = new GridBagConstraintsFactory(panel,gbc,2);
 		
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.weighty = 0;
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.8;
-		gbc.insets = new Insets(10,10,0,10);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 2;
-		
-		comboBox = new JComboBox<Object>();
-		panel.add(comboBox, gbc);
-		
+		comboBox = gbcf.addComboBox(
+				null, 
+				null, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.USE_FULL_WIDTH
+			);
 		for(int i=0; i< idLabelPairs.size(); i++ )
 			comboBox.addItem(idLabels.get(i).get(1));
 		
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
+		gbcf.nextLine();
 		
-		btnAdd = new JButton(labelResource.getProperty("btnAdd", "btnAdd"));
+		btnAdd = gbcf.addButton(
+				labelResource.getProperty("btnAdd", "btnAdd"), 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT,
+				1
+			);
 		btnAdd.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				actionAdd();
-			}
-		});
-		panel.add(btnAdd, gbc);
+				@Override
+				public void actionPerformed(ActionEvent e) 
+				{
+					actionAdd();
+				}
+			});
 		
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
+		gbcf.nextX();
 		
-		btnAddAll = new JButton(labelResource.getProperty("btnAddAll", "btnAddAll"));
+		btnAddAll =  gbcf.addButton(
+				labelResource.getProperty("btnAddAll", "btnAddAll"), 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT,
+				1
+			);
 		btnAddAll.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e) 
@@ -143,23 +139,28 @@ public class JunctionCellDialog
 					actionAddAll();
 				}
 			});
-		panel.add(btnAddAll, gbc);
 		
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 2;
+		gbcf.nextLine();
 		
 		list = new JList<Object>(new DefaultListModel<Object>());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setVisibleRowCount(12);
 		JScrollPane scrollPane = new JScrollPane(list);
-		panel.add(scrollPane, gbc);
+		gbcf.addComponent(
+				scrollPane,
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT,
+				GridBagConstraintsFactory.USE_FULL_WIDTH
+			);
 		
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.gridwidth = 1;
+		gbcf.nextLine();
 		
-		btnRemove = new JButton(labelResource.getProperty("btnRemove", "btnRemove"));
+		btnRemove = gbcf.addButton(
+				labelResource.getProperty("btnRemove", "btnRemove"), 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT,
+				1
+			);
 		btnRemove.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e) 
@@ -167,13 +168,15 @@ public class JunctionCellDialog
 					actionRemove();
 				}
 			});
-		panel.add(btnRemove, gbc);
 		
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		gbc.gridwidth = 1;
+		gbcf.nextX();
 		
-		btnRemoveAll = new JButton(labelResource.getProperty("btnRemoveAll", "btnRemoveAll"));
+		btnRemoveAll = gbcf.addButton(
+				labelResource.getProperty("btnRemoveAll", "btnRemoveAll"), 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT,
+				1
+			);
 		btnRemoveAll.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -181,20 +184,9 @@ public class JunctionCellDialog
 				actionRemoveAll();
 			}
 		});
-		panel.add(btnRemoveAll, gbc);
 		
-		// footer
-		gbc.gridwidth = 2;
-		
-		gbc.weighty = 1;
-		gbc.gridx = 0;
-		gbc.gridy = 7;
-		panel.add(new JPanel(),gbc);
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 8;
-		JSeparator s = new JSeparator(SwingConstants.HORIZONTAL);
-		panel.add(s,gbc);
+		gbcf.nextLine();
+		gbcf.addFooter(GridBagConstraintsFactory.CURRENT);
 	}
 
 	

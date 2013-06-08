@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
+import dsagenesis.core.ui.Colors;
 import dsagenesis.editor.coredata.dialog.AbstractCellDialog;
 
 /**
@@ -87,7 +88,7 @@ public abstract class AbstractDialogCellEditor
 		this.dialog = dialog;
 		
 		label = new JLabel();
-        label.setBackground(SystemColor.BLUE);
+        label.setBackground(Colors.colorTableCellActive);
         label.setForeground(SystemColor.textHighlightText);
     
         button = new JButton(" ... ");
@@ -97,7 +98,7 @@ public abstract class AbstractDialogCellEditor
         button.setMargin(new Insets(0, 0, 0, 0));
         
         panel = new JPanel(new BorderLayout()); 
-        panel.setBackground(SystemColor.BLUE);
+        panel.setBackground(Colors.colorTableCellActive);
         panel.setForeground(SystemColor.textHighlightText);
         panel.add(label); 
         panel.add(button, BorderLayout.EAST); 
