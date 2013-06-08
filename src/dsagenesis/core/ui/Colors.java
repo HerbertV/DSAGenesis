@@ -35,4 +35,6 @@ public class Colors
 	
 	public static final Color colorTableCellActiveReadonly = Color.decode("#9e2e2e");
 	
+	public static final Color colorHoverLine = Color.decode("#F3F2B1");
+	
 }

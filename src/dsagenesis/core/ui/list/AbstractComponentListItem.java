@@ -16,9 +16,11 @@
  */
 package dsagenesis.core.ui.list;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 /**
@@ -28,7 +30,6 @@ import javax.swing.JPanel;
  */
 public abstract class AbstractComponentListItem 
 		extends JPanel 
-		implements MouseListener 
 {
 	// ============================================================================
 	//  Constants
@@ -38,49 +39,93 @@ public abstract class AbstractComponentListItem
 
 	
 	// ============================================================================
+	//  Variables
+	// ============================================================================
+
+	private boolean isSelected = false;
+	
+	private boolean isHovered = false;
+	
+	
+	// ============================================================================
 	//  Constructors
 	// ============================================================================
 
-	public AbstractComponentListItem() 
+	/**
+	 * Constructor
+	 * 
+	 * @param list
+	 */
+	public AbstractComponentListItem(ComponentList list) 
 	{
 		super();
 		
-		// TODO
+		FlowLayout layout = new FlowLayout();
+		layout.setHgap(4);
+		layout.setVgap(1);
+		
+		this.setLayout(layout);
+		this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		
+		Dimension d = this.getPreferredSize();
+		d.height = 26;
+		this.setPreferredSize(d);
+		this.setMinimumSize(d);
+		
+		this.addMouseListener(list);
 	}
 
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
-
-	@Override
-	public void mouseClicked(MouseEvent me) 
+	
+	/**
+	 * setTextColor
+	 * 
+	 * @param c
+	 */
+	public abstract void setTextColor(Color c);
+	
+	/**
+	 * isSelected
+	 * 
+	 * @return
+	 */
+	public synchronized boolean isSelected()
 	{
-		// TODO Auto-generated method stub
+		return isSelected;
+	}
+	
+	/**
+	 * setSelected
+	 * 
+	 * @param val
+	 */
+	public synchronized void setSelected(boolean val)
+	{
+		this.isSelected = val;
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent me)
+	/**
+	 * isHovered
+	 * 
+	 * @return
+	 */
+	public synchronized boolean isHovered()
 	{
-		// TODO Auto-generated method stub
+		return isHovered;
 	}
 
-	@Override
-	public void mouseExited(MouseEvent me) 
+	/**
+	 * setHovered
+	 * 
+	 * @param val
+	 */
+	public synchronized void setHovered(boolean val)
 	{
-		// TODO Auto-generated method stub
+		this.isHovered = val;
 	}
-
-	@Override
-	public void mousePressed(MouseEvent me) 
-	{
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent me) 
-	{
-		// TODO Auto-generated method stub
-	}
+	
 
 }
