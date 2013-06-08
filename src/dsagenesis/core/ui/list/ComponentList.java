@@ -165,6 +165,7 @@ public class ComponentList
 		
 		GridLayout gl = (GridLayout)paneList.getLayout();
 		gl.setRows(gridrows);
+		paneList.setLayout(gl);
 		
 		recolorItems(-1);
 		this.validate();
@@ -197,6 +198,7 @@ public class ComponentList
 	{
 		paneList.remove(item);
 		items.remove(item);
+		updateItemLayout();
 	}
 	
 	/**
@@ -204,16 +206,19 @@ public class ComponentList
 	 */
 	public void removeAllSelectedItems()
 	{
-		int count = items.size()-1;
+		int start = items.size()-1;
 		
-		for( int i = count; i>-1; i-- )
+		for( int i = start; i > -1; i-- )
 		{
 			if( items.get(i).isSelected() )
 			{	
 				AbstractComponentListItem item = items.remove(i);
+				item.setVisible(false);
 				paneList.remove(item);
+				item = null;
 			}
 		}
+		updateItemLayout();
 	}
 
 	@Override
