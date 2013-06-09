@@ -681,8 +681,7 @@ public abstract class AbstractSQLTableModel
 		{
 			Class<?> c = colClasses.get(i+junctcount);		
 			Object value = rowData.get(i+junctcount);
-			
-// TODO Cleanup and Formula handling			
+					
 			if( c == Vector.class )
 			{
 				// skip junctions
@@ -691,8 +690,14 @@ public abstract class AbstractSQLTableModel
 				value = rowData.get(i+junctcount);
 			}
 			
-			if( c == Integer.class || c == Float.class )
+			if( value == null )
 			{
+				insert += "NULL";
+			
+			} else if( c == Formula.class ) {
+				insert += "'"+ ((Formula)value).getStringDBValue() + "'";
+				
+			} else if( c == Integer.class || c == Float.class ) {
 				insert += value.toString();
 			
 			} else if( c == Boolean.class )	{
@@ -737,7 +742,7 @@ public abstract class AbstractSQLTableModel
 			
 			Object value = rowData.get(i+junctcount);
 			Class<?> c = colClasses.get(i+junctcount);		
-// TODO Cleanup and Formula handling			
+
 			if( c == Vector.class )
 			{
 				// skip junctions
@@ -746,8 +751,14 @@ public abstract class AbstractSQLTableModel
 				value = rowData.get(i+junctcount);
 			} 
 			
-			if( c == Integer.class || c == Float.class )
+			if( value == null )
 			{
+				update += "NULL";
+			
+			} else if( c == Formula.class ) {
+				update += "'"+ ((Formula)value).getStringDBValue() + "'";
+				
+			} else if( c == Integer.class || c == Float.class ) {
 				update += value.toString();
 			
 			} else if( c == Boolean.class )	{

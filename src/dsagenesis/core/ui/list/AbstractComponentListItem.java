@@ -56,6 +56,7 @@ public abstract class AbstractComponentListItem
 	 * 
 	 * @param list
 	 */
+	@SuppressWarnings("rawtypes")
 	public AbstractComponentListItem(ComponentList list) 
 	{
 		super();

@@ -191,7 +191,8 @@ public class Characteristics
 		currColumn.setCellEditor(new FormulaCellEditor(
 				ceframe, 
 				(String)currColumn.getHeaderValue(),
-				tables
+				tables,
+				"c_acronym"
 			));
 		currColumn.setCellRenderer(new FormulaCellRenderer());
 		

@@ -43,7 +43,10 @@ public class FormulaCellEditor
 	// ============================================================================
 
 	private String rowId;
+	
 	private String rowName;
+	
+	private String rowColumn;
 	
 	
 	// ============================================================================
@@ -59,11 +62,13 @@ public class FormulaCellEditor
 	 * 						[0] db tablename
 	 * 						[1] table label
 	 * 						[2] column used as label for entries
+	 * @param labelColumn 
 	 */
 	public FormulaCellEditor(
 			CoreEditorFrame f, 
 			String title,
-			Vector<Vector<String>> allowedTables
+			Vector<Vector<String>> allowedTables,
+			String labelColumn	
 		) 
 	{
 		super(new FormulaCellDialog(
@@ -71,6 +76,7 @@ public class FormulaCellEditor
 				title,
 				allowedTables
 			));
+		this.rowColumn = labelColumn;
 	}
 
 	
@@ -112,7 +118,7 @@ public class FormulaCellEditor
 	{
 		if( e.getButton() == MouseEvent.BUTTON1 )
 		{
-			((FormulaCellDialog)dialog).setRowParams(rowId, rowName);
+			((FormulaCellDialog)dialog).setRowParams(rowId, rowName, rowColumn);
 			dialog.setValue(oldValue);
 			dialog.setLocationRelativeTo(dialog.getParent());
 			dialog.setVisible(true);

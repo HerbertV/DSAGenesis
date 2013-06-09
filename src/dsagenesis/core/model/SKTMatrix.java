@@ -357,7 +357,8 @@ public class SKTMatrix
 	/**
 	 * getAdventurePointCosts
 	 * 
-	 * for activation costs from = -1 and to = 0;
+	 * for activation costs use this:
+	 * 		from = -1 and to = 0;
 	 * 
 	 * @param from 
 	 * @param to

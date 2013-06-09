@@ -113,7 +113,7 @@ public class TableHelper
 	{
 		String prefix = stringwithprefix.substring( 0, (stringwithprefix.indexOf("_")+1) );
 		String query = 
-				"SELECT ti_prefix, ti_table_name from CoreDataTableIndex WHERE ti_prefix='"
+				"SELECT ti_prefix, ti_table_name FROM CoreDataTableIndex WHERE ti_prefix='"
 					+ prefix+"'";
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);
@@ -121,6 +121,23 @@ public class TableHelper
 			return rs.getString("ti_table_name");
 		
 		return "";
+	}
+	
+	
+	public static Object getColumnEntryFor(String id, String columnName )
+			throws SQLException
+	{
+		String table = getTableFromPrefix(id);
+	
+		String query = 
+				"SELECT "+ columnName + " FROM " + table + " WHERE ID='"
+					+ id +"'";
+		
+		ResultSet rs = DBConnector.getInstance().executeQuery(query);
+		if( rs.next() )
+			return rs.getObject(columnName);
+		
+		return null;
 	}
 	
 	

@@ -16,22 +16,35 @@
  */
 package dsagenesis.core.util.logic;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
+
+import javax.script.ScriptException;
+
+import dsagenesis.core.sqlite.TableHelper;
+
+import jhv.util.script.JXJavaScriptMethod;
+import jhv.util.script.JXScriptArgument;
+import jhv.util.script.JXScriptFactory;
 
 /**
  * Formula
  * 
- * A class for converting, parsing formula's from DB
+ * A class for converting, parsing formula's from DB string
  * and execute them with javax.script API
  * 
  * Formula is commonly used 
  * for basic calculations and modifiers
  * 
- * The first argument is also returned, e.g.:
+ * The first argument is also returned, e.g. (Pseudo code):
  * 		args: a,b,c 
  * 		script: a = (do something with b and c); return a;
  *  
  * @see jhv.util.script.*
+ * 
+ * since we are calculating values here, the formula return value is an integer.
+ * The arguments can be anything, but are commonly integers as well. 
  */
 public class Formula 
 {
@@ -41,6 +54,7 @@ public class Formula
 		
 	// for formatting db String
 	public static final String PREFIX_ARGUMENTS = "@rgs[";
+	public static final String PREFIX_LABELS = "@lbls[";
 	public static final String PREFIX_CODE = "@f(x)[";
 	public static final char PARENTESIS_OPEN = '[';
 	public static final char PARENTESIS_CLOSE = ']';
@@ -57,11 +71,15 @@ public class Formula
 	/**
 	 * Argument names are used inside the script code.
 	 * they are stored as a paired id label Vector Vector.
+	 * 		[0] id
+	 * 		[1] label
+	 * 		[2] column name for the label
 	 */
-	private Vector<Vector<String>> argumentIdLabels;
-	
+	private Vector<Vector<String>> arguments;
+		
 	private String scriptcode;
 
+	private boolean queryWasDone = false;
 	
 	// ============================================================================
 	//  Constructors
@@ -72,7 +90,7 @@ public class Formula
 	 */
 	public Formula() 
 	{
-		this.argumentIdLabels = new Vector<Vector<String>>();
+		this.arguments = new Vector<Vector<String>>();
 		this.scriptcode = "";
 	}
 
@@ -84,7 +102,7 @@ public class Formula
 	 */
 	public Formula(String dbString)
 	{
-		super();
+		this();
 		parseDBString(dbString);
 	}
 	
@@ -101,7 +119,7 @@ public class Formula
 			String scriptcode
 		)
 	{
-		this.argumentIdLabels = idLabels;
+		this.arguments = idLabels;
 		this.scriptcode = scriptcode;
 	}
 	
@@ -112,7 +130,8 @@ public class Formula
 	/**
 	 * parseDBString
 	 * 
-	 * string format: "@rgs[a,...,n]@f(x)[the scriptcode]"
+	 * string format: 
+	 * 		"@rgs[a,...,n]@lbls[a,....,n]@f(x)[the scriptcode]"
 	 * 
 	 * @param dbString
 	 */
@@ -120,7 +139,7 @@ public class Formula
 	{
 		String subArgs = dbString.substring(
 				PREFIX_ARGUMENTS.length(),
-				(dbString.indexOf(PARENTESIS_CLOSE)-1)
+				dbString.indexOf(PARENTESIS_CLOSE)
 			);
 		
 		String[] argIds = subArgs.split(",");
@@ -131,17 +150,24 @@ public class Formula
 		{
 			pair = new Vector<String>(2);
 			pair.add(argIds[i]);
-			// by default fill also the label as id,
-			// maybe some forgets to query the labels.
 			pair.add(argIds[i]);
-			this.argumentIdLabels.add(pair);
+			this.arguments.add(pair);
 		}
+
+		// extract labels
+		int start = dbString.indexOf(PREFIX_LABELS) + PREFIX_LABELS.length();
+		int end = dbString.indexOf(PARENTESIS_CLOSE,start);
+		String subLbls = dbString.substring(start,end);
+		String[] lbls = subLbls.split(",");
 		
-		int startcode = PREFIX_CODE.length();
-		String subScript = dbString.substring(
-				startcode,
-				(dbString.lastIndexOf(PARENTESIS_CLOSE)-1)
-			);
+		for( int i=0; i< lbls.length; i++ )
+			this.arguments.get(i).add(lbls[i]);
+		
+		// exctract code
+		start = dbString.indexOf(PREFIX_CODE) + PREFIX_CODE.length();
+		end = dbString.lastIndexOf(PARENTESIS_CLOSE);
+		String subScript = dbString.substring(start,end);
+		
 		subScript = subScript.replaceAll(MASK_NEWLINE,"\n");
 		this.scriptcode = subScript.replaceAll(MASK_TAB,"\t");
 	}
@@ -149,13 +175,61 @@ public class Formula
 	/**
 	 * queryLabels
 	 * 
-	 * if you need to query the labels for their ids
+	 * if you need to query the labels for their ids,
+	 * 
+	 * before we queried the labels the vector contains
+	 * the column name which is used as label.
+	 * 
+	 * @throws SQLException
 	 */
-	public void queryLabels()
+	public void queryLabels() 
+			throws SQLException
 	{
-		// TODO query labels
+		if( queryWasDone )
+			return;
+		
+		for( int i=0; i< arguments.size(); i++ )
+		{
+			String id = arguments.get(i).get(0);
+			String column = arguments.get(i).get(2);
+			
+			arguments.get(i).set(
+					1,
+					(String)TableHelper.getColumnEntryFor(id, column)
+				);
+		}
+		queryWasDone = true;
 	}
 	
+	/**
+	 * calculate
+	 * 
+	 * @param values
+	 * @return
+	 * @throws ScriptException
+	 */
+	public int calculate(
+			Vector<Object> values
+		) throws ScriptException
+	{
+		ArrayList<JXScriptArgument<?>> args = new ArrayList<JXScriptArgument<?>>();
+		
+		for( int i=0; i<arguments.size(); i++ )
+		{
+			JXScriptArgument<?> arg = new JXScriptArgument<Object>(
+					arguments.get(i).get(0),
+					values.get(i)
+				);
+			args.add(arg);
+		}
+		
+		JXJavaScriptMethod<Integer> method = new JXJavaScriptMethod<Integer>(
+				new JXScriptFactory(), 
+				Integer.class
+			);
+		
+		return method.invoke(scriptcode,args);
+	}
 	
 	/**
 	 * getStringForCell
@@ -166,12 +240,19 @@ public class Formula
 	 */
 	public String getStringForCell()
 	{
+		try 
+		{
+			queryLabels();
+		} catch (SQLException e) {
+			// nothing to do comes from db and should be correct.
+		}
+		
 		String code = scriptcode.replaceAll("\n", " ");
 		code = code.replaceAll("\t", " "); 
-		for( int i=0; i<argumentIdLabels.size(); i++ )
+		for( int i=0; i<arguments.size(); i++ )
 			code = code.replaceAll(
-					argumentIdLabels.get(i).get(0),
-					argumentIdLabels.get(i).get(1)
+					arguments.get(i).get(0),
+					arguments.get(i).get(1)
 				);
 		
 		return "f(x):{"+ code + "}";
@@ -186,14 +267,21 @@ public class Formula
 	 */
 	public String getStringForCellTooltip()
 	{
+		try 
+		{
+			queryLabels();
+		} catch (SQLException e) {
+			// nothing to do comes from db and should be correct.
+		}
+		
 		String code = scriptcode.replaceAll("\n", "<br>");
 		code = code.replaceAll("\t", "&nbsp; &nbsp; ");
 		
 		// replace ids with labels
-		for( int i=0; i<argumentIdLabels.size(); i++ )
+		for( int i=0; i<arguments.size(); i++ )
 			code = code.replaceAll(
-					argumentIdLabels.get(i).get(0),
-					argumentIdLabels.get(i).get(1)
+					arguments.get(i).get(0),
+					arguments.get(i).get(1)
 				);
 		
 		return "<html>" + code + "</html>";
@@ -207,16 +295,27 @@ public class Formula
 	 * @return
 	 */
 	public String getStringDBValue()
-	{
-		String str = PREFIX_ARGUMENTS;
+	{	
+		String idpart = "";
+		String lblpart = "";
 		
-		for( int i=0; i<argumentIdLabels.size(); i++ )
+		for( int i=0; i<arguments.size(); i++ )
 		{
-			str += argumentIdLabels.get(i).get(0);
-			if( i < (argumentIdLabels.size()-1) )
-				str += ",";
+			idpart += arguments.get(i).get(0);
+			lblpart += arguments.get(i).get(2);
+			if( i < (arguments.size()-1) )
+			{
+				idpart += ",";
+				lblpart += ",";
+			}
 		}
-		str += PARENTESIS_CLOSE
+		
+		String str = PREFIX_ARGUMENTS
+				+ idpart
+				+ PARENTESIS_CLOSE
+				+ PREFIX_LABELS
+				+ lblpart
+				+ PARENTESIS_CLOSE
 				+ PREFIX_CODE;
 		
 		String code = scriptcode.replaceAll("\n", MASK_NEWLINE);
@@ -229,23 +328,66 @@ public class Formula
 	/**
 	 * getArguments
 	 * 
-	 * @return
+	 * @return Vector Vector of arguments
+	 * 		Inner Vector:
+	 * 		[0] id
+	 * 		[1] label
+	 * 		[2] column name for the label
+	 * 
 	 */
-	public Vector<Vector<String>> getArgumentIdLabels()
+	public Vector<Vector<String>> getArguments()
 	{
-		return this.argumentIdLabels;
+		return this.arguments;
 	}
 
 	/**
 	 * setArguments
 	 * 
 	 * @param arguments
+	 * 		Inner Vector:
+	 * 		[0] id
+	 * 		[1] label 
+	 * 		[2] column name for the label 
 	 */
-	public void setArgumentIdLabels(Vector<Vector<String>> idLabels) 
+	public void setArguments(Vector<Vector<String>> arguments) 
 	{
-		this.argumentIdLabels = idLabels;
+		this.arguments = arguments;
+	}
+	
+	/**
+	 * addArgument
+	 * 
+	 * @param id
+	 * @param label
+	 * @param column
+	 */
+	public void addArgument(String id, String label, String column)
+	{
+		Vector<String> arg = new Vector<String>();
+		arg.add(id);
+		arg.add(label);
+		arg.add(column);
+		
+		this.arguments.add(arg);
 	}
 
+	/**
+	 * removeArgument
+	 * 
+	 * @param id
+	 */
+	public void removeArgument(String id)
+	{
+		for( int i=0; i<this.arguments.size(); i ++ )
+		{
+			if( this.arguments.get(i).get(0).equals(id) )
+			{
+				this.arguments.remove(i);
+				return;
+			}
+		}
+	}
+	
 	/**
 	 * getScriptcode
 	 * 
@@ -273,6 +415,5 @@ public class Formula
 	{
 		return this.getStringForCell();
 	}
-
-	
+		
 }

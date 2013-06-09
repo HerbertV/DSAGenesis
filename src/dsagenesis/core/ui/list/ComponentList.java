@@ -33,8 +33,10 @@ import dsagenesis.core.ui.Colors;
  * 
  * A scrollable list of components.
  * Each list item is a line of the same components.
+ * 
+ * @param <I> 
  */
-public class ComponentList 
+public class ComponentList<I extends AbstractComponentListItem> 
 		extends JScrollPane 
 		implements MouseListener 
 {
@@ -62,7 +64,7 @@ public class ComponentList
 	
 	private int selectionType = 0;
 	
-	private Vector<AbstractComponentListItem> items;
+	private Vector<I> items;
 	
 	private int selectedItems = 0;
 	
@@ -84,7 +86,7 @@ public class ComponentList
 	{
 		super();
 		
-		this.items = new Vector<AbstractComponentListItem>(); 
+		this.items = new Vector<I>(); 
 		this.maxVisibleItems = visibleItems;
 		this.selectionType = selectiontype;
 		
@@ -176,7 +178,7 @@ public class ComponentList
 	 * 
 	 * @return
 	 */
-	public Vector<AbstractComponentListItem> getItems()
+	public Vector<I> getItems()
 	{
 		return this.items;
 	}
@@ -184,7 +186,7 @@ public class ComponentList
 	/**
 	 * addItem
 	 */
-	public void addItem(AbstractComponentListItem item)
+	public void addItem(I item)
 	{
 		paneList.add(item);
 		items.add(item);
@@ -194,7 +196,7 @@ public class ComponentList
 	/**
 	 * actionRemoveArgument
 	 */
-	public void removeItem(AbstractComponentListItem item)
+	public void removeItem(I item)
 	{
 		paneList.remove(item);
 		items.remove(item);
@@ -220,7 +222,24 @@ public class ComponentList
 		}
 		updateItemLayout();
 	}
-
+	
+	/**
+	 * clearList
+	 */
+	public void clearList()
+	{
+		int start = items.size()-1;
+		
+		for( int i = start; i > -1; i-- )
+		{
+			AbstractComponentListItem item = items.remove(i);
+			item.setVisible(false);
+			paneList.remove(item);
+				item = null;
+		}
+		updateItemLayout();
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent me) 
 	{

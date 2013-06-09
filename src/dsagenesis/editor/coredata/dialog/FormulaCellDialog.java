@@ -20,23 +20,30 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
+import javax.script.ScriptException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
+import jhv.swing.gridbag.GridBagConstraintsFactory;
+import jhv.swing.gridbag.GridBagPanel;
+
+import dsagenesis.core.sqlite.DBConnector;
+import dsagenesis.core.ui.list.AbstractComponentListItem;
+import dsagenesis.core.ui.list.ComponentList;
+import dsagenesis.core.util.logic.Formula;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 
 /**
@@ -44,6 +51,7 @@ import dsagenesis.editor.coredata.CoreEditorFrame;
  */
 public class FormulaCellDialog 
 		extends AbstractCellDialog 
+		implements ItemListener
 {
 	// ============================================================================
 	//  Constants
@@ -61,6 +69,17 @@ public class FormulaCellDialog
 	 */
 	private String rowId;
 	
+	/**
+	 * current row name
+	 */
+	private String rowName;
+	
+	/**
+	 * current row columns used for label
+	 */
+	private String rowColumn;
+	
+	
 	private String titleColumnPart;
 	
 	/**
@@ -73,9 +92,15 @@ public class FormulaCellDialog
 	 */
 	private Vector<Vector<String>> allowedTables;
 	
-	private JComboBox<String> comboBoxTables;
+	/**
+	 * after selecting a table this selection is generated.
+	 * 
+	 */
+	private Vector<Vector<String>> entrySelection;
 	
-	private JComboBox<String> comboBoxEntries;
+	private JComboBox<Object> comboBoxTables;
+	
+	private JComboBox<Object> comboBoxEntries;
 	
 	private JTextArea txtCode;
 	
@@ -87,8 +112,9 @@ public class FormulaCellDialog
 	
 	private JTextField txtTestOutput;
 	
-	private JPanel paneArgumentList;
+	private ComponentList<ArgumentItem> componentList;
 	
+	private Formula formula;
 	
 	// ============================================================================
 	//  Constructors
@@ -100,9 +126,9 @@ public class FormulaCellDialog
 	 * @param f
 	 * @param title
 	 * @param allowedTables format:
-	 * 						[0] db tablename
-	 * 						[1] table label
-	 * 						[2] column used as label for entries
+	 * 		[0] db tablename
+	 * 		[1] table label
+	 * 		[2] column used as label for entries
 	 */
 	public FormulaCellDialog(
 			CoreEditorFrame f, 
@@ -132,181 +158,202 @@ public class FormulaCellDialog
 	 */
 	private void setup()
 	{
-		JPanel panel = new JPanel();
+		GridBagPanel panel = new GridBagPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
-		panel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = panel.getConstraints();
+		GridBagConstraintsFactory gbcf = new GridBagConstraintsFactory(panel,gbc,5);
 		
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.weighty = 0;
-		gbc.ipadx = 5;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.8;
-		gbc.insets = new Insets(10,10,0,10);
+		gbcf.addLabel(
+				labelResource.getProperty("lblTable", "lblTable"),
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				2
+			);
+		gbcf.nextX();
+		gbcf.nextX();
 		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		{
-			JLabel lbl = new JLabel(
-					labelResource.getProperty("lblTable", "lblTable")
-				);
-			panel.add(lbl, gbc);
-		}
-		{
-			gbc.gridx = 1;
-			gbc.gridwidth = 1;
-			JLabel lbl = new JLabel(
-					labelResource.getProperty("lblEntry", "lblEntry")
-				);
-			panel.add(lbl, gbc);
-		}
-		gbc.gridx = 0;
-		gbc.gridy = 1;	
-		gbc.gridwidth = 1;
-		comboBoxTables = new JComboBox<String>();
-		panel.add(comboBoxTables, gbc);
-			
+		gbcf.addLabel(
+				labelResource.getProperty("lblEntry", "lblEntry"),
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				2
+			);
+		
+		gbcf.nextLine();
+		
+		comboBoxTables = gbcf.addComboBox(
+				null, 
+				null, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				2
+			);
 		for(int i=0; i< allowedTables.size(); i++ )
 			comboBoxTables.addItem(allowedTables.get(i).get(1));
 			
-		// TODO add change listener
+		comboBoxTables.addItemListener(this);
 		comboBoxTables.setSelectedIndex(0);
 		
-		gbc.gridx = 1;
-		comboBoxEntries = new JComboBox<String>();
-		panel.add(comboBoxEntries, gbc);
+		gbcf.nextX();
+		gbcf.nextX();
 		
-		gbc.weightx = 0.1;
-		gbc.gridx = 2;
-		btnAddArgument = new JButton(
-				labelResource.getProperty("btnAddArgument", "btnAddArgument")
+		comboBoxEntries = gbcf.addComboBox(
+				null, 
+				null, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				2
 			);
-		panel.add(btnAddArgument,gbc);
+		
+		gbcf.nextX();
+		gbcf.nextX();
+		
+		gbcf.getConstraints().weightx = 0.0;
+		btnAddArgument = gbcf.addButton(
+				labelResource.getProperty("btnAddArgument", "btnAddArgument"), 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				1
+			);
 		btnAddArgument.addActionListener(new ActionListener(){
-				@Override
 				public void actionPerformed(ActionEvent e) 
 				{
 					actionAddArgument();
 				}
 			});
 		
-		gbc.weightx = 0.8;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 3;
-		{	
-			JLabel lbl = new JLabel(
-					labelResource.getProperty("lblUsedArguments", "lblUsedArguments")
-				);
-			panel.add(lbl, gbc);
-		}
+		gbcf.nextLine();
 		
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		
-		paneArgumentList = new JPanel();
-		paneArgumentList.setLayout(null);
-		paneArgumentList.setPreferredSize(new Dimension(400,27*5 +3));
-		// TEST
-		for( int i=0; i<5; i++ )
-		{
-			ArgumentLine line = new ArgumentLine("id"+i,"name"+i);
-			line.setLocation(1, (27*i)+1);
-			paneArgumentList.add(line);
-		}
-		{
-			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setViewportView(paneArgumentList);
-			scrollPane.setPreferredSize(new Dimension( 400, 100) );
-			panel.add(scrollPane, gbc);
-		}
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weighty = 0.0;		
-		gbc.weightx = 0.1;
-		gbc.gridwidth = 1;
-		gbc.gridx = 2;
-		gbc.gridy = 4;
-		btnRemoveArgument = new JButton(
-				labelResource.getProperty("btnRemoveArgument", "btnRemoveArgument")
+		gbcf.getConstraints().weightx = 0.8;
+		gbcf.addLabel(
+				labelResource.getProperty("lblUsedArguments", "lblUsedArguments"),
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.USE_FULL_WIDTH
 			);
-		panel.add(btnRemoveArgument,gbc);
+		
+		gbcf.nextLine();
+		
+		gbcf.getConstraints().fill = GridBagConstraints.BOTH;
+		gbcf.getConstraints().weightx = 1.0;
+		gbcf.getConstraints().weighty = 1.0;
+		{
+			int visibleItems = 3;
+			componentList = new ComponentList<ArgumentItem>(
+					visibleItems, 
+					ComponentList.MULTI_SELECTION
+				);
+			
+			ArgumentItem tmp = new ArgumentItem("","");
+			tmp.validate();
+			Dimension d = new Dimension(
+					400, 
+					visibleItems * (tmp.getPreferredSize().height - 1)
+				);
+			componentList.setPreferredSize(d);
+			componentList.setMinimumSize(d);
+			gbcf.addComponent(
+					componentList, 
+					GridBagConstraintsFactory.CURRENT, 
+					GridBagConstraintsFactory.CURRENT, 
+					GridBagConstraintsFactory.USE_FULL_WIDTH
+				);
+		}
+		
+		gbcf.nextLine();
+		gbcf.lastX();
+		
+		gbcf.getConstraints().fill = GridBagConstraints.HORIZONTAL;
+		gbcf.getConstraints().weightx = 0.0;
+		gbcf.getConstraints().weighty = 0.0; // 0.1
+		
+		btnRemoveArgument = gbcf.addButton(
+				labelResource.getProperty("btnRemoveArgument", "btnRemoveArgument"), 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				1
+			);
 		btnRemoveArgument.addActionListener(new ActionListener(){
-				@Override
 				public void actionPerformed(ActionEvent e) 
 				{
 					actionRemoveArgument();
 				}
 			});
 	
-		gbc.weightx = 0.8;
-		gbc.gridwidth = 3;
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		{
-			JLabel lbl = new JLabel(
-					labelResource.getProperty("lblScript", "lblScript")
-					);
-			panel.add(lbl, gbc);
-		}
+		gbcf.nextLine();
+		gbcf.getConstraints().weightx = 0.8;
 		
-		gbc.gridx = 0;
-		gbc.gridy = 6;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		txtCode = new JTextArea(3,1);
-		{
-			JScrollPane scrollPane = new JScrollPane(txtCode);
-			panel.add(scrollPane, gbc);
-		}
-		
-		gbc.gridwidth = 1;
-		gbc.gridx = 0;
-		gbc.gridy = 7;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weighty = 0.0;		
-		gbc.weightx = 0.8;
-		
-		{	
-			JLabel lbl = new JLabel(
-					labelResource.getProperty("lblOutput", "lblOutput")
-				);
-			lbl.setHorizontalAlignment(JLabel.RIGHT);
-			panel.add(lbl, gbc);
-		}
-		gbc.gridx = 1;
-		txtTestOutput = new JTextField("");
-		txtTestOutput.setEditable(false);
-		panel.add(txtTestOutput, gbc);
-		
-		gbc.gridx = 2;
-		btnTest = new JButton(
-				labelResource.getProperty("btnTest", "btnTest")
+		gbcf.addLabel(
+				labelResource.getProperty("lblScript", "lblScript"),
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.USE_FULL_WIDTH
 			);
-		panel.add(btnTest,gbc);
+		
+		gbcf.nextLine();
+		
+		gbcf.getConstraints().fill = GridBagConstraints.BOTH;
+		gbcf.getConstraints().weightx = 1.0;
+		gbcf.getConstraints().weighty = 1.0;
+		
+		txtCode = new JTextArea();
+		JScrollPane codeScroll = new JScrollPane(txtCode);
+		codeScroll.setViewportView(txtCode);
+		Dimension d = new Dimension(400,65);
+		codeScroll.setPreferredSize(d);
+		codeScroll.setMinimumSize(d);
+		gbcf.addComponent(
+				codeScroll, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.USE_FULL_WIDTH
+			);
+		
+		gbcf.nextLine();
+		
+		gbcf.getConstraints().fill = GridBagConstraints.HORIZONTAL;
+		gbcf.getConstraints().weighty = 0.0;		
+		gbcf.getConstraints().weightx = 0.8;
+		
+		JLabel lbl = gbcf.addLabel(
+				labelResource.getProperty("lblOutput", "lblOutput"),
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				3
+			);
+		lbl.setHorizontalAlignment(JLabel.RIGHT);
+	
+		gbcf.nextX();
+		gbcf.nextX();
+		gbcf.nextX();
+		
+		txtTestOutput = gbcf.addInput(
+				"",
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				1
+			);
+		txtTestOutput.setEditable(false);
+	
+		gbcf.nextX();
+		gbcf.getConstraints().weightx = 0.0;
+		
+		btnTest = gbcf.addButton(
+				labelResource.getProperty("btnTest", "btnTest"), 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				1
+			);
 		btnTest.addActionListener(new ActionListener(){
-			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
 				actionTest();
 			}
 		});
+		gbcf.getConstraints().weightx = 0.8;
 		
-		gbc.gridwidth = 3;
-		gbc.weighty = 1;
-		gbc.gridx = 0;
-		gbc.gridy = 8;
-		panel.add(new JPanel(),gbc);
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 9;
-		JSeparator s = new JSeparator(SwingConstants.HORIZONTAL);
-		panel.add(s,gbc);
-		
+		gbcf.nextLine();
+		gbcf.addFooter(GridBagConstraintsFactory.CURRENT);
 	}
 	
 	
@@ -318,8 +365,9 @@ public class FormulaCellDialog
 	 * 
 	 * @param id
 	 * @param name
+	 * @param column
 	 */
-	public void setRowParams(String id, String name) 
+	public void setRowParams(String id, String name, String column) 
 	{
 		this.setTitle(
 				labelResource.getProperty("title", "title") 
@@ -328,20 +376,51 @@ public class FormulaCellDialog
 			);
 		
 		rowId = id;
+		rowName = name;
+		rowColumn = column;
+		
+		itemStateChanged(null);
 	}
 	
 	@Override
 	public Object getValue() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.formula;
 	}
 
 	@Override
 	public void setValue(Object value) 
 	{
-		// TODO Auto-generated method stub
-
+		if( value != null )
+		{
+			this.formula = (Formula)value;
+		} else {
+			this.formula = new Formula();
+			this.formula.addArgument(rowId, rowName, rowColumn);
+		
+			this.formula.setScriptcode(
+					rowId + " = 0;\nreturn " + rowId + ";"
+				);
+		}
+		
+		try 
+		{
+			this.formula.queryLabels();
+		} catch (SQLException e) {
+		
+		}
+		
+		txtCode.setText(this.formula.getScriptcode());
+		Vector<Vector<String>> args =  this.formula.getArguments();
+		componentList.clearList();
+		
+		for( int i=0; i< args.size(); i++ )
+		{
+			componentList.addItem(new ArgumentItem(
+					args.get(i).get(0),
+					args.get(i).get(1)
+				));
+		}
 	}
 	
 	
@@ -350,7 +429,17 @@ public class FormulaCellDialog
 	 */
 	private void actionAddArgument()
 	{
-		// TODO
+		int idx = comboBoxEntries.getSelectedIndex();
+		String id = entrySelection.get(idx).get(0);
+		String label = entrySelection.get(idx).get(1);
+		
+		ArgumentItem item = new ArgumentItem(id,label);
+		formula.addArgument(
+				id, 
+				label, 
+				allowedTables.get(idx).get(2)
+			);
+		componentList.addItem(item);
 	}
 
 	/**
@@ -358,7 +447,26 @@ public class FormulaCellDialog
 	 */
 	private void actionRemoveArgument()
 	{
-		// TODO
+		componentList.removeAllSelectedItems();
+		
+		Vector<ArgumentItem> items = componentList.getItems();
+		Vector<Vector<String>> arguments = formula.getArguments();
+		
+		for( int i=(arguments.size()-1); i >-1; i-- )
+		{
+			boolean found = false;
+			for( int j=0; j< items.size(); j++ )
+			{
+				if( items.get(j).lblId.getText().equals(arguments.get(i).get(0)) )
+				{
+					found = true;
+					break;
+				}
+			}
+			
+			if( !found )
+				arguments.remove(i);
+		}
 	}
 	
 	/**
@@ -366,12 +474,76 @@ public class FormulaCellDialog
 	 */
 	private void actionTest()
 	{
-		// TODO
+		Vector<ArgumentItem> items = componentList.getItems();
+		Vector<Object> values = new Vector<Object>();
+		
+		for( int i=0; i<items.size(); i++ )
+			values.add(items.get(i).lblValue.getText());
+		
+		try
+		{
+			int result = formula.calculate(values);
+			txtTestOutput.setText(Integer.toString(result));
+		} catch (ScriptException e) {
+			txtTestOutput.setText("");
+			Toolkit.getDefaultToolkit().beep();
+// TODO show script exception popup
+		}
+		
 	}
 	
 	
-	private class ArgumentLine 
-		extends JPanel
+
+	@Override
+	public void itemStateChanged(ItemEvent ie) 
+	{
+		if( ie != null )
+			if( ie.getStateChange() != ItemEvent.SELECTED ) 
+				return;
+		
+		int idx = comboBoxTables.getSelectedIndex();
+		String table = allowedTables.get(idx).get(0);
+		String column = allowedTables.get(idx).get(2);
+		
+		String query = "SELECT ID, " 
+				+ column 
+				+ " FROM " 
+				+ table
+				+ " ORDER BY " 
+				+ column 
+				+ " ASC";
+		
+		try 
+		{
+			ResultSet rs = DBConnector.getInstance().executeQuery(query);
+			entrySelection = new Vector<Vector<String>>();
+			comboBoxEntries.removeAllItems();
+			
+			while( rs.next() )
+			{
+				String id = rs.getString("ID");
+				String label = rs.getString(column);
+				
+				Vector<String> entry = new Vector<String>();
+				entry.add(id);
+				entry.add(label);
+				
+				entrySelection.add(entry);
+				comboBoxEntries.addItem(label);
+			}
+			
+		} catch( SQLException e ) {
+			// nothing to do 
+		}
+	}
+	
+	
+	// ============================================================================
+	//  Inner Classes
+	// ============================================================================
+		
+	private class ArgumentItem 
+			extends AbstractComponentListItem
 	{
 		
 		private static final long serialVersionUID = 1L;
@@ -384,31 +556,42 @@ public class FormulaCellDialog
 		
 		JTextField txtValue;
 		
-		private ArgumentLine(String id, String name)
+		/**
+		 * Constructor
+		 * 
+		 * @param id
+		 * @param name
+		 */
+		private ArgumentItem(String id, String name) 
 		{
-			super();
-			this.setSize(430, 28);
-			this.setLayout(null);
-			this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-			
+			super(componentList);
+					
 			lblId = new JLabel(id);
-			lblId.setBounds(10,1,30, 26);
+			lblId.setPreferredSize(new Dimension(40,22));
 			this.add(lblId);
 			
 			lblName = new JLabel(name);
-			lblName.setBounds(45, 1,150, 26);
+			lblName.setPreferredSize(new Dimension(200,22));
 			this.add(lblName);
 			
 			lblValue = new JLabel("Test Value:");
 			lblValue.setHorizontalAlignment(JLabel.RIGHT);
-			lblValue.setBounds(200,1, 100, 26);
+			lblValue.setPreferredSize(new Dimension(100,22));
 			this.add(lblValue);
 			
 			txtValue = new JTextField("0");
 			txtValue.setHorizontalAlignment(JTextField.CENTER);
-			txtValue.setBounds(305, 2, 50, 24);
+			txtValue.setPreferredSize(new Dimension(50,22));
 			this.add(txtValue);
 		}
 		
+		@Override
+		public void setTextColor(Color c)
+		{
+			lblId.setForeground(c);
+			lblName.setForeground(c);
+			lblValue.setForeground(c);
+		}
 	}
+
 }

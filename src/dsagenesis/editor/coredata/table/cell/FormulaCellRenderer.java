@@ -21,8 +21,10 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 
+import dsagenesis.core.util.logic.Formula;
+
 /**
- * FormulaCellRenderer*
+ * FormulaCellRenderer
  */
 public class FormulaCellRenderer
 		extends BasicCellRenderer 
@@ -75,8 +77,10 @@ public class FormulaCellRenderer
 			label.setText("f(x):{}");
 		} else {	
 			label.setText(value.toString());
+			label.setToolTipText(
+					((Formula)value).getStringForCellTooltip()
+				);
 		}
-		// TODO label.setToolTipText(tooltip);
 		return label;
     }
 	
