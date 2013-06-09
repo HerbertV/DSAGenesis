@@ -29,7 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-import javax.script.ScriptException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -37,8 +37,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import jhv.image.ImageResource;
 import jhv.swing.gridbag.GridBagConstraintsFactory;
 import jhv.swing.gridbag.GridBagPanel;
+import jhv.util.debug.logger.ApplicationLogger;
 
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.ui.list.AbstractComponentListItem;
@@ -63,6 +65,17 @@ public class FormulaCellDialog
 	// ============================================================================
 	//  Variables
 	// ============================================================================
+	
+	/**
+	 * ok icon
+	 */
+	private static ImageIcon iconOk;
+	
+	/**
+	 * error icon
+	 */
+	private static ImageIcon iconError;
+
 	
 	/**
 	 * current row Id
@@ -102,6 +115,8 @@ public class FormulaCellDialog
 	
 	private JComboBox<Object> comboBoxEntries;
 	
+	private JLabel lblScript;
+	
 	private JTextArea txtCode;
 	
 	private JButton btnAddArgument;
@@ -137,6 +152,13 @@ public class FormulaCellDialog
 		) 
 	{
 		super(f, 500, 450);
+		
+		if( iconOk == null )
+		{
+			iconOk = new ImageResource("resources/images/icons/statusOk.gif",this).getImageIcon();
+			iconError = new ImageResource("resources/images/icons/statusError.gif",this).getImageIcon();
+		}
+		
 		this.allowedTables = allowedTables;
 		this.titleColumnPart = title;
 		
@@ -283,7 +305,7 @@ public class FormulaCellDialog
 		gbcf.nextLine();
 		gbcf.getConstraints().weightx = 0.8;
 		
-		gbcf.addLabel(
+		lblScript = gbcf.addLabel(
 				labelResource.getProperty("lblScript", "lblScript"),
 				GridBagConstraintsFactory.CURRENT, 
 				GridBagConstraintsFactory.CURRENT, 
@@ -385,6 +407,7 @@ public class FormulaCellDialog
 	@Override
 	public Object getValue() 
 	{
+		this.formula.setScriptcode(txtCode.getText().trim());
 		return this.formula;
 	}
 
@@ -411,7 +434,7 @@ public class FormulaCellDialog
 		}
 		
 		txtCode.setText(this.formula.getScriptcode());
-		Vector<Vector<String>> args =  this.formula.getArguments();
+		Vector<Vector<String>> args = this.formula.getArguments();
 		componentList.clearList();
 		
 		for( int i=0; i< args.size(); i++ )
@@ -421,6 +444,8 @@ public class FormulaCellDialog
 					args.get(i).get(1)
 				));
 		}
+		
+		lblScript.setIcon(null);
 	}
 	
 	
@@ -437,7 +462,7 @@ public class FormulaCellDialog
 		formula.addArgument(
 				id, 
 				label, 
-				allowedTables.get(idx).get(2)
+				allowedTables.get(comboBoxTables.getSelectedIndex()).get(2)
 			);
 		componentList.addItem(item);
 	}
@@ -478,16 +503,38 @@ public class FormulaCellDialog
 		Vector<Object> values = new Vector<Object>();
 		
 		for( int i=0; i<items.size(); i++ )
-			values.add(items.get(i).lblValue.getText());
-		
+		{
+			String value = items.get(i).txtValue.getText();
+			try
+			{
+				values.add(Integer.parseInt(value));
+			} catch( NumberFormatException e ) {
+				values.add(value);
+			}
+		}
 		try
 		{
+			formula.setScriptcode(txtCode.getText());
 			int result = formula.calculate(values);
+			
 			txtTestOutput.setText(Integer.toString(result));
-		} catch (ScriptException e) {
+			lblScript.setIcon(iconOk);
+			lblScript.setToolTipText(
+					labelResource.getProperty("status.script.ok", "status.script.ok")
+				);
+			
+		} catch (Exception e) {
+			ApplicationLogger.logError(e);
 			txtTestOutput.setText("");
+			lblScript.setIcon(iconError);
 			Toolkit.getDefaultToolkit().beep();
-// TODO show script exception popup
+			lblScript.setToolTipText(
+					"<html>"	
+						+ labelResource.getProperty("status.script.error", "status.script.error")
+						+ "<br>"
+						+ e.getMessage()
+						+ "</html>"
+				);
 		}
 		
 	}
