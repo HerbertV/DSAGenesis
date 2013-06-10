@@ -27,6 +27,7 @@ import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.core.sqlite.TableHelper;
+import dsagenesis.core.util.logic.Syntax;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
 import dsagenesis.editor.coredata.table.cell.CheckBoxCellEditor;
@@ -102,6 +103,7 @@ public class CoreEditorTable
 		this.setDefaultRenderer(Boolean.class, new CheckBoxCellRenderer());
 		this.setDefaultRenderer(Number.class, new NumericCellRenderer());
 		this.setDefaultRenderer(Object.class, new BasicCellRenderer());
+		this.setDefaultRenderer(Syntax.class, new BasicCellRenderer());
 		
 		// editors
 		this.setDefaultEditor(Boolean.class, new CheckBoxCellEditor());

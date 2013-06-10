@@ -10,9 +10,12 @@ lblUsedArguments=Script Parameter:
 lblScript=Script Code:
 lblOutput=Testergebnis:
 
+lblTestValue=Wert:
+
 btnAddArgument=Hinzufügen
 btnRemoveArgument=Entfernen
 btnTest=Testen
 
 status.script.ok=Script Code funktioniert.
 status.script.error=Fehler im Script:
+

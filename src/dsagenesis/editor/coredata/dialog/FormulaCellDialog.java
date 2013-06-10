@@ -266,7 +266,7 @@ public class FormulaCellDialog
 					ComponentList.MULTI_SELECTION
 				);
 			
-			ArgumentItem tmp = new ArgumentItem("","");
+			ArgumentItem tmp = new ArgumentItem("","","java.lang.Integer");
 			tmp.validate();
 			Dimension d = new Dimension(
 					400, 
@@ -419,8 +419,11 @@ public class FormulaCellDialog
 			this.formula = (Formula)value;
 		} else {
 			this.formula = new Formula();
-			this.formula.addArgument(rowId, rowName, rowColumn);
+		}
 		
+		if( this.formula.isEmpty() )
+		{
+			this.formula.addArgument(rowId, "java.lang.Integer", rowColumn, rowName);
 			this.formula.setScriptcode(
 					rowId + " = 0;\nreturn " + rowId + ";"
 				);
@@ -441,6 +444,7 @@ public class FormulaCellDialog
 		{
 			componentList.addItem(new ArgumentItem(
 					args.get(i).get(0),
+					args.get(i).get(3),
 					args.get(i).get(1)
 				));
 		}
@@ -458,11 +462,12 @@ public class FormulaCellDialog
 		String id = entrySelection.get(idx).get(0);
 		String label = entrySelection.get(idx).get(1);
 		
-		ArgumentItem item = new ArgumentItem(id,label);
+		ArgumentItem item = new ArgumentItem(id,label,"java.lang.Integer");
 		formula.addArgument(
 				id, 
-				label, 
-				allowedTables.get(comboBoxTables.getSelectedIndex()).get(2)
+				"java.lang.Integer", 
+				allowedTables.get(comboBoxTables.getSelectedIndex()).get(2),
+				label
 			);
 		componentList.addItem(item);
 	}
@@ -505,19 +510,25 @@ public class FormulaCellDialog
 		for( int i=0; i<items.size(); i++ )
 		{
 			String value = items.get(i).txtValue.getText();
-			try
-			{
+			String type = (String)items.get(i).comboBox.getSelectedItem();
+			
+			if( type.equals("Integer") ) {
 				values.add(Integer.parseInt(value));
-			} catch( NumberFormatException e ) {
+			} else if( type.equals("Float") ) {
+				values.add(Float.parseFloat(value));
+			} else if( type.equals("Boolean") ) {
+				values.add(Boolean.parseBoolean(value));
+			} else {
 				values.add(value);
 			}
 		}
 		try
 		{
 			formula.setScriptcode(txtCode.getText());
-			int result = formula.calculate(values);
+// TODO cast to returntype			
+			Object result =  formula.calculate(values);
 			
-			txtTestOutput.setText(Integer.toString(result));
+			txtTestOutput.setText(result.toString());
 			lblScript.setIcon(iconOk);
 			lblScript.setToolTipText(
 					labelResource.getProperty("status.script.ok", "status.script.ok")
@@ -591,6 +602,7 @@ public class FormulaCellDialog
 		
 	private class ArgumentItem 
 			extends AbstractComponentListItem
+			implements ActionListener 
 	{
 		
 		private static final long serialVersionUID = 1L;
@@ -603,13 +615,16 @@ public class FormulaCellDialog
 		
 		JTextField txtValue;
 		
+		JComboBox<String> comboBox;
+		
 		/**
 		 * Constructor
 		 * 
 		 * @param id
 		 * @param name
+		 * @param clasName
 		 */
-		private ArgumentItem(String id, String name) 
+		private ArgumentItem(String id, String name, String className) 
 		{
 			super(componentList);
 					
@@ -618,12 +633,21 @@ public class FormulaCellDialog
 			this.add(lblId);
 			
 			lblName = new JLabel(name);
-			lblName.setPreferredSize(new Dimension(200,22));
+			lblName.setPreferredSize(new Dimension(120,22));
 			this.add(lblName);
 			
-			lblValue = new JLabel("Test Value:");
+			comboBox = new JComboBox<String>(new String[]{
+					"Integer", "Float", "String", "Boolean" 
+				});
+			className = className.substring(className.lastIndexOf('.')+1);
+			comboBox.setSelectedItem(className);
+			comboBox.setPreferredSize(new Dimension(100,22));
+			this.add(comboBox);
+			comboBox.addActionListener(this);
+			
+			lblValue = new JLabel(labelResource.getProperty("lblTestValue","lblTestValue"));
 			lblValue.setHorizontalAlignment(JLabel.RIGHT);
-			lblValue.setPreferredSize(new Dimension(100,22));
+			lblValue.setPreferredSize(new Dimension(70,22));
 			this.add(lblValue);
 			
 			txtValue = new JTextField("0");
@@ -638,6 +662,13 @@ public class FormulaCellDialog
 			lblId.setForeground(c);
 			lblName.setForeground(c);
 			lblValue.setForeground(c);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent ae) 
+		{
+			Vector<String> arg = formula.getArgument(lblId.getText());
+			arg.set(1, "java.lang."+comboBox.getSelectedItem());
 		}
 	}
 

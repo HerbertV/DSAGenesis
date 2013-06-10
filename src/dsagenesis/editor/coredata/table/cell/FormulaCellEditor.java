@@ -22,6 +22,7 @@ import java.util.Vector;
 
 import javax.swing.JTable;
 
+import dsagenesis.core.util.logic.Formula;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.dialog.FormulaCellDialog;
 
@@ -108,7 +109,8 @@ public class FormulaCellEditor
 		{
 			label.setText("f(x):{}");
 		} else {	
-			label.setText("f(x)= "+value);
+			label.setText(value.toString());
+			label.setToolTipText(((Formula)value).renderStringForCellTooltip());
 		}
 		return c;
 	}

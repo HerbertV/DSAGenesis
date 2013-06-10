@@ -28,6 +28,7 @@ import java.util.Vector;
 import jhv.util.debug.logger.ApplicationLogger;
 
 import dsagenesis.core.ui.PopupDialogFactory;
+import dsagenesis.core.util.logic.Formula;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 
 /**
@@ -140,15 +141,18 @@ public class ClipboardCellTransfer
 				{
 					Class<?> c = table.getColumnClass(colsselected[j]);
 					
-					// indicate value as vector
-					if( c == Vector.class )
+					if( c == Formula.class )
 					{
-						sbf.append(PREFIX_VECTOR);
-					} else if ( c == Boolean.class ) {
-						sbf.append(PREFIX_BOOLEAN);
+						sbf.append(((Formula)value).renderStringForDB());
+						
+					} else {
+						if( c == Vector.class ) {
+							sbf.append(PREFIX_VECTOR);
+						} else if ( c == Boolean.class ) {
+							sbf.append(PREFIX_BOOLEAN);
+						}
+						sbf.append(value.toString());
 					}
-					
-					sbf.append(value.toString());
 				} else {
 					sbf.append(" ");
 				}
@@ -207,8 +211,12 @@ public class ClipboardCellTransfer
 					if( startRow+i < table.getRowCount() 
 							&& startCol+j < table.getColumnCount() )
 					{
-						if( value.startsWith(PREFIX_VECTOR) )
+						if( value.indexOf(Formula.PREFIX_ARGUMENTS) > -1 )
 						{
+							Formula f = new Formula(value);
+							table.setValueAt(f,startRow+i,startCol+j);
+						
+						} else if( value.startsWith(PREFIX_VECTOR) ) {
 							// convert back to vector
 							Vector<Object> vec = new Vector<Object>();
 							String vecstring = value.substring(
@@ -227,6 +235,7 @@ public class ClipboardCellTransfer
 									value.length()
 								);
 							table.setValueAt(boolstring,startRow+i,startCol+j);
+						
 						} else {
 							table.setValueAt(value.trim(),startRow+i,startCol+j);
 						}

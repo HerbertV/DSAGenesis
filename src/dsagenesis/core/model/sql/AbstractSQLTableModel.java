@@ -393,11 +393,15 @@ public abstract class AbstractSQLTableModel
 				Object value = rs.getObject(dbColumnNames.elementAt(col));
 				
 				// add formula
-				if( classes.get(col) == Formula.class 
-						&& value != null 
-					)
+				// add formula
+				if( classes.get(col) == Formula.class )
 				{
-					row.add(new Formula(value.toString()));
+					Formula f = new Formula();
+					
+					if( value != null)
+						f.parseStringFromDB(value.toString());
+					
+					row.add(f);
 					continue;
 				}
 				// skip junctions
@@ -506,11 +510,14 @@ public abstract class AbstractSQLTableModel
 				Object value = rs.getObject(dbColumnNames.elementAt(col));
 				
 				// add formula
-				if( classes.get(col) == Formula.class 
-						&& value != null 
-					)
+				if( classes.get(col) == Formula.class )
 				{
-					row.add(new Formula(value.toString()));
+					Formula f = new Formula();
+					
+					if( value != null)
+						f.parseStringFromDB(value.toString());
+					
+					row.add(f);
 					continue;
 				}
 				// skip junctions
@@ -695,7 +702,7 @@ public abstract class AbstractSQLTableModel
 				insert += "NULL";
 			
 			} else if( c == Formula.class ) {
-				insert += "'"+ ((Formula)value).getStringDBValue() + "'";
+				insert += "'"+ ((Formula)value).renderStringForDB() + "'";
 				
 			} else if( c == Integer.class || c == Float.class ) {
 				insert += value.toString();
@@ -756,7 +763,7 @@ public abstract class AbstractSQLTableModel
 				update += "NULL";
 			
 			} else if( c == Formula.class ) {
-				update += "'"+ ((Formula)value).getStringDBValue() + "'";
+				update += "'"+ ((Formula)value).renderStringForDB() + "'";
 				
 			} else if( c == Integer.class || c == Float.class ) {
 				update += value.toString();

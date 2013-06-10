@@ -24,6 +24,7 @@ import javax.script.ScriptException;
 
 import dsagenesis.core.sqlite.TableHelper;
 
+import jhv.util.debug.logger.ApplicationLogger;
 import jhv.util.script.JXJavaScriptMethod;
 import jhv.util.script.JXScriptArgument;
 import jhv.util.script.JXScriptFactory;
@@ -31,37 +32,47 @@ import jhv.util.script.JXScriptFactory;
 /**
  * Formula
  * 
- * A class for converting, parsing formula's from DB string
+ * A class for converting, parsing formula's from/to DB string
  * and execute them with javax.script API
  * 
  * Formula is commonly used 
  * for basic calculations and modifiers
- * 
- * The first argument is also returned, e.g. (Pseudo code):
- * 		args: a,b,c 
- * 		script: a = (do something with b and c); return a;
  *  
  * @see jhv.util.script.*
- * 
- * since we are calculating values here, the formula return value is an integer.
- * The arguments can be anything, but are commonly integers as well. 
  */
 public class Formula 
+		implements Syntax
 {
 	// ============================================================================
 	//  Constants
 	// ============================================================================
-		
-	// for formatting db String
-	public static final String PREFIX_ARGUMENTS = "@rgs[";
-	public static final String PREFIX_LABELS = "@lbls[";
-	public static final String PREFIX_CODE = "@f(x)[";
-	public static final char PARENTESIS_OPEN = '[';
-	public static final char PARENTESIS_CLOSE = ']';
-		
-	//masks for DB storage
-	public static final String MASK_NEWLINE = "@n;";
-	public static final String MASK_TAB = "@t;";
+	
+	/**
+	 * version of the formula format.
+	 * can be used to update formula strings.
+	 */
+	public static final String VERSION = "1.0";
+	
+	/**
+	 * prefix argument block
+	 * each argument is an array:
+	 * 		[0] = database id of the argument
+	 * 		[1] = value type of the argument
+	 * 		[2] = column name of the arguments table used as label
+	 */
+	public static final String PREFIX_ARGUMENTS = "_args_[";
+	
+	/**
+	 * prefix return type
+	 * e.g. java.lang.Integer, java.lang.String ...
+	 */
+	public static final String PREFIX_RETURN_TYPE = "_rtype_[";
+	
+	/**
+	 * prefix code block 
+	 * contains javascript code
+	 */
+	public static final String PREFIX_CODE = "_f(x)_[";
 	
 	
 	// ============================================================================
@@ -70,15 +81,27 @@ public class Formula
 	
 	/**
 	 * Argument names are used inside the script code.
-	 * they are stored as a paired id label Vector Vector.
-	 * 		[0] id
-	 * 		[1] label
-	 * 		[2] column name for the label
+	 * they are stored as a Vector Vector.
+	 * 		[0] = database id of the argument
+	 * 		[1] = class of the argument
+	 * 		[2] = column name of the arguments table used as label
+	 * 		[3] = (optional) contains the label string
 	 */
 	private Vector<Vector<String>> arguments;
-		
-	private String scriptcode;
+	
+	/**
+	 * return type (class) of the formula
+	 */
+	private Class<?> returnType;
 
+	/**
+	 * the script code
+	 */
+	private String scriptcode;
+		
+	/**
+	 * to reduce db access and query only once
+	 */
 	private boolean queryWasDone = false;
 	
 	// ============================================================================
@@ -87,101 +110,144 @@ public class Formula
 	
 	/**
 	 * Empty Constructor.
+	 * Used by cell dialog
 	 */
 	public Formula() 
 	{
 		this.arguments = new Vector<Vector<String>>();
+		try
+		{
+			this.returnType = Class.forName("java.lang.Integer");
+		} catch( ClassNotFoundException e ) {
+			// nothing to do 
+		}
 		this.scriptcode = "";
 	}
 
 	/**
 	 * Constructor 2.
-	 * used by table cells
+	 * Used by table cells
 	 * 
 	 * @param dbString
 	 */
 	public Formula(String dbString)
 	{
 		this();
-		parseDBString(dbString);
+		
+		if( dbString != null )
+			parseStringFromDB(dbString);
 	}
 	
-	/**
-	 * Constructor 3
-	 * 
-	 * used by FormulaCellDialog to create a new formula.
-	 * 
-	 * @param idLabels
-	 * @param scriptcode
-	 */
-	public Formula(
-			Vector<Vector<String>> idLabels, 
-			String scriptcode
-		)
-	{
-		this.arguments = idLabels;
-		this.scriptcode = scriptcode;
-	}
 	
 	// ============================================================================
 	//  Functions
 	// ============================================================================
 
 	/**
-	 * parseDBString
+	 * parseStringFromDB
 	 * 
 	 * string format: 
-	 * 		"@rgs[a,...,n]@lbls[a,....,n]@f(x)[the scriptcode]"
+	 * 		"@[...]_args_[[a,b,c],[...]...,n]_rtype_[long class name]_f(x)_[the script code]"
 	 * 
 	 * @param dbString
 	 */
-	private void parseDBString(String dbString)
+	@Override
+	public void parseStringFromDB(String dbString)
 	{
-		String subArgs = dbString.substring(
-				PREFIX_ARGUMENTS.length(),
-				dbString.indexOf(PARENTESIS_CLOSE)
-			);
-		
-		String[] argIds = subArgs.split(",");
-		Vector<String> pair;
-		
-		// extract args
-		for( int i=0; i< argIds.length; i++ )
+		if( !dbString.startsWith(PREFIX_LOGIC+PREFIX_VERSION) )
 		{
-			pair = new Vector<String>(2);
-			pair.add(argIds[i]);
-			pair.add(argIds[i]);
-			this.arguments.add(pair);
+			ApplicationLogger.logError("Not a Formula:\n"+dbString);
+			return;
 		}
-
-		// extract labels
-		int start = dbString.indexOf(PREFIX_LABELS) + PREFIX_LABELS.length();
-		int end = dbString.indexOf(PARENTESIS_CLOSE,start);
-		String subLbls = dbString.substring(start,end);
-		String[] lbls = subLbls.split(",");
 		
-		for( int i=0; i< lbls.length; i++ )
-			this.arguments.get(i).add(lbls[i]);
+		int start = PREFIX_LOGIC.length()
+				+ PREFIX_VERSION.length();
+		int end = dbString.indexOf(PARENTHESIS_CLOSE,start);
+		String version = dbString.substring(start,end);
 		
-		// exctract code
-		start = dbString.indexOf(PREFIX_CODE) + PREFIX_CODE.length();
-		end = dbString.lastIndexOf(PARENTESIS_CLOSE);
+		if( !version.equals(VERSION) )
+		{
+			ApplicationLogger.logWarning(
+					"Formula has Version "
+						+ version 
+						+ " but needs "
+						+ VERSION
+					);
+// TODO implement update
+			ApplicationLogger.logWarning(
+					"TODO implement update!"
+				);
+		}
+		
+		// extract arguments
+		start = parseArguments(dbString,start);
+		
+		// extract return type
+		start = dbString.indexOf(PREFIX_RETURN_TYPE,start)
+				+ PREFIX_RETURN_TYPE.length();
+		end = dbString.indexOf(PARENTHESIS_CLOSE,start);
+		try 
+		{
+			returnType = Class.forName(dbString.substring(start,end));
+		} catch( ClassNotFoundException e ) {
+			// nothing to do
+		}
+		
+		// extract code
+		start = dbString.indexOf(PREFIX_CODE,end) 
+				+ PREFIX_CODE.length();
+		end = dbString.lastIndexOf(PARENTHESIS_CLOSE);
 		String subScript = dbString.substring(start,end);
 		
 		subScript = subScript.replaceAll(MASK_NEWLINE,"\n");
 		this.scriptcode = subScript.replaceAll(MASK_TAB,"\t");
 	}
 	
-	/**
-	 * queryLabels
-	 * 
-	 * if you need to query the labels for their ids,
-	 * 
-	 * before we queried the labels the vector contains
-	 * the column name which is used as label.
-	 * 
-	 * @throws SQLException
-	 */
+	private int parseArguments(String dbString, int pos)
+	{
+		boolean isParenthesisOpen = false;
+		boolean done = false;
+		String fragment = "";
+		Vector<String> arg = new Vector<String>();
+		
+		pos = dbString.indexOf(PREFIX_ARGUMENTS, pos) 
+				+ PREFIX_ARGUMENTS.length();
+		
+		while( !done )
+		{
+			char c = dbString.charAt(pos);
+			
+			if( c == PARENTHESIS_OPEN )
+			{
+				isParenthesisOpen = true;
+			
+			} else if( c == PARENTHESIS_CLOSE ) {
+				if( !isParenthesisOpen )
+				{
+					done = true;
+				} else {
+					isParenthesisOpen = false;
+					
+					arg.add(fragment);
+					arg.add("");
+					arguments.add(arg);
+					fragment = "";
+					arg = new Vector<String>();
+				}
+			} else if( c == ARRAY_SEPARATOR ) {
+				arg.add(fragment);
+				fragment = "";
+				
+			} else {
+				fragment += c;
+			}
+			pos++;
+		}
+		return pos;
+	}
+	
+	
+	@Override
 	public void queryLabels() 
 			throws SQLException
 	{
@@ -192,54 +258,58 @@ public class Formula
 		{
 			String id = arguments.get(i).get(0);
 			String column = arguments.get(i).get(2);
-			
 			arguments.get(i).set(
-					1,
+					3,
 					(String)TableHelper.getColumnEntryFor(id, column)
 				);
 		}
 		queryWasDone = true;
 	}
 	
-	/**
-	 * calculate
-	 * 
-	 * @param values
-	 * @return
-	 * @throws ScriptException
-	 */
-	public int calculate(
-			Vector<Object> values
-		) throws ScriptException
-	{
-		ArrayList<JXScriptArgument<?>> args = new ArrayList<JXScriptArgument<?>>();
+	@Override
+	public String renderStringForDB()
+	{	
+		if( isEmpty() ) 
+			return null;		
+
+		String args = "";
 		
 		for( int i=0; i<arguments.size(); i++ )
 		{
-			JXScriptArgument<?> arg = new JXScriptArgument<Object>(
-					arguments.get(i).get(0),
-					values.get(i)
-				);
-			args.add(arg);
+			args += PARENTHESIS_OPEN
+					+ arguments.get(i).get(0)
+					+ ARRAY_SEPARATOR
+					+ arguments.get(i).get(1)
+					+ ARRAY_SEPARATOR
+					+ arguments.get(i).get(2)
+					+ PARENTHESIS_CLOSE;
 		}
 		
-		JXJavaScriptMethod<Integer> method = new JXJavaScriptMethod<Integer>(
-				new JXScriptFactory(), 
-				Integer.class
-			);
+		String str = PREFIX_LOGIC
+				+ PREFIX_VERSION
+				+ VERSION
+				+ PARENTHESIS_CLOSE
+				+ PREFIX_ARGUMENTS
+				+ args
+				+ PARENTHESIS_CLOSE
+				+ PREFIX_RETURN_TYPE
+				+ this.returnType
+				+ PARENTHESIS_CLOSE
+				+ PREFIX_CODE;
 		
-		return method.invoke(scriptcode,args);
+		String code = scriptcode.replaceAll("\n", MASK_NEWLINE);
+		str += code.replaceAll("\t", MASK_TAB) 
+				+ PARENTHESIS_CLOSE;
+		
+		return str;
 	}
 	
-	/**
-	 * getStringForCell
-	 * 
-	 * returns a string that is used by CellRenderer and CellEditor view
-	 * 
-	 * @return
-	 */
-	public String getStringForCell()
+	@Override
+	public String renderStringForCell()
 	{
+		if( isEmpty() )
+			return "f(x):{null}";
+		
 		try 
 		{
 			queryLabels();
@@ -252,21 +322,18 @@ public class Formula
 		for( int i=0; i<arguments.size(); i++ )
 			code = code.replaceAll(
 					arguments.get(i).get(0),
-					arguments.get(i).get(1)
+					arguments.get(i).get(3)
 				);
 		
 		return "f(x):{"+ code + "}";
 	}
 	
-	/**
-	 * getStringForCellTooltip
-	 * 
-	 * returns a string for the cell renderer tooltip.
-	 * 
-	 * @return
-	 */
-	public String getStringForCellTooltip()
+	@Override
+	public String renderStringForCellTooltip()
 	{
+		if( isEmpty() )
+			return null;
+		
 		try 
 		{
 			queryLabels();
@@ -281,63 +348,76 @@ public class Formula
 		for( int i=0; i<arguments.size(); i++ )
 			code = code.replaceAll(
 					arguments.get(i).get(0),
-					arguments.get(i).get(1)
+					arguments.get(i).get(3)
 				);
 		
 		return "<html>" + code + "</html>";
 	}
 	
+	
+	
 	/**
-	 * getStringDBValue
+	 * calculate
 	 * 
-	 * returns a string that is stored in the DB
-	 * 
+	 * @param values
 	 * @return
+	 * @throws ScriptException
 	 */
-	public String getStringDBValue()
-	{	
-		String idpart = "";
-		String lblpart = "";
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Object calculate(
+			Vector<Object> values
+		) throws ScriptException
+	{
+		ArrayList<JXScriptArgument<?>> args = new ArrayList<JXScriptArgument<?>>();
 		
 		for( int i=0; i<arguments.size(); i++ )
 		{
-			idpart += arguments.get(i).get(0);
-			lblpart += arguments.get(i).get(2);
-			if( i < (arguments.size()-1) )
-			{
-				idpart += ",";
-				lblpart += ",";
-			}
+			JXScriptArgument<?> arg = new JXScriptArgument<Object>(
+					arguments.get(i).get(0),
+					values.get(i)
+				);
+			args.add(arg);
 		}
 		
-		String str = PREFIX_ARGUMENTS
-				+ idpart
-				+ PARENTESIS_CLOSE
-				+ PREFIX_LABELS
-				+ lblpart
-				+ PARENTESIS_CLOSE
-				+ PREFIX_CODE;
+		JXJavaScriptMethod method = new JXJavaScriptMethod(
+				new JXScriptFactory(), 
+				returnType
+			);
 		
-		String code = scriptcode.replaceAll("\n", MASK_NEWLINE);
-		str += code.replaceAll("\t", MASK_TAB) 
-				+ PARENTESIS_CLOSE;
-		
-		return str;
+		return method.invoke(scriptcode,args);
 	}
-
+	
 	/**
 	 * getArguments
 	 * 
 	 * @return Vector Vector of arguments
 	 * 		Inner Vector:
-	 * 		[0] id
-	 * 		[1] label
-	 * 		[2] column name for the label
+	 * 		[0] = database id of the argument
+	 * 		[1] = value type of the argument
+	 * 		[2] = column name of the arguments table used as label
+	 * 		[3] = (optional) contains the label string
 	 * 
 	 */
 	public Vector<Vector<String>> getArguments()
 	{
 		return this.arguments;
+	}
+	
+	/**
+	 * getArgument
+	 * 
+	 * @param id
+	 */
+	public Vector<String> getArgument(String id)
+	{
+		for( int i=0; i<this.arguments.size(); i ++ )
+		{
+			if( this.arguments.get(i).get(0).equals(id) )
+			{
+				return this.arguments.get(i);
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -345,9 +425,10 @@ public class Formula
 	 * 
 	 * @param arguments
 	 * 		Inner Vector:
-	 * 		[0] id
-	 * 		[1] label 
-	 * 		[2] column name for the label 
+	 * 		[0] = database id of the argument
+	 * 		[1] = value type of the argument
+	 * 		[2] = column name of the arguments table used as label
+	 * 		[3] = (optional) contains the label string
 	 */
 	public void setArguments(Vector<Vector<String>> arguments) 
 	{
@@ -357,16 +438,26 @@ public class Formula
 	/**
 	 * addArgument
 	 * 
-	 * @param id
-	 * @param label
-	 * @param column
+	 * @param id 
+	 * 		database id of the argument
+	 * @param type 
+	 * 		class name
+	 * @param column 
+	 * 		column name of the arguments table used as label
+	 * @param label (optional)
 	 */
-	public void addArgument(String id, String label, String column)
+	public void addArgument(
+			String id, 
+			String type,
+			String column,
+			String label
+		)
 	{
 		Vector<String> arg = new Vector<String>();
 		arg.add(id);
-		arg.add(label);
+		arg.add(type);
 		arg.add(column);
+		arg.add(label);
 		
 		this.arguments.add(arg);
 	}
@@ -386,6 +477,19 @@ public class Formula
 				return;
 			}
 		}
+	}
+	
+	/**
+	 * isEmpty
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty()
+	{
+		if( arguments.size() == 0 && scriptcode.equals("") ) 
+			return true;		
+
+		return false;
 	}
 	
 	/**
@@ -409,11 +513,33 @@ public class Formula
 	}
 	
 	/**
+	 * getReturnType
+	 * 
+	 * @return
+	 */
+	public Class<?> getReturnType() 
+	{
+		return returnType;
+	}
+
+	/**
+	 * setReturnType
+	 * 
+	 * @param returnType
+	 */
+	public void setReturnType(Class<?> returnType) 
+	{
+		this.returnType = returnType;
+	}
+	
+	/**
 	 * toString
 	 */
 	public String toString()
 	{
-		return this.getStringForCell();
+		return this.renderStringForCell();
 	}
+
+	
 		
 }

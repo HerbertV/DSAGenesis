@@ -31,7 +31,6 @@ import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellEditor;
 import dsagenesis.editor.coredata.table.cell.CrossReferenceCellRenderer;
 import dsagenesis.editor.coredata.table.cell.FormulaCellEditor;
-import dsagenesis.editor.coredata.table.cell.FormulaCellRenderer;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
 
 /**
@@ -194,7 +193,7 @@ public class Characteristics
 				tables,
 				"c_acronym"
 			));
-		currColumn.setCellRenderer(new FormulaCellRenderer());
+		//currColumn.setCellRenderer(new FormulaCellRenderer());
 		
 		//col 15
 		currColumn = cetable.getColumnModel().getColumn(15);
