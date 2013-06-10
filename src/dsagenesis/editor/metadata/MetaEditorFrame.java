@@ -16,19 +16,33 @@
  */
 package dsagenesis.editor.metadata;
 
+import java.awt.BorderLayout;
+
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
 import dsagenesis.core.ui.AbstractGenesisFrame;
+import dsagenesis.core.ui.StatusBar;
 
 public class MetaEditorFrame 
 		extends AbstractGenesisFrame 
 {
 	// ============================================================================
-	//  Variables
+	//  Constants
 	// ============================================================================
 			
 	private static final long serialVersionUID = 1L;
 
+	
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+	
+	/**
+	 * for status messages
+	 */
+	private StatusBar statusBar;
+	
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -38,10 +52,26 @@ public class MetaEditorFrame
 	 */
 	public MetaEditorFrame()
 	{
-		super(
-				GenesisConfig.getInstance().getAppTitle() + " - Meta Data Editor",
-				IGenesisConfigKeys.KEY_WIN_META		
+		super(IGenesisConfigKeys.KEY_WIN_META);
+		
+		BorderLayout borderLayout = (BorderLayout) getContentPane().getLayout();
+		borderLayout.setVgap(3);
+		borderLayout.setHgap(3);
+		
+		this.setTitle(
+				GenesisConfig.getInstance().getAppTitle()
+					+ " - "
+					+ labelResource.getProperty("title", "title")
 			);
+		
+		
+		// TODO init gui
+		
+		this.statusBar = new StatusBar();
+		this.statusBar.setStatus("",
+				StatusBar.STATUS_WORKING
+			);
+		getContentPane().add(this.statusBar, BorderLayout.SOUTH);
 	}
 	
 

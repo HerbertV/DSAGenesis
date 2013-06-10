@@ -25,6 +25,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.border.EtchedBorder;
 
 import jhv.image.ImageResource;
 
@@ -119,7 +120,7 @@ public class StatusBar
 		gbc.weightx = 0.2;
 		this.add(statusProgressBar,gbc);
 		
-		this.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
+		this.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 	}
 
 	// ============================================================================

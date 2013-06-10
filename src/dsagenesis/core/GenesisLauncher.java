@@ -22,21 +22,22 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.ui.ConfigFrame;
-import dsagenesis.core.sqlite.CreateDBTask;
 import dsagenesis.core.sqlite.DBConnector;
+import dsagenesis.core.task.CreateDBTask;
+import dsagenesis.core.task.CreateFoldersTask;
+import dsagenesis.core.task.FirstLaunchErrorRunnable;
+import dsagenesis.core.task.FirstLaunchFinishedRunnable;
 import dsagenesis.core.ui.AbstractGenesisFrame;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.hero.HeroEditorFrame;
@@ -503,66 +504,19 @@ public class GenesisLauncher
 			);
 		
 		SerialTaskExecutor executor = new SerialTaskExecutor(false);
-		executor.setFinishedRunnable(new Runnable(){
-				public void run() 
-				{
-					// we are done
-					DBConnector.getInstance().closeConnection();
-					GenesisConfig.getInstance().setFirstLaunchDone();	
-					JPanel p = GenesisLauncher.this.imgPanel;
-					// enable the buttons
-					for( int i=0; i<p.getComponentCount(); i++ )
-					{
-						if( p.getComponent(i) instanceof JButton )
-						{
-							JButton btn = (JButton)p.getComponent(i);
-							btn.setEnabled(true);
-						}
-					}
-					// set normal cursor
-					GenesisLauncher.this.setCursor(
-							Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-						);
-					
-					ApplicationLogger.logInfo("first launch finished.");
-					lblDisclaimerAndStatus.setText(
-							labelResource.getProperty("lblDisclaimer", "lblDisclaimer")
-						);
-					lblDisclaimerAndStatus.revalidate();
-				}
-			});
+		executor.setFinishedRunnable(new FirstLaunchFinishedRunnable(
+				this, 
+				lblDisclaimerAndStatus, 
+				labelResource.getProperty("lblDisclaimer", "lblDisclaimer"),
+				this.imgPanel
+			));
 		
-		executor.setErrorRunnable(new Runnable(){
-			public void run() 
-			{
-				DBConnector.getInstance().closeConnection();
-				JPanel p = GenesisLauncher.this.imgPanel;
-				
-				// delete DB file since it failed 
-				File f = new File(GenesisConfig.getInstance().getDBFile());
-				f.delete();
-				
-				// enable close minimize buttons
-				for( int i=0; i<p.getComponentCount(); i++ )
-				{
-					if( p.getComponent(i) instanceof JButton )
-					{
-						JButton btn = (JButton)p.getComponent(i);
-						if( btn.getIcon() != null )
-							btn.setEnabled(true);
-					}
-				}
-				// set normal cursor
-				GenesisLauncher.this.setCursor(
-						Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-					);
-				
-				ApplicationLogger.logInfo("first launch aborted. see above.");
-				lblDisclaimerAndStatus.setText(
-						labelResource.getProperty("firstLaunch.error", "firstLaunch.error")
-					);
-			}
-		});
+		executor.setErrorRunnable(new FirstLaunchErrorRunnable(
+				this, 
+				lblDisclaimerAndStatus, 
+				labelResource.getProperty("firstLaunch.error", "firstLaunch.error"),
+				this.imgPanel
+			));
 		
 		DBConnector.getInstance().openConnection(
 				GenesisConfig.getInstance().getDBFile(),false
@@ -570,7 +524,7 @@ public class GenesisLauncher
 		
 		if( DBConnector.getInstance().isDBEmpty() )
 		{		
-			ApplicationLogger.logInfo("DB is Empty. now initializing ...");
+			ApplicationLogger.logDebug("DB is Empty. now initializing ...");
 			executor.execute(new CreateDBTask(
 					lblDisclaimerAndStatus, 
 					labelResource.getProperty(
@@ -580,7 +534,7 @@ public class GenesisLauncher
 				));
 		}
 		
-		executor.execute(new FirstLaunchTask(
+		executor.execute(new CreateFoldersTask(
 				lblDisclaimerAndStatus, 
 				labelResource.getProperty(
 						"firstLaunch.pathes", 

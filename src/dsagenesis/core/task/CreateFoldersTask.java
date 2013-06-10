@@ -1,4 +1,20 @@
-package dsagenesis.core;
+/*
+ *  ___  ___   _      ___                 _    
+ * |   \/ __| /_\    / __|___ _ _  ___ __(_)___
+ * | |) \__ \/ _ \  | (_ / -_) ' \/ -_|_-< (_-<
+ * |___/|___/_/ \_\  \___\___|_||_\___/__/_/__/
+ *
+ * -----------------------------------------------------------------------------
+ * @author: Herbert Veitengruber 
+ * @version: 1.0.0
+ * -----------------------------------------------------------------------------
+ *
+ * Copyright (c) 2013 Herbert Veitengruber 
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+package dsagenesis.core.task;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -18,7 +34,7 @@ import jhv.swing.task.AbstractSerialTask;
  * 
  * creates the path structure
  */
-public class FirstLaunchTask 
+public class CreateFoldersTask 
 		extends AbstractSerialTask
 {
 	// ============================================================================
@@ -40,7 +56,7 @@ public class FirstLaunchTask
 	 * @param lbl
 	 * @param message
 	 */
-	public FirstLaunchTask(
+	public CreateFoldersTask(
 			JLabel lbl,
 			String message
 		)

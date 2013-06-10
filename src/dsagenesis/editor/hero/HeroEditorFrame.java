@@ -16,9 +16,12 @@
  */
 package dsagenesis.editor.hero;
 
+import java.awt.BorderLayout;
+
 import dsagenesis.core.config.GenesisConfig;
 import dsagenesis.core.config.IGenesisConfigKeys;
 import dsagenesis.core.ui.AbstractGenesisFrame;
+import dsagenesis.core.ui.StatusBar;
 
 /**
  * JFrame for the Hero Editor
@@ -28,11 +31,22 @@ public class HeroEditorFrame
 {
 
 	// ============================================================================
-	//  Variables
+	//  Constants
 	// ============================================================================
 			
 	private static final long serialVersionUID = 1L;
 
+	
+	// ============================================================================
+	//  Variables
+	// ============================================================================
+	
+	/**
+	 * for status messages
+	 */
+	private StatusBar statusBar;
+	
+	
 	// ============================================================================
 	//  Constructors
 	// ============================================================================
@@ -42,10 +56,26 @@ public class HeroEditorFrame
 	 */
 	public HeroEditorFrame()
 	{
-		super(
-				GenesisConfig.getInstance().getAppTitle() + " - Hero Editor",
-				IGenesisConfigKeys.KEY_WIN_HERO			
+		super(IGenesisConfigKeys.KEY_WIN_HERO);
+		
+		BorderLayout borderLayout = (BorderLayout) getContentPane().getLayout();
+		borderLayout.setVgap(3);
+		borderLayout.setHgap(3);
+		
+		this.setTitle(
+				GenesisConfig.getInstance().getAppTitle()
+					+ " - "
+					+ labelResource.getProperty("title", "title")
 			);
+		
+		
+		// TODO init gui
+		
+		this.statusBar = new StatusBar();
+		this.statusBar.setStatus("",
+				StatusBar.STATUS_WORKING
+			);
+		getContentPane().add(this.statusBar, BorderLayout.SOUTH);
 	}
 
 	

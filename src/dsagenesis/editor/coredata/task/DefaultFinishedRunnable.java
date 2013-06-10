@@ -16,44 +16,46 @@
  */
 package dsagenesis.editor.coredata.task;
 
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-
-import dsagenesis.core.task.CreateDBTask;
+import dsagenesis.core.task.AbstractEditorRunnable;
+import dsagenesis.core.ui.StatusBar;
+import dsagenesis.editor.coredata.CoreEditorFrame;
 
 /**
- * CreateDBTaskCoreEditor
- * 
- * uses progressbar and a single line status label.
+ * DefaultFinishedRunnable
  */
-public class CreateDBTaskCoreEditor 
-		extends CreateDBTask 
+public class DefaultFinishedRunnable 
+		extends AbstractEditorRunnable 
 {
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param lbl
-	 * @param progress
-	 * @param header
+	 * @param frame
+	 * @param statusBar
+	 * @param statusMessage
 	 */
-	public CreateDBTaskCoreEditor(
-			JLabel lbl, 
-			JProgressBar progress,
-			String header
+	public DefaultFinishedRunnable(
+			CoreEditorFrame frame, 
+			StatusBar statusBar,
+			String statusMessage
 		)
 	{
-		super(lbl, progress, header);
+		super(
+				frame, 
+				statusBar, 
+				statusMessage, 
+				StatusBar.STATUS_OK
+			);
 	}
-	
-	/**
-	 * adjustment for Core Editor single line status bar.
-	 */
-	@Override
-	protected String prepareNextStep()
+
+		@Override
+	public void run() 
 	{
-		String status = header + sqlfiles[this.currentStep];
+		super.run();
 		
-		return status;
+		statusBar.setProgress(0);
+		statusBar.revalidate();
+		
+		((CoreEditorFrame)this.window).setEnabled(true);
 	}
 }

@@ -14,10 +14,12 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package dsagenesis.core.sqlite;
+package dsagenesis.core.task;
 
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
+
+import dsagenesis.core.sqlite.DBConnector;
 
 import jhv.swing.task.AbstractSerialTask;
 

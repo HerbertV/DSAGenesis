@@ -33,6 +33,8 @@ import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
 import dsagenesis.editor.coredata.task.CommitTableRowTask;
 import dsagenesis.editor.coredata.task.CreateDBTaskCoreEditor;
+import dsagenesis.editor.coredata.task.DefaultErrorRunnable;
+import dsagenesis.editor.coredata.task.DefaultFinishedRunnable;
 import dsagenesis.editor.coredata.task.LoadTableDataTask;
 import dsagenesis.editor.coredata.task.RemoveTableRowTask;
 
@@ -44,6 +46,7 @@ import java.awt.Rectangle;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
@@ -249,7 +252,7 @@ public class CoreEditorFrame
 				);
 	
 			ApplicationLogger.separator();
-			ApplicationLogger.logInfo(
+			ApplicationLogger.logDebug(
 					"DB Version: "
 						+ TableHelper.getDBVersion() + " "
 						+ TableHelper.getDBLanguage()
@@ -259,6 +262,7 @@ public class CoreEditorFrame
 			vecTables = new Vector<CoreEditorTable>();
 			
 			CoreEditorTable table;
+			ImageIcon sysIco = (new ImageResource("resources/images/icons/dbTableSystem.gif",this)).getImageIcon();
 			
 			// init system Tables
 			{
@@ -266,29 +270,20 @@ public class CoreEditorFrame
 				vecTables.add(table);
 				
 				tabbedPane.addTab("CoreDataVersion", new JScrollPane(table)); 
-				tabbedPane.setIconAt(
-						0, 
-						(new ImageResource("resources/images/icons/dbTableSystem.gif",this)).getImageIcon()
-					);
+				tabbedPane.setIconAt(0,	sysIco);
 			}
 			{
 				table = new CoreEditorTable(this, new CoreDataTableIndex());
 				vecTables.add(table);
 				tabbedPane.addTab("CoreDataTableIndex", new JScrollPane(table)); 
-				tabbedPane.setIconAt(
-						1, 
-						(new ImageResource("resources/images/icons/dbTableSystem.gif",this)).getImageIcon()
-					);
+				tabbedPane.setIconAt(1,	sysIco);
 			}
 			{
 				table = new CoreEditorTable(this, new TableColumnLabels());
 				vecTables.add(table);
 				
 				tabbedPane.addTab("TableColumnLabels",	new JScrollPane(table)); 
-				tabbedPane.setIconAt(
-						2, 
-						(new ImageResource("resources/images/icons/dbTableSystem.gif",this)).getImageIcon()
-					);
+				tabbedPane.setIconAt(2,	sysIco);
 			}
 			
 			// create the rest.
@@ -652,40 +647,24 @@ public class CoreEditorFrame
 		
 		statusBar.setStatus(startMsg,StatusBar.STATUS_WORKING);
 		this.setEnabled(false);
-		CoreEditorFrame.this.setCursor(
+		this.setCursor(
 				Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
 			);
 		
 		// set default finished runnable
 		if( successMsg != null )
-			taskExecutor.setFinishedRunnable(new Runnable(){
-					public void run() 
-					{
-						// we are done
-						// set normal cursor
-						CoreEditorFrame.this.setCursor(
-								Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-							);
-						
-						statusBar.setStatus(successMsg,StatusBar.STATUS_OK);
-						statusBar.setProgress(0);
-						CoreEditorFrame.this.setEnabled(true);
-					}
-				});
+			taskExecutor.setFinishedRunnable(new DefaultFinishedRunnable(
+					this, 
+					statusBar, 
+					successMsg
+				));
 		
-		taskExecutor.setErrorRunnable(new Runnable(){
-			public void run() 
-			{
-				// set normal cursor
-				CoreEditorFrame.this.setCursor(
-						Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-					);
-				
-				statusBar.setStatus(errorMsg,StatusBar.STATUS_ERROR);
-				statusBar.setProgress(0);
-				CoreEditorFrame.this.setEnabled(true);
-			}
-		});
+		taskExecutor.setErrorRunnable(new DefaultErrorRunnable(
+				this, 
+				statusBar, 
+				errorMsg
+			));
+			
 		return true;
 	}
 	
@@ -781,28 +760,22 @@ public class CoreEditorFrame
 			
 			// custom finished runnable since we need to update 
 			// the markers
-			taskExecutor.setFinishedRunnable(new Runnable(){
-					public void run() 
-					{
-						// we are done
-						// set normal cursor
-						CoreEditorFrame.this.setCursor(
-								Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-							);
-						
-						statusBar.setStatus(
-								labelResource.getProperty("status.commit.success", "status.commit.success"),
-								StatusBar.STATUS_OK);
-						statusBar.setProgress(0);
-						CoreEditorFrame.this.setEnabled(true);
-						
-						markUnsavedTabTitle(table, table.containsUncommitedData());
-			        	boolean contentChanged = hasContentChanged();
-			        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
-						setTitle(title);
-						btnCommitAll.setEnabled(contentChanged);
-					}
-				});
+			taskExecutor.setFinishedRunnable(new DefaultFinishedRunnable(
+					this, 
+					statusBar, 
+					labelResource.getProperty("status.commit.success", "status.commit.success")
+				){
+						public void run() 
+						{
+							super.run();
+							
+							markUnsavedTabTitle(table, table.containsUncommitedData());
+				        	boolean contentChanged = hasContentChanged();
+				        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
+							setTitle(title);
+							btnCommitAll.setEnabled(contentChanged);
+						}
+					});
 			
 			taskExecutor.execute(new CommitTableRowTask(
 					statusBar.getStatusLabel(), 
@@ -812,34 +785,26 @@ public class CoreEditorFrame
 				));
 		} else {
 			// commit all
-			taskExecutor.setFinishedRunnable(new Runnable(){
-					public void run() 
-					{
-						// we are done
-						// set normal cursor
-						CoreEditorFrame.this.setCursor(
-								Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
-							);
-						
-						statusBar.setStatus(
-								labelResource.getProperty("status.commit.success", "status.commit.success"),
-								StatusBar.STATUS_OK);
-						statusBar.setProgress(0);
-						CoreEditorFrame.this.setEnabled(true);
-						
-						for( int i=0; i< vecTables.size(); i++ )
+			taskExecutor.setFinishedRunnable(new DefaultFinishedRunnable(
+					this, 
+					statusBar, 
+					labelResource.getProperty("status.commit.success", "status.commit.success")
+				){
+						public void run() 
 						{
-							markUnsavedTabTitle(
-									vecTables.elementAt(i), 
-									vecTables.elementAt(i).containsUncommitedData()
-								);
+							for( int i=0; i< vecTables.size(); i++ )
+							{
+								markUnsavedTabTitle(
+										vecTables.elementAt(i), 
+										vecTables.elementAt(i).containsUncommitedData()
+									);
+							}
+				        	boolean contentChanged = hasContentChanged();
+				        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
+							setTitle(title);
+							btnCommitAll.setEnabled(contentChanged);
 						}
-			        	boolean contentChanged = hasContentChanged();
-			        	String title = CoreEditorFrame.markUnsaved(getTitle(), contentChanged);
-						setTitle(title);
-						btnCommitAll.setEnabled(contentChanged);
-					}
-				});
+					});
 			
 			for( int i=0; i< vecTables.size(); i++ )
 			{
