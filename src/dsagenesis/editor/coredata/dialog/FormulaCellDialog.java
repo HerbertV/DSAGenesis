@@ -123,6 +123,8 @@ public class FormulaCellDialog
 	
 	private JButton btnRemoveArgument;
 	
+	private JComboBox<Object> comboBoxReturnType;
+	
 	private JButton btnTest;
 	
 	private JTextField txtTestOutput;
@@ -151,7 +153,7 @@ public class FormulaCellDialog
 			Vector<Vector<String>> allowedTables
 		) 
 	{
-		super(f, 500, 450);
+		super(f, 500, 500);
 		
 		if( iconOk == null )
 		{
@@ -305,6 +307,27 @@ public class FormulaCellDialog
 		gbcf.nextLine();
 		gbcf.getConstraints().weightx = 0.8;
 		
+		JLabel lbl = gbcf.addLabel(
+				labelResource.getProperty("lblReturnType", "lblReturnType"), 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				2
+			);
+		lbl.setHorizontalAlignment(JLabel.RIGHT);
+		gbcf.nextX();
+		gbcf.nextX();
+		
+		
+		comboBoxReturnType = gbcf.addComboBox(
+				new String[]{"Integer", "Float", "String", "Boolean"}, 
+				null, 
+				GridBagConstraintsFactory.CURRENT, 
+				GridBagConstraintsFactory.CURRENT, 
+				1
+			); 
+		comboBoxReturnType.addItemListener(this);
+		gbcf.nextLine();
+		
 		lblScript = gbcf.addLabel(
 				labelResource.getProperty("lblScript", "lblScript"),
 				GridBagConstraintsFactory.CURRENT, 
@@ -337,15 +360,14 @@ public class FormulaCellDialog
 		gbcf.getConstraints().weighty = 0.0;		
 		gbcf.getConstraints().weightx = 0.8;
 		
-		JLabel lbl = gbcf.addLabel(
+		lbl = gbcf.addLabel(
 				labelResource.getProperty("lblOutput", "lblOutput"),
 				GridBagConstraintsFactory.CURRENT, 
 				GridBagConstraintsFactory.CURRENT, 
-				3
+				2
 			);
 		lbl.setHorizontalAlignment(JLabel.RIGHT);
 	
-		gbcf.nextX();
 		gbcf.nextX();
 		gbcf.nextX();
 		
@@ -353,11 +375,13 @@ public class FormulaCellDialog
 				"",
 				GridBagConstraintsFactory.CURRENT, 
 				GridBagConstraintsFactory.CURRENT, 
-				1
+				2
 			);
 		txtTestOutput.setEditable(false);
 	
 		gbcf.nextX();
+		gbcf.nextX();
+		
 		gbcf.getConstraints().weightx = 0.0;
 		
 		btnTest = gbcf.addButton(
@@ -401,7 +425,7 @@ public class FormulaCellDialog
 		rowName = name;
 		rowColumn = column;
 		
-		itemStateChanged(null);
+		stateChangedTables();
 	}
 	
 	@Override
@@ -423,7 +447,12 @@ public class FormulaCellDialog
 		
 		if( this.formula.isEmpty() )
 		{
-			this.formula.addArgument(rowId, "java.lang.Integer", rowColumn, rowName);
+			this.formula.addArgument(
+					rowId, 
+					"java.lang.Integer", 
+					rowColumn, 
+					rowName
+				);
 			this.formula.setScriptcode(
 					rowId + " = 0;\nreturn " + rowId + ";"
 				);
@@ -436,6 +465,9 @@ public class FormulaCellDialog
 		
 		}
 		
+		comboBoxReturnType.setSelectedItem(
+				formula.getReturnType().getSimpleName()
+			);
 		txtCode.setText(this.formula.getScriptcode());
 		Vector<Vector<String>> args = this.formula.getArguments();
 		componentList.clearList();
@@ -524,10 +556,8 @@ public class FormulaCellDialog
 		}
 		try
 		{
-			formula.setScriptcode(txtCode.getText());
-// TODO cast to returntype			
+			formula.setScriptcode(txtCode.getText());		
 			Object result =  formula.calculate(values);
-			
 			txtTestOutput.setText(result.toString());
 			lblScript.setIcon(iconOk);
 			lblScript.setToolTipText(
@@ -550,15 +580,11 @@ public class FormulaCellDialog
 		
 	}
 	
-	
-
-	@Override
-	public void itemStateChanged(ItemEvent ie) 
+	/**
+	 * stateChangedTables
+	 */
+	private void stateChangedTables()
 	{
-		if( ie != null )
-			if( ie.getStateChange() != ItemEvent.SELECTED ) 
-				return;
-		
 		int idx = comboBoxTables.getSelectedIndex();
 		String table = allowedTables.get(idx).get(0);
 		String column = allowedTables.get(idx).get(2);
@@ -592,6 +618,37 @@ public class FormulaCellDialog
 			
 		} catch( SQLException e ) {
 			// nothing to do 
+		}
+	}
+	
+	/**
+	 * stateChangedReturnType
+	 */
+	private void stateChangedReturnType() 
+	{
+		String classname = "java.lang."+comboBoxReturnType.getSelectedItem();
+		
+		try
+		{
+			formula.setReturnType(Class.forName(classname));
+		} catch( ClassNotFoundException e ) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void itemStateChanged(ItemEvent ie) 
+	{
+		if( ie != null )
+			if( ie.getStateChange() != ItemEvent.SELECTED ) 
+				return;
+		
+		if( ie.getSource() == comboBoxTables )
+		{
+			stateChangedTables();
+		} else if( ie.getSource() == comboBoxReturnType ) {
+			stateChangedReturnType();
 		}
 	}
 	

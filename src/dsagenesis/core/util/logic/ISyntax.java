@@ -24,7 +24,7 @@ import java.sql.SQLException;
  * 
  * Defines basic constants for all logic classes
  */
-public interface Syntax 
+public interface ISyntax 
 {
 	/**
 	 * every logical string representation must start with this.
@@ -100,6 +100,15 @@ public interface Syntax
 	 * @return
 	 */
 	public String renderStringForCellTooltip();
+	
+	/**
+	 * isEmpty
+	 * 
+	 * returns true if no values are set.
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty();
 	
 
 }

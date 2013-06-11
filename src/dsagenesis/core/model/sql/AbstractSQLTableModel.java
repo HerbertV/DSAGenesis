@@ -393,7 +393,6 @@ public abstract class AbstractSQLTableModel
 				Object value = rs.getObject(dbColumnNames.elementAt(col));
 				
 				// add formula
-				// add formula
 				if( classes.get(col) == Formula.class )
 				{
 					Formula f = new Formula();
@@ -464,7 +463,7 @@ public abstract class AbstractSQLTableModel
 		
 		ResultSet rs = DBConnector.getInstance().executeQuery(query);	
 		
-		ApplicationLogger.logInfo(
+		ApplicationLogger.logDebug(
 					this.getClass().getSimpleName()
 					+ ".queryList time: "
 					+ DBConnector.getInstance().getQueryTime() 
@@ -569,7 +568,7 @@ public abstract class AbstractSQLTableModel
 		updateReferencesFor((String)id,rowData);
 		querytime += DBConnector.getInstance().getQueryTime();
 			
-		ApplicationLogger.logInfo(
+		ApplicationLogger.logDebug(
 				this.getClass().getSimpleName()
 					+ ".commitRow time: "+querytime+ " ms"
 			);
@@ -595,7 +594,7 @@ public abstract class AbstractSQLTableModel
 		DBConnector.getInstance().executeUpdate(delete);
 		querytime += DBConnector.getInstance().getQueryTime();
 					
-		ApplicationLogger.logInfo(
+		ApplicationLogger.logDebug(
 				this.getClass().getSimpleName()
 					+ ".deleteRow time: " + querytime + " ms"
 			);

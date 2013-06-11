@@ -41,7 +41,7 @@ import jhv.util.script.JXScriptFactory;
  * @see jhv.util.script.*
  */
 public class Formula 
-		implements Syntax
+		implements ISyntax
 {
 	// ============================================================================
 	//  Constants
@@ -293,7 +293,7 @@ public class Formula
 				+ args
 				+ PARENTHESIS_CLOSE
 				+ PREFIX_RETURN_TYPE
-				+ this.returnType
+				+ this.returnType.getName()
 				+ PARENTHESIS_CLOSE
 				+ PREFIX_CODE;
 		
@@ -354,7 +354,14 @@ public class Formula
 		return "<html>" + code + "</html>";
 	}
 	
-	
+	@Override
+	public boolean isEmpty()
+	{
+		if( arguments.size() == 0 && scriptcode.equals("") ) 
+			return true;		
+
+		return false;
+	}
 	
 	/**
 	 * calculate
@@ -477,19 +484,6 @@ public class Formula
 				return;
 			}
 		}
-	}
-	
-	/**
-	 * isEmpty
-	 * 
-	 * @return
-	 */
-	public boolean isEmpty()
-	{
-		if( arguments.size() == 0 && scriptcode.equals("") ) 
-			return true;		
-
-		return false;
 	}
 	
 	/**

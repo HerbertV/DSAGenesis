@@ -21,6 +21,7 @@ import javax.swing.JComboBox;
 
 import jhv.component.LabelResource;
 import jhv.swing.gridbag.GridBagConstraintsFactory;
+import jhv.util.debug.logger.ApplicationLogger;
 import dsagenesis.core.config.GenesisConfig;
 
 /**
@@ -38,8 +39,8 @@ public class DebugConfigTabPanel
 	private static final String[] debugLevelStrings = {
 			"OFF",
 			"ALL",
-			"INFO",
 			"DEBUG",
+			"INFO",
 			"WARNING",
 			"ERROR",
 			"FATAL ERROR"	
@@ -153,7 +154,8 @@ public class DebugConfigTabPanel
 				GenesisConfig.KEY_DEBUG_LEVEL, 
 				Integer.toString(comboDebugLevel.getSelectedIndex())
 			);
-		
+		// update logger level as well
+		ApplicationLogger.setLevel(comboDebugLevel.getSelectedIndex());
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import dsagenesis.core.ui.Colors;
-import dsagenesis.core.util.logic.Syntax;
+import dsagenesis.core.util.logic.ISyntax;
 
 /**
  * CoreEditorTableCellRenderer
@@ -141,11 +141,11 @@ public class BasicCellRenderer
 		{
 			this.setText("");
 		} else {
-			if( value instanceof Syntax )
+			if( value instanceof ISyntax )
 			{
-				this.setText(((Syntax)value).renderStringForCell());
+				this.setText(((ISyntax)value).renderStringForCell());
 				this.setToolTipText(
-						((Syntax)value).renderStringForCellTooltip()
+						((ISyntax)value).renderStringForCellTooltip()
 					);
 				
 			} else {

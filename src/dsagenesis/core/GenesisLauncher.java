@@ -524,7 +524,7 @@ public class GenesisLauncher
 		
 		if( DBConnector.getInstance().isDBEmpty() )
 		{		
-			ApplicationLogger.logDebug("DB is Empty. now initializing ...");
+			ApplicationLogger.logInfo("DB is Empty. now initializing ...");
 			executor.execute(new CreateDBTask(
 					lblDisclaimerAndStatus, 
 					labelResource.getProperty(

@@ -79,8 +79,8 @@ public class Advantages
 		this.dbColumnNames.addElement("ada_step_cp_cost");
 		this.dbColumnNames.addElement("ada_min_level");
 		this.dbColumnNames.addElement("ada_max_level");
-		this.dbColumnNames.addElement("ada_has_choice");
-		this.dbColumnNames.addElement("ada_choice_formula");
+		this.dbColumnNames.addElement("ada_has_selection");
+		this.dbColumnNames.addElement("ada_selection");
 		this.dbColumnNames.addElement("ada_has_modifier");
 		this.dbColumnNames.addElement("ada_modifier_formula");
 		this.dbColumnNames.addElement("ada_bookmark");

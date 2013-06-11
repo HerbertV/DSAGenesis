@@ -252,7 +252,7 @@ public class CoreEditorFrame
 				);
 	
 			ApplicationLogger.separator();
-			ApplicationLogger.logDebug(
+			ApplicationLogger.logInfo(
 					"DB Version: "
 						+ TableHelper.getDBVersion() + " "
 						+ TableHelper.getDBLanguage()

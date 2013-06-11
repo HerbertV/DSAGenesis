@@ -9,8 +9,8 @@ lblEntry=Eintrag:
 lblUsedArguments=Script Parameter:
 lblScript=Script Code:
 lblOutput=Testergebnis:
-
 lblTestValue=Wert:
+lblReturnType=Rückgabewert:
 
 btnAddArgument=Hinzufügen
 btnRemoveArgument=Entfernen

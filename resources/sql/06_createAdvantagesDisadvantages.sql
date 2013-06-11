@@ -20,8 +20,8 @@ CREATE TABLE "Advantages" (
 	"ada_step_cp_cost" INTEGER DEFAULT '0' NOT NULL,
 	"ada_min_level" INTEGER DEFAULT '0' NOT NULL,
 	"ada_max_level" INTEGER DEFAULT '0' NOT NULL,
-	"ada_has_choice" BOOLEAN DEFAULT '0' NOT NULL,
-	"ada_choice_formula" TEXT DEFAULT NULL,
+	"ada_has_selection" BOOLEAN DEFAULT '0' NOT NULL,
+	"ada_selection" TEXT DEFAULT NULL,
 	"ada_has_modifier" BOOLEAN DEFAULT '0' NOT NULL,
 	"ada_modifier_formula" TEXT DEFAULT NULL,
 	"ada_bookmark" TEXT DEFAULT NULL,
@@ -78,11 +78,11 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Advantages', 'ada_has_choice', 'hat Auswahl');	
+	( 'Advantages', 'ada_has_selection', 'hat Auswahl');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Advantages', 'ada_choice_formula', 'Auswahl Formel');	
+	( 'Advantages', 'ada_selection', 'Auswahl');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
@@ -136,8 +136,8 @@ CREATE TABLE "Disadvantages" (
 	"add_step_cp_cost" INTEGER DEFAULT '0' NOT NULL,
 	"add_min_level" INTEGER DEFAULT '0' NOT NULL,
 	"add_max_level" INTEGER DEFAULT '0' NOT NULL,
-	"add_has_choice" BOOLEAN DEFAULT '0' NOT NULL,
-	"add_choice_formula" TEXT DEFAULT NULL,
+	"add_has_selection" BOOLEAN DEFAULT '0' NOT NULL,
+	"add_selection" TEXT DEFAULT NULL,
 	"add_has_modifier" BOOLEAN DEFAULT '0' NOT NULL,
 	"add_modifier_formula" TEXT DEFAULT NULL,
 	"add_bookmark" TEXT DEFAULT NULL,
@@ -202,11 +202,11 @@ INSERT INTO TableColumnLabels
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Disadvantages', 'add_has_choice', 'hat Auswahl');	
+	( 'Disadvantages', 'add_has_selection', 'hat Auswahl');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES
-	( 'Disadvantages', 'add_choice_formula', 'Auswahl Formel');	
+	( 'Disadvantages', 'add_selection', 'Auswahl');	
 INSERT INTO TableColumnLabels
 	( tcl_table_name, tcl_column_name, tcl_label )
 	VALUES

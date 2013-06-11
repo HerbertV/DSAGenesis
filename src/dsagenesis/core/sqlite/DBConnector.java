@@ -199,7 +199,7 @@ public class DBConnector
 	public void openConnection(String dbfile, boolean readonly)
 	{
 		try {
-			ApplicationLogger.logDebug("open DB: "+dbfile);
+			ApplicationLogger.logInfo("open DB: "+dbfile);
 			
 			SQLiteConfig sqlconf = new SQLiteConfig();
 			sqlconf.setReadOnly(readonly);   
@@ -233,7 +233,7 @@ public class DBConnector
 				connection = null;
 				openDBFilename = null;
 				
-				ApplicationLogger.logDebug("closed DB connection.");
+				ApplicationLogger.logInfo("closed DB connection.");
 			}
 		} catch( SQLException e ) {
 			ApplicationLogger.logFatalError(e);
