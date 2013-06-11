@@ -8,6 +8,11 @@
 	Build-Date: @BUILDDATE
 ================================================================================
 
+Ein Inoffizelles Tool zur Heldenerschaffung und Verwaltung für 
+"Das Schwarze Auge" Rollenspiel. 
+
+Unterstützt die DSA4.1 Regeln.
+
 --------------------------------------------------------------------------------
 DSAGenesis is Licensed under The MIT License (MIT): 
 --------------------------------------------------------------------------------

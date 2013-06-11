@@ -2,7 +2,11 @@
 
 -----------------------------------
 
-*An un-offical Character Creation and Managing Tool for the German "Das Schwarze Auge" Pen&Paper RPG.*
+*An un-offical Character Creation and Managing Tool for the German "The Dark Eye" Pen&Paper RPG
+using DSA4.1 ruleset.*
+
+*Ein Inoffizelles Tool zur Heldenerschaffung und Verwaltung für "Das Schwarze Auge" Rollenspiel. 
+Unterstützt die DSA4.1 Regeln.*
 
 -----------------------------------
 
@@ -19,7 +23,7 @@
 
 ## Downloads:
 
-TODO
+comming soon...
 
 
 ## Licenses:
