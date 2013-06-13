@@ -23,9 +23,14 @@ import java.util.Vector;
 import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.xml.AbstractGenesisModel;
+import dsagenesis.core.sqlite.TableHelper;
+import dsagenesis.core.util.logic.Formula;
+import dsagenesis.core.util.logic.Selection;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
+import dsagenesis.editor.coredata.table.cell.FormulaCellEditor;
 import dsagenesis.editor.coredata.table.cell.NumericCellEditor;
+import dsagenesis.editor.coredata.table.cell.SelectionCellEditor;
 
 /**
  * Advantages
@@ -122,11 +127,40 @@ public class Advantages
 				ceframe.getStatusBar()
 			));
 		
+		// coll 11
 		currColumn = cetable.getColumnModel().getColumn(11);
 		currColumn.setMinWidth(120);
+		currColumn.setCellEditor(new SelectionCellEditor(
+				ceframe, 
+				(String)currColumn.getHeaderValue()
+			));
 		
 		currColumn = cetable.getColumnModel().getColumn(13);
 		currColumn.setMinWidth(120);
+		
+		Vector<Vector<String>> tables = new Vector<Vector<String>>();
+		try 
+		{
+			Vector<String> t = new Vector<String>();
+			t.add("Characteristics");
+			t.add(TableHelper.getLabelForTable("Characteristics"));
+			t.add("c_acronym");
+			tables.add(t);
+			t.add(this.getDBTableName());
+			t.add(this.getDBTableLabel());
+			t.add("ada_name");
+			tables.add(t);
+			
+		} catch (SQLException e) {
+			// nothing to do
+		}
+		currColumn.setCellEditor(new FormulaCellEditor(
+				ceframe, 
+				(String)currColumn.getHeaderValue(),
+				tables,
+				"ada_name"
+			));
+		
 		
 		currColumn = cetable.getColumnModel().getColumn(15);
 		currColumn.setMinWidth(120);
@@ -156,9 +190,9 @@ public class Advantages
 		vec.add(Integer.class);
 		vec.add(Integer.class);
 		vec.add(Boolean.class);
-		vec.add(String.class);
+		vec.add(Selection.class);
 		vec.add(Boolean.class);
-		vec.add(String.class);
+		vec.add(Formula.class);
 		vec.add(String.class);
 		vec.add(String.class);
 				

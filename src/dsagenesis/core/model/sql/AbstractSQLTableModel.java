@@ -28,6 +28,8 @@ import dsagenesis.core.model.xml.AbstractGenesisModel;
 import dsagenesis.core.sqlite.DBConnector;
 import dsagenesis.core.sqlite.TableHelper;
 import dsagenesis.core.util.logic.Formula;
+import dsagenesis.core.util.logic.ISyntax;
+import dsagenesis.core.util.logic.Selection;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.CoreEditorTable;
 import dsagenesis.editor.coredata.table.CoreEditorTableModel;
@@ -350,6 +352,57 @@ public abstract class AbstractSQLTableModel
 	}
 	
 	/**
+	 * addSyntaxToRow
+	 * 
+	 * check if the value implements ISyntax
+	 * adds it if it is and returns true.  
+	 * 
+	 * @param row
+	 * @param c
+	 * @param value
+	 * 
+	 * @return
+	 */
+	private boolean addSyntaxToRow(
+			Vector<Object> row,
+			Class<?> c, 
+			Object value 
+		)
+	{
+		Class<?>[] interfaces = c.getInterfaces();
+		
+		// check for syntax interface
+		boolean isSyntax = false;
+		for( int i=0; i<interfaces.length; i++ )
+		{
+			if( interfaces[i] == ISyntax.class )
+			{
+				isSyntax = true;
+				break;
+			}
+		}
+		
+		if( !isSyntax )
+			return false;
+		
+		// add syntax
+		ISyntax s = null;
+		if( c == Formula.class )
+		{
+			s = new Formula();
+		} else if( c == Selection.class ) {
+			s = new Selection();
+		}
+		
+		if( value != null)
+			s.parseStringFromDB(value.toString());
+		
+		row.add(s);
+		
+		return true;
+	}
+	
+	/**
 	 * queryList
 	 * 
 	 * returns all entries sort by ID
@@ -392,17 +445,9 @@ public abstract class AbstractSQLTableModel
 			{
 				Object value = rs.getObject(dbColumnNames.elementAt(col));
 				
-				// add formula
-				if( classes.get(col) == Formula.class )
-				{
-					Formula f = new Formula();
-					
-					if( value != null)
-						f.parseStringFromDB(value.toString());
-					
-					row.add(f);
+				if( addSyntaxToRow(row, classes.get(col), value) )
 					continue;
-				}
+				
 				// skip junctions
 				int junctcount = 0;
 				while( classes.get(col+junctcount) == Vector.class )
@@ -508,17 +553,9 @@ public abstract class AbstractSQLTableModel
 			{
 				Object value = rs.getObject(dbColumnNames.elementAt(col));
 				
-				// add formula
-				if( classes.get(col) == Formula.class )
-				{
-					Formula f = new Formula();
-					
-					if( value != null)
-						f.parseStringFromDB(value.toString());
-					
-					row.add(f);
+				if( addSyntaxToRow(row, classes.get(col), value) )
 					continue;
-				}
+				
 				// skip junctions
 				int junctcount = 0;
 				while( classes.get(col+junctcount) == Vector.class )

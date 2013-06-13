@@ -27,6 +27,8 @@ import javax.swing.table.TableColumn;
 
 import dsagenesis.core.model.sql.AbstractSQLTableModel;
 import dsagenesis.core.sqlite.TableHelper;
+import dsagenesis.core.util.logic.Formula;
+import dsagenesis.core.util.logic.Selection;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.coredata.table.cell.BasicCellRenderer;
 import dsagenesis.editor.coredata.table.cell.CheckBoxCellEditor;
@@ -239,6 +241,13 @@ public class CoreEditorTable
 			if( classes.elementAt(i).equals(Vector.class) )
 			{
 				row.addElement(new Vector<Object>());
+			
+			} else if( classes.elementAt(i).equals(Formula.class) ) {
+				row.addElement(new Formula());
+				
+			} else if( classes.elementAt(i).equals(Selection.class) ) {
+				row.addElement(new Selection());
+				
 			} else if( classes.elementAt(i).equals(String.class) ) {
 				row.addElement("");
 				

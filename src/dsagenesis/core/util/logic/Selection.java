@@ -212,6 +212,9 @@ public class Selection
 	public void queryLabels() 
 			throws SQLException 
 	{
+		if( type == null )
+			return;
+		
 		if( type.equals(TYPE_USER) )
 			return;
 		
