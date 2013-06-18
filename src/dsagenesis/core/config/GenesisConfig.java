@@ -222,6 +222,9 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_COLOR_NEGATIVE, "FF0000");
 		this.setSystemProperty(KEY_COLOR_COMMENT, "0094FF");
 		
+		this.setSystemProperty(KEY_UPDATE_AVAILABLE, "false");
+		
+		
 		// TODO Calendar
 	}
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<JAppDater xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0.0" xsi:noNamespaceSchemaLocation="jappdater.xsd">
+	
+	<!-- TEST -->
+	<application index="index.xml" name="DSA Genesis" server="http://localhost:8080/genesis/" version="0.2.0"/>
+	
+	<files>
+	<!-- TEST -->
+		<file ID="1" dest="./DSAGenesis.jar" src="DSAGenesis.jar"/>
+	</files>
+
+</JAppDater>

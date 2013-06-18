@@ -97,6 +97,11 @@ public interface IGenesisConfigKeys
 
 	public static final String KEY_COLOR_COMMENT = "color.comment";
 
+	/**
+	 * this key becomes true if an update is available
+	 */
+	public static final String KEY_UPDATE_AVAILABLE = "update.isAvailable";
+	
 // TODO Calendar keys
 	
 }

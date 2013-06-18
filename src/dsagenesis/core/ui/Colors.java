@@ -37,4 +37,6 @@ public class Colors
 	
 	public static final Color colorHoverLine = Color.decode("#F3F2B1");
 	
+	public static final Color colorImportantBlueButton = Color.decode("#0084ff");
+	
 }

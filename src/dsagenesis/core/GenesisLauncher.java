@@ -20,8 +20,12 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -39,6 +43,7 @@ import dsagenesis.core.task.CreateFoldersTask;
 import dsagenesis.core.task.FirstLaunchErrorRunnable;
 import dsagenesis.core.task.FirstLaunchFinishedRunnable;
 import dsagenesis.core.ui.AbstractGenesisFrame;
+import dsagenesis.core.ui.Colors;
 import dsagenesis.editor.coredata.CoreEditorFrame;
 import dsagenesis.editor.hero.HeroEditorFrame;
 import dsagenesis.editor.metadata.MetaEditorFrame;
@@ -46,6 +51,9 @@ import dsagenesis.editor.metadata.MetaEditorFrame;
 import jhv.component.ILabeledComponent;
 import jhv.component.LabelResource;
 import jhv.image.ImageResource;
+import jhv.jappdater.Checker;
+import jhv.jappdater.event.UpdateEvent;
+import jhv.jappdater.event.UpdateEventListener;
 import jhv.swing.launcher.AbstractLauncher;
 import jhv.swing.task.SerialTaskExecutor;
 import jhv.util.debug.DebugLevel;
@@ -57,7 +65,7 @@ import jhv.util.debug.logger.ApplicationLogger;
  */
 public class GenesisLauncher 
 		extends AbstractLauncher 
-		implements ActionListener, ILabeledComponent
+		implements ActionListener, ILabeledComponent, UpdateEventListener
 {
 	
 	// ============================================================================
@@ -69,6 +77,10 @@ public class GenesisLauncher
 	public static final String ACMD_LAUNCH_META = "launchMetaEditor";
 	
 	public static final String ACMD_LAUNCH_HERO = "launchHeroEditor";
+	
+	public static final String ACMD_UPDATE_CHECK = "updateCheck";
+	
+	public static final String ACMD_UPDATE_NOW = "updateNow";
 	
 	public static final String ACMD_SETUP = "setup";
 	
@@ -99,6 +111,10 @@ public class GenesisLauncher
 	 */
 	private JLabel lblDisclaimerAndStatus;
 	
+	/**
+	 * button for checking and updating
+	 */
+	private JButton btnUpdate;
 	
 	// ============================================================================
 	//  Constructors
@@ -152,6 +168,9 @@ public class GenesisLauncher
 		// init config
 		GenesisConfig conf = GenesisConfig.getInstance();
 		GenesisConfig.APP_START_TIME = time;
+		
+		// check args
+		checkArgs(args);
 		
 		// init logger
 		if( conf.isLoggerEnabled() 
@@ -217,6 +236,28 @@ public class GenesisLauncher
 					GenesisLauncher.open();
 				}
 			});
+	}
+	
+	/**
+	 * checkArgs
+	 * 
+	 * @param args
+	 */
+	private static void checkArgs(String[] args)
+	{
+		GenesisConfig conf = GenesisConfig.getInstance();
+		
+		for(int i=0; i<args.length; i++ )
+		{
+			if( args[i].equals("-jadfinished") )
+			{
+				conf.setSystemProperty(
+						GenesisConfig.KEY_UPDATE_AVAILABLE, 
+						"false"
+					);
+				conf.saveSystem();
+			}
+		}
 	}
 	
 	/**
@@ -294,11 +335,11 @@ public class GenesisLauncher
 		String[][] btnList = {
 				{ labelResource.getProperty("btnSetup", "btnSetup"),
 						ACMD_SETUP, 
-						"0"
+						"10"
 					}, 
 				{  labelResource.getProperty("btnCoreDataEditor", "btnCoreDataEditor"), 
 						ACMD_LAUNCH_CORE, 
-						"10" 
+						"20" 
 					},
 				{ labelResource.getProperty("btnMetaDataEditor", "btnMetaDataEditor"),
 						ACMD_LAUNCH_META, 
@@ -310,6 +351,16 @@ public class GenesisLauncher
 					},
 			};
 		
+		btnUpdate = this.addTextButton(
+				margin,	//x
+				90, //y 
+				defaultWidth - 2*margin,
+				btnHeight, 					
+				"",
+				""			
+			);
+		this.setUpdateButtonLabel();
+		
 		int additionalY = 0;
 		for( int i=0; i< btnList.length; i++ )
 		{
@@ -317,14 +368,13 @@ public class GenesisLauncher
 			
 			this.addTextButton(
 					margin,	//x
-					90 + (i*(btnHeight +btnPadding)) + additionalY, //y 
+					90 + ((i+1)*(btnHeight +btnPadding)) + additionalY, //y 
 					defaultWidth - 2*margin, 			//width
 					btnHeight, 							//height
 					btnList[i][0], 						//label text
 					btnList[i][1]						//action command
 				);
 		}
-		
 		
 	}
 	
@@ -352,7 +402,7 @@ public class GenesisLauncher
 	 * @param label
 	 * @param cmd
 	 */
-	protected void addTextButton(
+	protected JButton addTextButton(
 			int x, 
 			int y, 
 			int width, 
@@ -370,8 +420,19 @@ public class GenesisLauncher
 		btn.setOpaque(false);
 		btn.setFocusPainted(false);
 		
+		if( cmd.equals(ACMD_LAUNCH_HERO) )
+		{
+			btn.setForeground(Colors.colorImportantBlueButton);
+			btn.setText(
+					"<html><b>"
+						+ label
+						+ "</b></div></html>"
+					);
+		}
 		// to avoid z fighting
 		imgPanel.add(btn);
+		
+		return btn;
 	}
 	
 	/**
@@ -419,6 +480,67 @@ public class GenesisLauncher
 	}
 	
 	/**
+	 * 
+	 */
+	private void setUpdateButtonLabel()
+	{
+		if( GenesisConfig.getInstance().getBoolean(GenesisConfig.KEY_UPDATE_AVAILABLE) )
+		{
+			btnUpdate.setText(
+					"<html><b>"
+						+ labelResource.getProperty("btnUpdate.update", "btnUpdate.update")
+						+ "</b><html>"
+				);
+			btnUpdate.setForeground(Colors.colorImportantBlueButton);
+			btnUpdate.setActionCommand(ACMD_UPDATE_NOW);
+			
+		} else {
+			btnUpdate.setText(
+					labelResource.getProperty("btnUpdate.check", "btnUpdate.check")
+				);
+			btnUpdate.setForeground(SystemColor.controlText);
+			btnUpdate.setActionCommand(ACMD_UPDATE_CHECK);
+			
+			if( !btnUpdate.isEnabled() )
+				btnUpdate.setForeground(SystemColor.textInactiveText);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void actionCheckForUpdate()
+	{
+		Properties p = new Properties();
+		try
+		{
+			FileInputStream fis = new FileInputStream(
+					"data/jappdater/jappdater.properties"
+				);
+			p.load(fis);
+			fis.close();
+    		
+			Checker.checkForUpdates(p, this);
+		} catch( Exception e ) {
+			ApplicationLogger.logError(e);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void actionUpdate()
+	{
+		try {
+			String exec = "java -jar libs/JAppDater.jar data/jappdater/jappdater.properties";
+			Runtime.getRuntime().exec(exec);
+			System.exit(0);
+		} catch (IOException e) {
+			ApplicationLogger.logError(e);
+		}
+	}
+	
+	/**
 	 * actionPerformed.
 	 * handler for the launcher buttons.
 	 * 
@@ -443,6 +565,12 @@ public class GenesisLauncher
 			
 		} else if( ae.getActionCommand().equals(ACMD_MINIMIZE) ) {
 			this.setExtendedState(ICONIFIED);
+			
+		} else if( ae.getActionCommand().equals(ACMD_UPDATE_CHECK) ) {
+			actionCheckForUpdate();
+			
+		} else if( ae.getActionCommand().equals(ACMD_UPDATE_NOW) ) {
+			actionUpdate();
 			
 		} else {
 			if( ae.getActionCommand().equals(ACMD_LAUNCH_CORE) ) 
@@ -542,6 +670,36 @@ public class GenesisLauncher
 					)
 			));
 	}
-	
+
+	@Override
+	public void handleUpdateEvent(UpdateEvent ue) 
+	{
+		if( ue.getType() == UpdateEvent.EXCEPTION )
+		{
+			ApplicationLogger.logError(ue.getException());
+			
+		} else if( ue.getType() == UpdateEvent.NO_UPDATE_AVAILABLE ) {
+			GenesisConfig.getInstance().setSystemProperty(
+					GenesisConfig.KEY_UPDATE_AVAILABLE, "false"
+				);
+			GenesisConfig.getInstance().saveSystem();
+			btnUpdate.setEnabled(false);
+			this.setUpdateButtonLabel();
+			
+		} else if( ue.getType() == UpdateEvent.UPDATE_AVAILABLE ) {
+			GenesisConfig.getInstance().setSystemProperty(
+					GenesisConfig.KEY_UPDATE_AVAILABLE, "true"
+				);
+			GenesisConfig.getInstance().saveSystem();
+			this.setUpdateButtonLabel();
+			
+		} else if( ue.getType() == UpdateEvent.FINISHED ) {
+			GenesisConfig.getInstance().setSystemProperty(
+					GenesisConfig.KEY_UPDATE_AVAILABLE, "false"
+				);
+			GenesisConfig.getInstance().saveSystem();
+			this.setUpdateButtonLabel();
+		}
+	}
 	
 }

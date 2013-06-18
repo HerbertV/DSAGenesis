@@ -1284,7 +1284,11 @@ System.out.println("TODO actionExport");
 			d.setVisible(true);
 			
 		} else if( ae.getActionCommand().equals(ACMD_HELP) ) {
-			File page = new File("./help/coreDataEditor.html");
+			String helpfile = "./help/"
+					+ GenesisConfig.getInstance().getLanguage()
+					+ "/coreDataEditor.html";
+			
+			File page = new File(helpfile);
 			try {
 				HelpDialog d = HelpDialog.getInstance();
 				d.openURL(page.toURI().toURL().toExternalForm());
