@@ -24,7 +24,7 @@ import java.sql.SQLException;
  * 
  * Defines basic constants for all logic classes
  */
-public interface ISyntax 
+public interface ISyntax
 {
 	/**
 	 * every logical string representation must start with this.
@@ -109,6 +109,13 @@ public interface ISyntax
 	 * @return
 	 */
 	public boolean isEmpty();
-	
-
+		
+	/**
+	 * clone
+	 * 
+	 * does NOT use the default java.lang.Cloneable interface.
+	 * 
+	 * @return
+	 */
+	public Object clone();
 }

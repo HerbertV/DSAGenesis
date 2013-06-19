@@ -341,7 +341,7 @@ public class DBConnector
     		
         } catch( NullPointerException e1 ) {
         	// no resource found try to load from file
-        	System.out.println("load sql file: "+ filename);
+        	ApplicationLogger.logDebug("load sql file: "+ filename);
         	try {
         		in = new FileInputStream(filename);
         		isr = new InputStreamReader(in);

@@ -32,6 +32,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
 import dsagenesis.core.ui.Colors;
+import dsagenesis.core.util.logic.ISyntax;
 import dsagenesis.editor.coredata.dialog.AbstractCellDialog;
 
 /**
@@ -135,6 +136,10 @@ public abstract class AbstractDialogCellEditor
 		if( value != null )
 		{
 			label.setText(value.toString());
+
+			if( value instanceof ISyntax )
+				oldValue = ((ISyntax)value).clone();
+			
 		} else {
 			label.setText("");
 		}

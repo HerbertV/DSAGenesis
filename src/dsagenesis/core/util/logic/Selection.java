@@ -105,6 +105,11 @@ public class Selection
 	public Selection() 
 	{
 		this.type = null;
+		
+		this.userSelections = new Vector<String>();
+		this.tableName = "";
+		this.columnName = "";
+		this.columnValue = "";
 	}
 
 	/**
@@ -378,6 +383,23 @@ public class Selection
 	public String toString()
 	{
 		return this.renderStringForCell();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public Object clone()
+	{
+		Selection s = new Selection();
+		
+		if( this.type != null )
+			s.type =  new String(this.type);
+		
+		s.userSelections = (Vector<String>) this.userSelections.clone();
+		s.tableName = new String(this.tableName);
+		s.columnName = new String(this.columnName);
+		s.columnValue = new String(this.columnValue);
+		
+		return s;
 	}
 
 }

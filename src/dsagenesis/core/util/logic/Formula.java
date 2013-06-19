@@ -534,6 +534,16 @@ public class Formula
 		return this.renderStringForCell();
 	}
 
-	
+	@Override
+	@SuppressWarnings("unchecked")
+	public Object clone()
+	{
+		Formula f = new Formula();
 		
+		f.arguments = (Vector<Vector<String>>) this.arguments.clone();
+		f.returnType = this.returnType;
+		f.scriptcode = new String(this.scriptcode);
+		
+		return f;
+	}
 }

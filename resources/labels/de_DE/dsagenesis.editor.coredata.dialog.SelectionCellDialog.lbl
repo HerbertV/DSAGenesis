@@ -1,0 +1,23 @@
+title=Auswahl Editor -
+
+btnOk=Übernehmen
+btnCancel=Abbrechen
+
+lblType=Auswahl Typ:
+
+type.table=Tabelle
+type.user=User
+
+lblList=Benutzerdefinierte Einträge / Ausgewählte Tabelle:
+lblTable=Tabellen Abhängige Auswahlmöglichkeiten:
+lblUser=Benutzerdefinierte Auswahlmöglichkeiten:
+
+lblTableColumn=Nach Spalte Filtern:
+lblColumnValue=Filter:
+
+btnAdd=Hinzufügen
+btnRemove=Entfernen
+btnSort=Sortieren
+
+lblUserInput=Neuer Eintrag:
+
