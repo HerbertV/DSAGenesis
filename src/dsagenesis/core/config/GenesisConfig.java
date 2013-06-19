@@ -128,6 +128,8 @@ public class GenesisConfig
 	public String getPathRace()
 	{
 		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_META) 
+				+ System.getProperty("file.separator")
 				+ getString(GenesisConfig.KEY_PATH_RACE) 
 				+ System.getProperty("file.separator");
 	}
@@ -135,6 +137,8 @@ public class GenesisConfig
 	public String getPathCulture()
 	{
 		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_META) 
+				+ System.getProperty("file.separator")
 				+ getString(GenesisConfig.KEY_PATH_CULTURE) 
 				+ System.getProperty("file.separator");
 	}
@@ -142,6 +146,8 @@ public class GenesisConfig
 	public String getPathProfession()
 	{
 		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_META) 
+				+ System.getProperty("file.separator")
 				+ getString(GenesisConfig.KEY_PATH_PROFESSION) 
 				+ System.getProperty("file.separator");
 	}
@@ -149,6 +155,8 @@ public class GenesisConfig
 	public String getPathRandomNameGenerator()
 	{
 		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_META) 
+				+ System.getProperty("file.separator")
 				+ getString(GenesisConfig.KEY_PATH_NAME) 
 				+ System.getProperty("file.separator");
 	}
@@ -156,14 +164,15 @@ public class GenesisConfig
 	public String getPathScript()
 	{
 		return  getPathData() 
+				+ getString(GenesisConfig.KEY_PATH_CORE) 
+				+ System.getProperty("file.separator")
 				+ getString(GenesisConfig.KEY_PATH_SCRIPT) 
 				+ System.getProperty("file.separator");
 	}
 	
 	public String getDBFile()
 	{
-		return  getPathData() 
-				+ getString(GenesisConfig.KEY_DB_FILE);
+		return  getString(GenesisConfig.KEY_DB_FILE);
 	}
 	
 	
@@ -199,6 +208,8 @@ public class GenesisConfig
 		// path defaults
 		this.setSystemProperty(KEY_PATH_USER_HOME, "DSAGenesis");
 		this.setSystemProperty(KEY_PATH_DATA, "data");
+		this.setSystemProperty(KEY_PATH_CORE, "core");
+		this.setSystemProperty(KEY_PATH_META, "meta");
 		this.setSystemProperty(KEY_PATH_TEMPLATE, "templates");
 		this.setSystemProperty(KEY_PATH_HERO, "heroes");
 		this.setSystemProperty(KEY_PATH_ARCHTYPE, "archtypes");
@@ -209,7 +220,7 @@ public class GenesisConfig
 		this.setSystemProperty(KEY_PATH_SCRIPT, "scripts");
 		
 		// database file
-		this.setSystemProperty(KEY_DB_FILE, "core_de_DE.s3db");
+		this.setSystemProperty(KEY_DB_FILE, "data/core/core_de_DE.s3db");
 		
 		// default settings hero editor
 		this.setSystemProperty(KEY_DEFAULT_START_CP, "110");
@@ -254,6 +265,5 @@ public class GenesisConfig
 		setUserDefaults();
 		saveUser();
 	}
-
 
 }

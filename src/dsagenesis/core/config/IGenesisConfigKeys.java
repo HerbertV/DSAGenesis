@@ -57,6 +57,8 @@ public interface IGenesisConfigKeys
 	 */
 	public static final String KEY_PATH_USER_HOME = "path.user.home";
 	public static final String KEY_PATH_DATA = "path.data";
+	public static final String KEY_PATH_CORE = "path.core";
+	public static final String KEY_PATH_META = "path.meta";
 	public static final String KEY_PATH_TEMPLATE = "path.template";
 	public static final String KEY_PATH_HERO = "path.hero";
 	public static final String KEY_PATH_ARCHTYPE = "path.archtype";
