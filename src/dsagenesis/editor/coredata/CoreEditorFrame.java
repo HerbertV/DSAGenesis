@@ -838,6 +838,10 @@ public class CoreEditorFrame
 	@Override
 	public boolean hasContentChanged() 
 	{
+		// fail save if there was a problem to find the db
+		if( vecTables == null )
+			return false;
+		
 		for( int i=0; i< vecTables.size(); i++ )
 			if( vecTables.elementAt(i).containsUncommitedData() )
 				return true;
