@@ -40,15 +40,6 @@
 	    	classpath="${dir.javafx.ant}/ant-javafx.jar"
 	    />      
 	
-	<!-- launch4j task definition -->
-	<!-- http://launch4j.sourceforge.net -->
-	<!-- Version 3.1.0-beta2 -->
-	<taskdef name="launch4j"
-	    	classname="net.sf.launch4j.ant.Launch4jTask"
-	    	classpath="${launch4j.dir}/launch4j.jar
-	        	:${launch4j.dir}/lib/xstream.jar" 
-		/>
-	
 	<property name="project.jar" value="${project.name.short}.jar"/>
 		
 	
@@ -72,7 +63,24 @@
 		
 	<!-- increment build -->
 	<buildnumber file="${dir.src}/ant/buildproject.num" />
+					
+	
+<!-- 
+	===========================================================================
+		Target copy_help_files
+	===========================================================================
+ -->	
+	<target name="copy_help_files"
+			description="copies help files">
 		
+		<delete dir="${dir.build}help"/>
+		<mkdir dir="${dir.build}help"/>
+		
+		<copy todir="${dir.build}help">
+			<fileset dir="${dir.src}help"/>
+		</copy>
+	</target>	
+			
 		
 <!-- 
 	===========================================================================
@@ -91,7 +99,7 @@
 
 <!-- 
 	===========================================================================
-		Target copy_libs
+		Target copy_readme_changelog
 	===========================================================================
  -->	
 	<target name="copy_readme_changelog"
@@ -135,12 +143,58 @@
 			/>
 	</target>	
 	
+
+<!--
+	=========================================================================== 
+		Target create_exe
+	===========================================================================
+ -->	
+	<target name="create_exe"
+			description="creates an exe with launch4j"
+		>
+		
+		<if>
+			<and>
+				<isset property="launch4j.dir"/>
+				<not>
+					<equals arg1="${launch4j.dir}" arg2=""/>
+				</not>
+			</and>
+			<then>
+				
+				<!-- launch4j task definition -->
+				<!-- http://launch4j.sourceforge.net -->
+				<!-- Version 3.1.0-beta2 -->
+				<taskdef name="launch4jTask"
+				    	classname="net.sf.launch4j.ant.Launch4jTask"
+				    	classpath="${launch4j.dir}/launch4j.jar
+				        	:${launch4j.dir}/lib/xstream.jar" 
+					/>
+				
+				<echo message="creating ${project.name.short}.exe ..."/>
+				
+				<echo message="config: ${launch4j.config}"/>
+				<echo message="version: ${project.version.num}-build${build.number}"/>
+											
+				<launch4jTask configFile="${launch4j.config}"
+						jarPath="${project.name.short}.jar"
+						outfile="${dir.build}${project.name.short}.exe"
+					    fileVersion="${project.version.num}.0" 
+						txtFileVersion="${project.version.num}-build${build.number}"
+						productVersion="${project.version.num}.0"
+						txtProductVersion="${project.version.num}-build${build.number}"
+					/>
+			</then>
+
+		</if>
+	</target>
+	
 <!--
 	=========================================================================== 
 		DEFAULT Target BUILD
 	===========================================================================
  -->	
-	<target name="process" depends="copy_libs,copy_readme_changelog">
+	<target name="process" depends="copy_help_files,copy_libs,copy_readme_changelog,create_exe">
 		<echo message="DSA Genesis building ... "/>
 		<echo message="${ant.version}"/>
 		<echo message="${tsNow}"/>
@@ -167,21 +221,41 @@
 		<!-- create batch file --> 
 		<echo file="${dir.build}START_ME.BAT" append="false">java -jar ${project.jar}</echo>
 		
-		<!-- Mark application as a Swing app -->
+		<!-- Mark application as a swing app -->
 		<fx:application id="DSAGenesis" 
 				mainClass="dsagenesis.core.GenesisLauncher"
 				toolkit="swing"
 			/>
-
+		
+		<delete file="${dir.build}${project.jar}"/>
 		
 		<!-- create jar -->
-		<delete file="${dir.build}${project.jar}"/>
-				
 		<fx:jar destfile="${dir.build}${project.jar}">
+		    <fx:application refid="DSAGenesis"/>
+			<fileset dir="${dir.src}bin/">
+				<filename name="**/*.class"/>
+			</fileset>	
+			<fileset dir="${dir.src}">
+				<or>
+					<filename name="resources/**/*.png"/>
+					<filename name="resources/**/*.gif"/>
+					<filename name="resources/**/*.jpg"/>
+					<filename name="resources/**/*.lbl"/>
+					<filename name="resources/**/*.sql"/>
+					<filename name="data/scripts/**/*.js"/>
+				</or>
+			</fileset>
+			<!-- 
+				with JavaFX 2.2.40 <attribute name="Class-Path" value="${manifest.classpath}"/> no longer works 
+				now we must use fx:resource
+			-->
+			<fx:resources>
+				<fx:fileset dir="${dir.src}" includes="${dir.lib}/*.jar"/>
+			</fx:resources>
 			<manifest>
 				<!-- java attributes -->
-				<attribute name="Class-Path" 
-		       			value="${manifest.classpath}"/>
+				<!-- attribute name="Class-Path" 
+		       			value="${manifest.classpath}"/ -->
 				<attribute name="Main-Class"
 						value="dsagenesis.core.GenesisLauncher"/>
 							
@@ -204,20 +278,6 @@
 						value="${project.version.num}"/>
 			    
 			</manifest>
-		    <fx:application refid="DSAGenesis"/>
-			<fileset dir="${dir.src}bin/">
-				<filename name="**/*.class"/>
-			</fileset>	
-			<fileset dir="${dir.src}">
-				<or>
-					<filename name="resources/**/*.png"/>
-					<filename name="resources/**/*.gif"/>
-					<filename name="resources/**/*.jpg"/>
-					<filename name="resources/**/*.lbl"/>
-					<filename name="resources/**/*.sql"/>
-					<filename name="data/scripts/**/*.js"/>
-				</or>
-			</fileset>
 		</fx:jar>
 		 
 		<fx:deploy width="800" height="600" outdir="${dir.build}" 
@@ -230,6 +290,8 @@
 		</fx:deploy> 
 	
 		<checksum file="${dir.build}${project.jar}" forceOverwrite="yes"/>
+		
+		
 	</target>
 
 </project>

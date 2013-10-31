@@ -9,10 +9,19 @@ project.version.num=0.1.0
 
 
 #setup your workspace and sub dirs.
-dir.workspace=absolute path to your eclipse workspace
-dir.src=${dir.workspace}DSAGenesis/
-dir.build=${dir.workspace}DSAGenesis_Release/
+dir.workspace=${basedir}/
+dir.src=${dir.workspace}../
+dir.build=${dir.workspace}../../DSAGenesis_Release/
 dir.javafx=C:/Program Files (x86)/Java/jre7/lib/jfxrt.jar
 dir.javafx.ant=C\:/Program Files (x86)/Java/jdk1.7.0_21/lib
 
 dir.lib=libs
+
+
+#launch4j properties (optional) 
+#uncomment these settings if you have not launch4j installed.
+
+#installation dir for launch4j
+launch4j.dir=C\:/Program Files (x86)/Launch4j/
+#config xml location
+launch4j.config=${basedir}/launch4j/config.xml
