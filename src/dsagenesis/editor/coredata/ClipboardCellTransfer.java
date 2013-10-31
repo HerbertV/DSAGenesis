@@ -113,6 +113,10 @@ public class ClipboardCellTransfer
 	 */
 	public boolean setClipboardContents(CoreEditorTable table)
 	{
+		//fail save
+		if( table.getSelectedColumns().length == 0 )
+			return false;
+		
 		this.selectedStartColumn = (table.getSelectedColumns())[0];
 		this.copyTable = table;
 		
