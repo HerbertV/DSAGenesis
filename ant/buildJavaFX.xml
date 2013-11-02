@@ -64,6 +64,61 @@
 	<!-- increment build -->
 	<buildnumber file="${dir.src}/ant/buildproject.num" />
 					
+
+<!-- 
+	===========================================================================
+		Target check_xsd
+	===========================================================================
+ -->
+	<target name="check_xsd" 
+			description="check if the xsd needs to be uploaded">
+		
+		<echo>XSD upload.enabled=${upload.enabled}</echo>
+		<if>
+			<equals arg1="${upload.enabled}" arg2="true"/>
+			<then>
+				<echo>checking for changes...</echo>
+									
+				<fileset file="${dir.src}/${upload.xsdfile}" id="upload.xsdfileset">
+					  	<modified update="true"
+								seldirs="true"
+								cache="propertyfile"
+				                algorithm="digest"
+								comparator="equal"
+							>
+							<param name="cache.cachefile" value="${basedir}/xsdCache.properties"/>
+							<param name="algorithm.algorithm" value="MD5"/>
+		            	</modified>
+				</fileset>
+			</then>
+		</if>
+		<pathconvert refid="upload.xsdfileset" property="upload.xsdChanged" setonempty="false"/>
+	</target>	
+
+<!-- 
+	===========================================================================
+		Target upload_xsd
+	===========================================================================
+ -->
+	<target name="upload_xsd" 
+			depends="check_xsd" 
+			if="upload.xsdChanged"
+			description="upload the dsagenesis.xsd if it has changed">
+		
+		<echo message="Uploading XSD ..."/>
+		
+		<ftp server="${upload.server}"
+				userid="${upload.user}"
+				password="${upload.pwd}"
+				remotedir="${upload.dir}"
+				verbose="true"
+			>
+			<fileset file="${dir.src}/${upload.xsdfile}" />
+		</ftp>
+		
+		<echo message="Upload finished."/>
+	</target>	
+				
 	
 <!-- 
 	===========================================================================
@@ -194,7 +249,9 @@
 		DEFAULT Target BUILD
 	===========================================================================
  -->	
-	<target name="process" depends="copy_help_files,copy_libs,copy_readme_changelog,create_exe">
+	<target name="process"
+			depends="copy_help_files,copy_libs,copy_readme_changelog,create_exe"
+		>
 		<echo message="DSA Genesis building ... "/>
 		<echo message="${ant.version}"/>
 		<echo message="${tsNow}"/>

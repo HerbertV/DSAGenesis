@@ -25,3 +25,11 @@ dir.lib=libs
 launch4j.dir=C\:/Program Files (x86)/Launch4j/
 #config xml location
 launch4j.config=${basedir}/launch4j/config.xml
+
+#upload xsd properties
+upload.enabled=false
+upload.server=
+upload.user=
+upload.pwd=
+upload.xsdfile=data/core/dsagenesis.xsd
+upload.dir=

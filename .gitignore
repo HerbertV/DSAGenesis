@@ -17,9 +17,11 @@ tmp/**/*
 
 ant/build.properties
 ant/buildproject.num
+ant/xsdCache.properties
 
 /config/
 /logs/
+
 
 # has its own git repo
 /data/**
