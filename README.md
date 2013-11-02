@@ -16,6 +16,8 @@ Unterstützt die DSA4.1 Regeln.*
 
 [Wiki Aventurica - Fan Wiki about DSA](http://www.wiki-aventurica.de/)
 
+[DSA Genesis Data](https://github.com/HerbertV/DSAGenesisData)
+
 [DSA Genesis Wiki](https://github.com/HerbertV/DSAGenesis/wiki)
 
 [DSA Genesis Issues](https://github.com/HerbertV/DSAGenesis/issues)
