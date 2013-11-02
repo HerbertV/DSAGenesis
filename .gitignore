@@ -12,7 +12,8 @@ tmp/**/*
 *.MF
 .externalToolBuilders/
 
-# Gesesis Releated
+
+# DSAGenesis Releated
 
 ant/build.properties
 ant/buildproject.num
@@ -20,4 +21,5 @@ ant/buildproject.num
 /config/
 /logs/
 
-
+# has its own git repo
+/data/**
