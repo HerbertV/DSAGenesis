@@ -1,0 +1,21 @@
+title=Hero Editor
+
+
+# Menu and bar
+copy=Kopieren
+paste=Einfügen
+
+
+mnFile=Datei
+
+mnEdit=Bearbeiten
+
+mnHelp=Hilfe
+mntmInfo=Info
+mntmHelp=Hilfe
+
+
+# Status Messages
+status.init=Initialisiere ...
+status.init.error=Fehler beim Initialisieren! Siehe Log Datei.
+status.ready=Bereit.

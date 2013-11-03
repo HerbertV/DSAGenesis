@@ -1,0 +1,80 @@
+title=Meta Data Editor
+
+# Menu and bar
+
+mnFile=Datei
+mntmNew=Neu
+mntmLoad=Laden
+mntmSave=Speichern
+mntmSaveAs=Speichern unter
+mntmDelete=Löschen
+
+mnHelp=Hilfe
+mntmInfo=Info
+mntmHelp=Hilfe
+
+# generic labels
+lblAdd=Hinzufügen
+lblRemove=Entfernen
+
+# overview
+overview.title=Übersicht
+overview.lblName=Name:
+overview.lblMetaType=Metadaten Typ:
+#race/culture or profession group
+overview.lblGruppe=Metadaten Gruppe:
+overview.lblCP=GP Kosten:
+overview.lblWorld=Kampagnen Welt:
+overview.lblGender=Geschlecht:
+
+overview.lblCalculatedCP=Brechneter GP Wert:
+
+# tabs
+tab.culture.title=Kulturspezifisch
+tab.culture.info=Wird nur bei Kulturen ausgefüllt.
+tab.culture.lblRandomNameFile=Zufallsnamen Datei:
+
+tab.profession.title=Professionsspezifisch
+tab.profession.info=Wird nur bei Professionen ausgefüllt.
+tab.profession.lblProfessionType=Professions Typ:
+tab.profession.lblProfessionCategory=Professions Kategorie:
+
+tab.modifier.title=Modifikationen
+tab.modifier.info=Modfikationen der Grundwerte.
+
+tab.minmax.title=Min Max
+tab.minmax.info=Min/Max der Grundwerte.
+tab.minmax.lblMin=Minimalwerte:
+tab.minmax.lblMax=Maximalwerte:
+
+tab.presets.title=Vorgaben
+tab.presets.info=Vorgegebene Talente, Zauber, etc.
+# TODO
+
+tab.appropriate.title=Geeignet
+tab.appropriate.info=Vor-/Nachteile die geeignet sind.
+# TODO
+
+tab.inappropriate.title=Ungeeignet
+tab.inappropriate.info=Vor-/Nachteile die ungeeignet sind.
+# TODO
+
+tab.reducted.title=Verbilligt
+tab.reducted.info=Verbilligte Sonderfähigkeiten.
+# TODO
+
+tab.appearance.title=Aussehen
+tab.appearance.info=Wird nur bei Völkern benötigt.<br>Definiert die Auswahl bei Zufallsgenerierung.
+tab.appearance.lblMinSize=Mindest Größe:
+tab.appearance.lblMaxSize=Maximale Größe:
+tab.appearance.lblEyeColor=Augenfarbe:
+tab.appearance.lblHairFurColor=Haar-/Fellfarbe:
+tab.appearance.lblSkin=Hautfarbe/-muster:
+
+
+
+# Status Messages
+
+status.init=Initialisiere ...
+status.init.error=Fehler beim Initialisieren! Siehe Log Datei.
+status.ready=Bereit.
