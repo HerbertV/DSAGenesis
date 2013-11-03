@@ -250,7 +250,7 @@
 	===========================================================================
  -->	
 	<target name="process"
-			depends="copy_help_files,copy_libs,copy_readme_changelog,create_exe"
+			depends="copy_help_files,copy_libs,copy_readme_changelog,create_exe,upload_xsd"
 		>
 		<echo message="DSA Genesis building ... "/>
 		<echo message="${ant.version}"/>
