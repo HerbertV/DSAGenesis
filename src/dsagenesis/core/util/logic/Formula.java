@@ -320,11 +320,12 @@ public class Formula
 		String code = scriptcode.replaceAll("\n", " ");
 		code = code.replaceAll("\t", " "); 
 		for( int i=0; i<arguments.size(); i++ )
-			code = code.replaceAll(
-					arguments.get(i).get(0),
-					arguments.get(i).get(3)
-				);
-		
+			if( arguments.get(i).get(3) != null )
+				code = code.replaceAll(
+						arguments.get(i).get(0),
+						arguments.get(i).get(3)
+					);
+			
 		return "f(x):{"+ code + "}";
 	}
 	
@@ -346,10 +347,11 @@ public class Formula
 		
 		// replace ids with labels
 		for( int i=0; i<arguments.size(); i++ )
-			code = code.replaceAll(
-					arguments.get(i).get(0),
-					arguments.get(i).get(3)
-				);
+			if( arguments.get(i).get(3) != null )
+				code = code.replaceAll(
+						arguments.get(i).get(0),
+						arguments.get(i).get(3)
+					);
 		
 		return "<html>" + code + "</html>";
 	}
