@@ -127,7 +127,7 @@ public class Advantages
 				ceframe.getStatusBar()
 			));
 		
-		// coll 11
+		// col 11 selection
 		currColumn = cetable.getColumnModel().getColumn(11);
 		currColumn.setMinWidth(120);
 		currColumn.setCellEditor(new SelectionCellEditor(
@@ -135,6 +135,7 @@ public class Advantages
 				(String)currColumn.getHeaderValue()
 			));
 		
+		// col 13 formula
 		currColumn = cetable.getColumnModel().getColumn(13);
 		currColumn.setMinWidth(120);
 		
@@ -160,8 +161,7 @@ public class Advantages
 				tables,
 				"ada_name"
 			));
-		
-		
+				
 		currColumn = cetable.getColumnModel().getColumn(15);
 		currColumn.setMinWidth(120);
 		

@@ -99,6 +99,7 @@ public abstract class AbstractAdvantageDisadvantageModel
 	{
 		super.setupDBColumns();
 		
+		// col 2
 		this.dbColumnNames.addElement(this.prefix+"is_arbitrary");
 		this.dbColumnNames.addElement(this.prefix+"cp_cost");
 	}

@@ -287,7 +287,8 @@ public class Selection
 					str += ",";
 			}
 		} else if( type.equals(TYPE_TABLE) ) {
-			
+			str += tableName;
+			// TODO need we Labels?
 		}
 		
 		str += "}";
@@ -311,7 +312,8 @@ public class Selection
 					str += "<br>";
 			}
 		} else if( type.equals(TYPE_TABLE) ) {
-			
+			str += tableName;
+			// TODO need we Labels?
 		}
 		
 		str += "</html>";
