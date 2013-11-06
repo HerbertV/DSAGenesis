@@ -4,6 +4,7 @@
 
 #release full package
 release.archive={project.name.short}_{project.version.num}.zip
+release.dir=${dir.workspace}../../DSAGenesis_Release/
 
 #update package
 jappdater.server=
