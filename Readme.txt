@@ -1,4 +1,4 @@
-  ___  ___   _      ___                 _    
+ï»¿  ___  ___   _      ___                 _    
  |   \/ __| /_\    / __|___ _ _  ___ __(_)___
  | |) \__ \/ _ \  | (_ / -_) ' \/ -_|_-< (_-<
  |___/|___/_/ \_\  \___\___|_||_\___/__/_/__/
@@ -8,10 +8,10 @@
 	Build-Date: @BUILDDATE
 ================================================================================
 
-Ein Inoffizelles Tool zur Heldenerschaffung und Verwaltung für 
+Ein Inoffizelles Tool zur Heldenerschaffung und Verwaltung fÃ¼r 
 "Das Schwarze Auge" Rollenspiel. 
 
-Unterstützt die DSA4.1 Regeln.
+UnterstÃ¼tzt die DSA4.1 Regeln.
 
 --------------------------------------------------------------------------------
 DSAGenesis is Licensed under The MIT License (MIT): 
@@ -71,7 +71,7 @@ Ant-Contrib:
 	Mindestvorraussetzung:
 --------------------------------------------------------------------------------
 JAVA 7+ mit JavaFX 2.2+
-Läuft unter Windows, MacOS und Linux
+LÃ¤uft unter Windows, MacOS und Linux
 
 --------------------------------------------------------------------------------
 	Installation:
