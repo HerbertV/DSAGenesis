@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- 
+	ANT BUILDER
+ -->
+<project default="process" name="DSA Genesis release">
+    <description>
+    	packs a release archive and uploads the update files.
+    </description>
+	
+	
+<!--
+	=========================================================================== 
+		Public Properties
+	===========================================================================
+	change it within the props file
+-->
+	<loadproperties srcfile="build.properties"/>
+	<loadproperties srcfile="release.properties"/>
+	
+<!-- 
+	===========================================================================
+		Private Properties
+	===========================================================================
+	Do not touch!
+	At least until you know what you are doing ;)
+ -->
+		
+	<!-- add ant-contrib lib -->
+	<!-- http://ant-contrib.sourceforge.net/ -->
+	<!-- Version 1.0b3 -->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="ant-contrib/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+	
+	<!-- timestamp for release -->
+	<tstamp>
+		<format property="tsNow" pattern="yyyy-MM-dd HH:mm:ss"/>
+	</tstamp>
+	
+	<tstamp>
+		<format property="tsYear" pattern="yyyy"/>
+	</tstamp>
+	
+	<target name="create_index"
+		description="creates a new index for jappdater">
+		
+	</target>
+	
+<!-- 
+	===========================================================================
+		Target copy_data
+	===========================================================================
+ -->	
+<!-- TODO create a new index.xml before -->
+	<target name="copy_data"
+			description="copies data files">
+		
+		<delete dir="${dir.build}data"/>
+		<mkdir dir="${dir.build}data"/>
+		
+		<!-- 
+			We need only copy the db, xml files and properties.
+			Js Scripts are included into the jar (see buildJavaFX.xml) .	
+		-->
+		<copy todir="${dir.build}data" verbose="true" includeEmptyDirs="true">
+			<fileset dir="${dir.src}data">
+				<or>
+					<filename name="**/*.xml"/>
+					<filename name="**/*.s3db"/>
+					<filename name="**/*.properties"/>
+				</or>
+			</fileset>		
+		</copy>
+	</target>	
+
+<!--
+	=========================================================================== 
+		DEFAULT Target BUILD
+	===========================================================================
+ -->	
+	<target name="process"
+			depends="copy_data"
+		>
+		<echo message="DSA Genesis release ... "/>
+		<echo message="${ant.version}"/>
+		<echo message="${tsNow}"/>
+		<echo>
+		</echo>
+		<echo message="Project Version: ${project.version.num}"/>
+		<echo>
+		</echo>
+				
+		<!-- delete previous archive -->
+		<delete>
+			<fileset dir="${release.dir}" includes="*.zip" />
+		</delete>
+		
+		<zip basedir="${dir.build}" destfile="${release.dir}/${release.archive}" />
+		
+		<!-- TODO --> 
+		
+	</target>
+
+</project>

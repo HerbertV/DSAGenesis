@@ -1,0 +1,12 @@
+#depends on:
+# - build.properties
+# - buildproject.num
+
+#release full package
+release.archive={project.name.short}_{project.version.num}.zip
+
+#update package
+jappdater.server=
+jappdater.user=
+jappdater.pwd=
+jappdater.dir=

@@ -18,6 +18,7 @@ tmp/**/*
 ant/build.properties
 ant/buildproject.num
 ant/xsdCache.properties
+ant/release.properties
 
 /config/
 /logs/
