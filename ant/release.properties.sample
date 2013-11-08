@@ -12,7 +12,9 @@ jappdater.upload.user=
 jappdater.upload.pwd=
 
 
-jappdater.download.server=
+jappdater.download.server=http://dsagenesis.veitengruber.com
 
 jappdater.patch.local.dir=${release.dir}patch\\
-jappdater.patch.remote.dir=/patch
+jappdater.patch.remote.dir=patch/
+jappdater.snippet.dir=
+jappdater.root.dir=

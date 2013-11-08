@@ -48,6 +48,8 @@
 	<tstamp>
 		<format property="tsYear" pattern="yyyy"/>
 	</tstamp>	
+	
+	<property name="patchpath" value="${jappdater.patch.remote.dir}${project.version.num}/"/>						
 			
 <!-- 
 	===========================================================================
@@ -64,7 +66,11 @@
 			We need only copy the db, xml files and properties.
 			Js Scripts are included into the jar (see buildJavaFX.xml) .	
 		-->
-		<copy todir="${dir.build}data" verbose="true" includeEmptyDirs="true">
+		<copy todir="${dir.build}data" 
+				verbose="true" 
+				includeEmptyDirs="true" 
+				preservelastmodified="true"
+			>
 			<fileset dir="${dir.src}data">
 				<or>
 					<filename name="**/*.xml"/>
@@ -84,14 +90,13 @@
 	<target name="create_index"
 			description="creates a new index.xml for jappdater">
 		
-		<property name="patchpath" value="${jappdater.patch.remote.dir}/${project.version.num}/"/>						
 		<delete file="${dir.build}data/jappdater/index.xml"/>
-		
+<!-- TODO add buildnumber to version-->		
 		<!-- create the base -->
 		<echoxml file="${dir.build}data/jappdater/index.xml">
 			<JAppDater version="1.0.0">
 				
-				<application index="index.xml" 
+				<application index="/index.xml" 
 						name="DSA Genesis" 
 						server="${jappdater.download.server}"
 						version="${project.version.num}"/>
@@ -130,21 +135,21 @@
 					<exclude name="*.MD5"/>
 					<exclude name="DSAGenesis.jar"/>
 					<exclude name="*.log"/>
+					<!-- this is done sepparate -->
+					<exclude name="**/jappdater/index.xml"/>
 				</fileset>
 			</path>
 			<sequential>
-				<local name="filename" />
-				<basename property="filename" file="@{currentFileForIndex}"/>
-				<local name="absolutefilepath" />
-				<dirname property="absolutefilepath" file="@{currentFileForIndex}"/>
-				
+				<local name="relativefilepath" />
+				<local name="fileChecksum" />
+							
 				<pathconvert targetos="unix" property="relativefilepath">
-					<fileset file="${absolutefilepath}/${filename}" />
+					<fileset file="@{currentFileForIndex}" />
 					<map from="${dir.build}" to="" />
 				</pathconvert>
 				
 				<math result="iFileCounter" operand1="${iFileCounter}" operation="+" operand2="1" datatype="int"/>
-				<checksum property="fileChecksum" file="${absolutefilepath}/${filename}"/>
+				<checksum property="fileChecksum" file="@{currentFileForIndex}"/>
 				
 				<xmltask source="${dir.build}data/jappdater/index.xml" dest="${dir.build}data/jappdater/index.xml">
 					<insert path="JAppDater/files">
@@ -157,8 +162,6 @@
 					</insert> 
 				</xmltask>
 				
-				<var name="relativefilepath" unset="true"/>
-				<var name="fileChecksum" unset="true"/>
 			</sequential>
 		</for>
 		       
@@ -185,7 +188,142 @@
 		</xmltask>
 			
 	</target>
+
+<!-- 
+	===========================================================================
+		Target create_download_snippet
+	===========================================================================
+ -->	
+	<target name="create_download_snippet">
+		
+		<copy file="${dir.ant}dsag_dl_snippet.html"
+				tofile="${release.dir}dsagenesis_downloads.html"
+			/>
+		
+		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
+				match="@VERSION(.*)"
+				replace="${project.version.num}\1"
+				byline="true"
+			/>
+		
+		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
+				match="@DOWNLOADLINK(.*)"
+				replace="${jappdater.download.server}/${release.archive}\1"
+				byline="true"
+			/>
+				
+		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
+				match="@BULDDATE(.*)"
+				replace="${tsNow}\1"
+				byline="true"
+			/>
+		
+		<checksum file="${release.dir}/${release.archive}" property="zipmd5" />
+		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
+				match="@CHECKSUM(.*)"
+				replace="${zipmd5}\1"
+				byline="true"
+			/>
+	</target>
 	
+	
+<!-- 
+	===========================================================================
+		Target upload
+	===========================================================================
+ -->			
+	<target name="upload">
+		<echo message="Uploading Zip ..."/>
+		<echo message="--> ${jappdater.root.dir}" />
+						
+		<ftp server="${jappdater.upload.server}"
+				preservelastmodified="true"
+				passive="true"
+				depends="yes"
+				userid="${jappdater.upload.user}"
+				password="${jappdater.upload.pwd}"
+				remotedir="${jappdater.root.dir}"
+				verbose="true"
+			>
+			<fileset file="${release.dir}/${release.archive}" />
+		</ftp>
+		
+		<fileset dir="${release.dir}${patchpath}" casesensitive="yes" id="filesForPatch" >
+			<!-- this is done sepparate -->
+			<exclude name="**/jappdater/index.xml"/>
+		</fileset>
+		<echo message="Preparing folders --> ${jappdater.root.dir}${patchpath} ..." />
+		
+		<!-- prepare all needed dirs -->	
+		<for param="currentDirToMake">
+			<path>
+				<fileset refid="filesForPatch" />
+			</path>
+			<sequential>
+				<local name="dirPath" />
+				<local name="shortendDir" />
+				<local name="shortendDirUnix" />
+				
+				<!-- most tricky part: extract the pathes we need to make -->
+				<dirname property="dirPath" file="@{currentDirToMake}" />
+				<property basedir="${release.dir}" name="shortendDir" value="${dirPath}" relative="yes" />
+				<propertyregex property="shortendDirUnix"
+				              input="${shortendDir}"
+				              regexp="\\"
+				              replace="/"
+				              global="true"
+				              defaultValue="${shortendDir}" />
+				
+				<ftp server="${jappdater.upload.server}"
+						action="mkdir"	
+						passive="true"
+						userid="${jappdater.upload.user}"
+						password="${jappdater.upload.pwd}"
+						remotedir="${jappdater.root.dir}/${shortendDirUnix}"
+					/>
+				
+			</sequential>
+		</for>
+		
+		<echo message="Uploading Patch files ..."/>
+					
+		<ftp server="${jappdater.upload.server}"
+				preservelastmodified="true"
+				passive="true"
+				depends="yes"
+				userid="${jappdater.upload.user}"
+				password="${jappdater.upload.pwd}"
+				remotedir="${jappdater.root.dir}${patchpath}"
+				verbose="true"
+			>
+			<fileset refid="filesForPatch" />
+		</ftp>
+		
+		<echo message="Uploading Page Snippet ..."/>
+		
+		<ftp server="${jappdater.upload.server}"
+				userid="${jappdater.upload.user}"
+				password="${jappdater.upload.pwd}"
+				remotedir="${jappdater.snippet.dir}"
+				verbose="true"
+			>
+			<fileset file="${release.dir}dsagenesis_downloads.html" />
+		</ftp>
+		
+		<echo message="Uploading update index ..."/>
+				
+		<ftp server="${jappdater.upload.server}"
+				userid="${jappdater.upload.user}"
+				password="${jappdater.upload.pwd}"
+				remotedir="${jappdater.root.dir}"
+				verbose="true"
+			>
+			<fileset file="${release.dir}${patchpath}data/jappdater/index.xml" />
+		</ftp>
+				
+		<echo message="Upload finished."/>
+	</target>
+			
 	
 <!--
 	=========================================================================== 
@@ -204,15 +342,23 @@
 		<echo>
 		</echo>
 				
-		<!-- delete previous archive -->
-		<delete>
-			<fileset dir="${release.dir}" includes="*.zip">
-			</fileset>
+		<!-- delete previous release -->
+		<delete includeemptydirs="true">
+			<fileset dir="${release.dir}" includes="**/*"/>
 		</delete>
 		
-		<zip basedir="${dir.build}" destfile="${release.dir}/${release.archive}" />
+		<zip basedir="${dir.build}" destfile="${release.dir}${release.archive}" />
 		
-		<!-- TODO copy zip and patch files and upload them --> 
+		<antcall target="create_download_snippet" />
+		
+		<!-- copy everything into release folder -->
+		<copy preservelastmodified="true" 
+				todir="${release.dir}${patchpath}"
+			>
+			<fileset dir="${dir.build}"/>
+		</copy>	
+			
+		<antcall target="upload" />
 		
 	</target>
 
