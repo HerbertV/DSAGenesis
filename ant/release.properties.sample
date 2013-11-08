@@ -3,11 +3,16 @@
 # - buildproject.num
 
 #release full package
-release.archive={project.name.short}_{project.version.num}.zip
-release.dir=${dir.workspace}../../DSAGenesis_Release/
+release.archive=${project.name.short}_${project.version.num}.zip
+release.dir=${dir.workspace}DSAGenesis_Release\\
 
 #update package
-jappdater.server=
-jappdater.user=
-jappdater.pwd=
-jappdater.dir=
+jappdater.upload.server=
+jappdater.upload.user=
+jappdater.upload.pwd=
+
+
+jappdater.download.server=
+
+jappdater.patch.local.dir=${release.dir}patch\\
+jappdater.patch.remote.dir=/patch

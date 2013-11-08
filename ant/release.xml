@@ -2,7 +2,9 @@
 <!-- 
 	ANT BUILDER
  -->
-<project default="process" name="DSA Genesis release">
+<project default="process" 
+		name="DSA Genesis release"
+	>
     <description>
     	packs a release archive and uploads the update files.
     </description>
@@ -14,8 +16,8 @@
 	===========================================================================
 	change it within the props file
 -->
-	<loadproperties srcfile="build.properties"/>
-	<loadproperties srcfile="release.properties"/>
+	<loadproperties srcfile="DSAGenesis/ant/build.properties"/>
+	<loadproperties srcfile="${dir.ant}release.properties"/>
 	
 <!-- 
 	===========================================================================
@@ -28,11 +30,15 @@
 	<!-- add ant-contrib lib -->
 	<!-- http://ant-contrib.sourceforge.net/ -->
 	<!-- Version 1.0b3 -->
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
-			<pathelement location="ant-contrib/ant-contrib-1.0b3.jar"/>
+			<pathelement location="${dir.ant}ant-contrib/ant-contrib-1.0b3.jar"/>
 		</classpath>
 	</taskdef>
+	
+	<!-- add xmltask lib -->
+	<!-- http://www.oopsconsultancy.com/software/xmltask/index.html -->
+	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 	
 	<!-- timestamp for release -->
 	<tstamp>
@@ -41,19 +47,13 @@
 	
 	<tstamp>
 		<format property="tsYear" pattern="yyyy"/>
-	</tstamp>
-	
-	<target name="create_index"
-		description="creates a new index for jappdater">
-		
-	</target>
-	
+	</tstamp>	
+			
 <!-- 
 	===========================================================================
 		Target copy_data
 	===========================================================================
- -->	
-<!-- TODO create a new index.xml before -->
+ -->
 	<target name="copy_data"
 			description="copies data files">
 		
@@ -75,13 +75,125 @@
 		</copy>
 	</target>	
 
+
+<!-- 
+	===========================================================================
+		Target create_index
+	===========================================================================
+ -->	
+	<target name="create_index"
+			description="creates a new index.xml for jappdater">
+		
+		<property name="patchpath" value="${jappdater.patch.remote.dir}/${project.version.num}/"/>						
+		<delete file="${dir.build}data/jappdater/index.xml"/>
+		
+		<!-- create the base -->
+		<echoxml file="${dir.build}data/jappdater/index.xml">
+			<JAppDater version="1.0.0">
+				
+				<application index="index.xml" 
+						name="DSA Genesis" 
+						server="${jappdater.download.server}"
+						version="${project.version.num}"/>
+				
+				<files>
+					<file ID="1" dest="./${project.name.short}.jar" 
+							src="${patchpath}${project.name.short}.jar" 
+							version="${project.version.num}"/>
+					<file ID="2" dest="./${project.name.short}.exe" 
+							src="${patchpath}${project.name.short}.exe" 
+							version="${project.version.num}"/>
+					<file ID="3" dest="./${project.name.short}.jar.MD5" 
+							src="${patchpath}${project.name.short}.jar.MD5" 
+							version="${project.version.num}"/>
+					<file ID="4" dest="./Changelog.txt" 
+							src="${patchpath}Changelog.txt" 
+							version="${project.version.num}"/>
+					<file ID="5" dest="./Readme.txt" 
+							src="${patchpath}Readme.txt" 
+							version="${project.version.num}"/>
+				</files>
+			</JAppDater>
+		</echoxml>
+		
+		<!-- add remaining files -->
+		<var name="iFileCounter" value="5" />
+		
+		<for param="currentFileForIndex">
+			<path>
+				<fileset dir="${dir.build}" casesensitive="yes">
+					<include name="**/*"/>
+					<exclude name="Changelog.txt"/>
+					<exclude name="Readme.txt"/>
+					<exclude name="*.exe"/>
+					<exclude name="*.BAT"/>
+					<exclude name="*.MD5"/>
+					<exclude name="DSAGenesis.jar"/>
+					<exclude name="*.log"/>
+				</fileset>
+			</path>
+			<sequential>
+				<local name="filename" />
+				<basename property="filename" file="@{currentFileForIndex}"/>
+				<local name="absolutefilepath" />
+				<dirname property="absolutefilepath" file="@{currentFileForIndex}"/>
+				
+				<pathconvert targetos="unix" property="relativefilepath">
+					<fileset file="${absolutefilepath}/${filename}" />
+					<map from="${dir.build}" to="" />
+				</pathconvert>
+				
+				<math result="iFileCounter" operand1="${iFileCounter}" operation="+" operand2="1" datatype="int"/>
+				<checksum property="fileChecksum" file="${absolutefilepath}/${filename}"/>
+				
+				<xmltask source="${dir.build}data/jappdater/index.xml" dest="${dir.build}data/jappdater/index.xml">
+					<insert path="JAppDater/files">
+					<![CDATA[ 
+						<file ID="${iFileCounter}" 
+								dest="./${relativefilepath}" 
+								src="${patchpath}${relativefilepath}" 
+								checksum="${fileChecksum}"/>
+					]]>
+					</insert> 
+				</xmltask>
+				
+				<var name="relativefilepath" unset="true"/>
+				<var name="fileChecksum" unset="true"/>
+			</sequential>
+		</for>
+		       
+		
+		<!-- validate -->
+		<xmlvalidate file="${dir.build}data/jappdater/index.xml" 
+				lenient="false"
+				failonerror="true" 
+				warn="true"
+			>
+			<attribute name="http://apache.org/xml/features/validation/schema" value="true"/>
+			<property name="http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation"
+					value="http://xsd.veitengruber.com/jappdater.xsd"
+				/>
+		</xmlvalidate>
+		
+		<!--
+		add schema reference
+		Since <echoxml> can not handle xsi:noNamespaceSchemaLocation we do this here.
+		-->
+		<xmltask source="${dir.build}data/jappdater/index.xml" dest="${dir.build}data/jappdater/index.xml">
+			<attr path="JAppDater" attr="xmlns:xsi" value="http://www.w3.org/2001/XMLSchema-instance"/>
+			<attr path="JAppDater" attr="xsi:noNamespaceSchemaLocation" value="http://xsd.veitengruber.com/jappdater.xsd"/>
+		</xmltask>
+			
+	</target>
+	
+	
 <!--
 	=========================================================================== 
 		DEFAULT Target BUILD
 	===========================================================================
  -->	
 	<target name="process"
-			depends="copy_data"
+			depends="copy_data,create_index"
 		>
 		<echo message="DSA Genesis release ... "/>
 		<echo message="${ant.version}"/>
@@ -94,12 +206,13 @@
 				
 		<!-- delete previous archive -->
 		<delete>
-			<fileset dir="${release.dir}" includes="*.zip" />
+			<fileset dir="${release.dir}" includes="*.zip">
+			</fileset>
 		</delete>
 		
 		<zip basedir="${dir.build}" destfile="${release.dir}/${release.archive}" />
 		
-		<!-- TODO --> 
+		<!-- TODO copy zip and patch files and upload them --> 
 		
 	</target>
 

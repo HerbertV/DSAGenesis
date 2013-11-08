@@ -14,7 +14,7 @@
 	===========================================================================
 	change it within the props file
 -->
-	<loadproperties srcfile="build.properties"/>
+	<loadproperties srcfile="DSAGenesis/ant/build.properties"/>
 			
 	
 <!-- 
@@ -28,16 +28,16 @@
 	<!-- add ant-contrib lib -->
 	<!-- http://ant-contrib.sourceforge.net/ -->
 	<!-- Version 1.0b3 -->
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
-			<pathelement location="ant-contrib/ant-contrib-1.0b3.jar"/>
+			<pathelement location="${dir.ant}ant-contrib/ant-contrib-1.0b3.jar"/>
 		</classpath>
 	</taskdef>
 	
 	<taskdef 
 			resource="com/sun/javafx/tools/ant/antlib.xml"      
 	    	uri="javafx:com.sun.javafx.tools.ant"
-	    	classpath="${dir.javafx.ant}/ant-javafx.jar"
+	    	classpath="${dir.javafx.ant}ant-javafx.jar"
 	    />      
 	
 	<property name="project.jar" value="${project.name.short}.jar"/>
@@ -62,7 +62,7 @@
 	</path>
 		
 	<!-- increment build -->
-	<buildnumber file="${dir.src}/ant/buildproject.num" />
+	<buildnumber file="${dir.ant}buildproject.num" />
 					
 
 <!-- 
@@ -79,14 +79,14 @@
 			<then>
 				<echo>checking for changes...</echo>
 									
-				<fileset file="${dir.src}/${upload.xsdfile}" id="upload.xsdfileset">
+				<fileset file="${dir.src}${upload.xsdfile}" id="upload.xsdfileset">
 					  	<modified update="true"
 								seldirs="true"
 								cache="propertyfile"
 				                algorithm="digest"
 								comparator="equal"
 							>
-							<param name="cache.cachefile" value="${basedir}/xsdCache.properties"/>
+							<param name="cache.cachefile" value="${dir.ant}xsdCache.properties"/>
 							<param name="algorithm.algorithm" value="MD5"/>
 		            	</modified>
 				</fileset>
@@ -113,7 +113,7 @@
 				remotedir="${upload.dir}"
 				verbose="true"
 			>
-			<fileset file="${dir.src}/${upload.xsdfile}" />
+			<fileset file="${dir.src}${upload.xsdfile}" />
 		</ftp>
 		
 		<echo message="Upload finished."/>
@@ -222,8 +222,8 @@
 				<!-- Version 3.1.0-beta2 -->
 				<taskdef name="launch4jTask"
 				    	classname="net.sf.launch4j.ant.Launch4jTask"
-				    	classpath="${launch4j.dir}/launch4j.jar
-				        	:${launch4j.dir}/lib/xstream.jar" 
+				    	classpath="${launch4j.dir}launch4j.jar
+				        	:${launch4j.dir}lib/xstream.jar" 
 					/>
 				
 				<echo message="creating ${project.name.short}.exe ..."/>
