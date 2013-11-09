@@ -154,51 +154,119 @@
 
 <!-- 
 	===========================================================================
-		Target copy_readme_changelog
+		Target compile_readme
 	===========================================================================
  -->	
-	<target name="copy_readme_changelog"
-			description="copies readme and changelog to the release folder">
+	<target name="compile_readme"
+			description="compiles and copies the readme">
 		
 		<delete file="${dir.build}Readme.txt"/>
-		<delete file="${dir.build}Changelog.txt"/>
+		<delete file="${dir.src}Readme.txt"/>
+				
+		<copy todir="${dir.src}" file="${dir.ant}snippets/Readme.txt"/>
 		
-		<copy todir="${dir.build}" file="${dir.src}Readme.txt"/>
-		<copy todir="${dir.build}" file="${dir.src}Changelog.txt"/>
-
-		<replaceregexp file="${dir.build}Readme.txt"
+		<replaceregexp file="${dir.src}Readme.txt"
 				match="@VERSION(.*)"
 				replace="${project.version.num}-b${build.number}\1"
 				byline="true"
 			/>
-		<replaceregexp file="${dir.build}Readme.txt"
+		<replaceregexp file="${dir.src}Readme.txt"
 				match="@BUILDDATE(.*)"
 				replace="${tsNow}\1"
 				byline="true"
 			/>
-		<replaceregexp file="${dir.build}Readme.txt"
+		<replaceregexp file="${dir.src}Readme.txt"
 				match="@COPYRIGHTYEAR(.*)"
 				replace="${tsYear}\1"
 				byline="true"
 			/>
-		<replaceregexp file="${dir.build}Readme.txt"
+		<replaceregexp file="${dir.src}Readme.txt"
 				match="@AUTOR(.*)"
 				replace="${author.name}\1"
 				byline="true"
 			/>
-		<replaceregexp file="${dir.build}Changelog.txt"
-				match="@VERSION(.*)"
-				replace="${project.version.num}-b${build.number}\1"
-				byline="true"
-			/>
-		<replaceregexp file="${dir.build}Changelog.txt"
-				match="@BUILDDATE(.*)"
-				replace="${tsNow}\1"
-				byline="true"
-			/>
-	</target>	
+		
+		<copy todir="${dir.build}" file="${dir.src}Readme.txt"/>
+				
+	</target>		
 	
+<!-- 
+	===========================================================================
+		Target compile_changelog
+	===========================================================================
+ -->
+	<target name="compile_changelog"
+				description="compiles and copies the changelog.">
+			
+			<!-- cleanup -->
+			<delete file="${dir.build}Changelog.txt"/>
+			<delete file="${dir.src}Changelog.txt"/>
+			
+			<concat destfile="${dir.src}Changelog.txt" fixlastline="yes">
+		    	<filelist dir="${dir.ant}snippets"
+		        	 	files="ChangelogHead.txt,ChangelogEntry.txt,ChangelogHistory.txt"
+		    		/>
+		  	</concat>
+			
+			<loadfile property="cl.lastchanges" srcFile="${dir.ant}lastchanges.txt"/>
+		
+			<replaceregexp file="${dir.src}Changelog.txt"
+					match="@CHANGES(.*)"
+					replace="${cl.lastchanges}\1"
+					byline="true"
+				/>
 
+			<replaceregexp file="${dir.src}Changelog.txt"
+					match="@VERSION_SMALL(.*)"
+					replace="${project.version.num}\1"
+					byline="true"
+				/>
+
+			<replaceregexp file="${dir.src}Changelog.txt"
+					match="@VERSION(.*)"
+					replace="${project.version.num}-b${build.number}\1"
+					byline="true"
+				/>
+			<replaceregexp file="${dir.src}Changelog.txt"
+					match="@BUILDDATE(.*)"
+					replace="${tsNow}\1"
+					byline="true"
+				/>
+			
+			<!-- 
+				if yes it updates the changelog history as well. 
+				This should be done if you want to switch the version number. 
+			-->
+			<input message="Save History changes? (y/default n)" addProperty="arg.saveHistory"/>
+			<if>
+				<equals arg1="${arg.saveHistory}" arg2="y"/>
+				<then>
+					<echo>Saving history changes...</echo>
+					<concat destfile="${dir.ant}snippets/ChangelogHistoryNew.txt" fixlastline="yes">
+				    	<filelist dir="${dir.ant}snippets"
+				        	 	files="ChangelogEntry.txt,ChangelogHistory.txt"
+				    		/>
+				  	</concat>
+					<replaceregexp file="${dir.ant}snippets/ChangelogHistoryNew.txt"
+							match="@CHANGES(.*)"
+							replace="${cl.lastchanges}\1"
+							byline="true"
+						/>
+
+					<replaceregexp file="${dir.ant}snippets/ChangelogHistoryNew.txt"
+							match="@VERSION_SMALL(.*)"
+							replace="${project.version.num}\1"
+							byline="true"
+						/>
+					<copy file="${dir.ant}snippets/ChangelogHistoryNew.txt" tofile="${dir.ant}snippets/ChangelogHistory.txt"/>
+					<delete file="${dir.ant}snippets/ChangelogHistoryNew.txt"/>
+				</then>
+			</if>
+
+			<copy todir="${dir.build}" file="${dir.src}Changelog.txt"/>
+				
+		</target>		
+	
 <!--
 	=========================================================================== 
 		Target create_exe
@@ -251,7 +319,7 @@
 	===========================================================================
  -->	
 	<target name="process"
-			depends="copy_help_files, copy_libs, copy_readme_changelog, create_exe, upload_xsd"
+			depends="copy_help_files, copy_libs, compile_readme, compile_changelog, create_exe, upload_xsd"
 		>
 		<echo message="DSA Genesis building ... "/>
 		<echo message="${ant.version}"/>

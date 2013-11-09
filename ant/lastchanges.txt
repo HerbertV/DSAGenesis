@@ -1,0 +1,2 @@
+- Core Data Manager (WIP)
+- Download Modul Integration

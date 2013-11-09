@@ -3,7 +3,7 @@
 # - buildproject.num
 
 #release full package
-release.archive=${project.name.short}_${project.version.num}.zip
+release.archive=${project.name.short}_${project.version.num}-b${build.number}.zip
 release.dir=${dir.workspace}DSAGenesis_Release\\
 
 #update package

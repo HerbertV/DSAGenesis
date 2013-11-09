@@ -25,7 +25,7 @@ Unterstützt die DSA4.1 Regeln.*
 
 ## Downloads:
 
-comming soon...
+[DSA Genesis Downloads](http://herbert.veitengruber.com/en/dsagenesis.html)
 
 
 ## Licenses:
@@ -58,6 +58,7 @@ THE SOFTWARE.
 
 [Ant-Contrib is Licensed under Apache License](http://ant-contrib.sourceforge.net/)
 
+[XMLTask is Licensed under Apache License](http://www.oopsconsultancy.com/software/xmltask/index.html)
 
 
 ## Disclaimer:

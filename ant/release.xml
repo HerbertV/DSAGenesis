@@ -17,6 +17,7 @@
 	change it within the props file
 -->
 	<loadproperties srcfile="DSAGenesis/ant/build.properties"/>
+	<loadproperties srcfile="${dir.ant}buildproject.num"/>
 	<loadproperties srcfile="${dir.ant}release.properties"/>
 	
 <!-- 
@@ -49,7 +50,7 @@
 		<format property="tsYear" pattern="yyyy"/>
 	</tstamp>	
 	
-	<property name="patchpath" value="${jappdater.patch.remote.dir}${project.version.num}/"/>						
+	<property name="patchpath" value="${jappdater.patch.remote.dir}${project.version.num}-b${build.number}/"/>						
 			
 <!-- 
 	===========================================================================
@@ -99,24 +100,24 @@
 				<application index="/index.xml" 
 						name="DSA Genesis" 
 						server="${jappdater.download.server}"
-						version="${project.version.num}"/>
+						version="${project.version.num}-b${build.number}"/>
 				
 				<files>
 					<file ID="1" dest="./${project.name.short}.jar" 
 							src="${patchpath}${project.name.short}.jar" 
-							version="${project.version.num}"/>
+							version="${project.version.num}-b${build.number}"/>
 					<file ID="2" dest="./${project.name.short}.exe" 
 							src="${patchpath}${project.name.short}.exe" 
-							version="${project.version.num}"/>
+							version="${project.version.num}-b${build.number}"/>
 					<file ID="3" dest="./${project.name.short}.jar.MD5" 
 							src="${patchpath}${project.name.short}.jar.MD5" 
-							version="${project.version.num}"/>
+							version="${project.version.num}-b${build.number}"/>
 					<file ID="4" dest="./Changelog.txt" 
 							src="${patchpath}Changelog.txt" 
-							version="${project.version.num}"/>
+							version="${project.version.num}-b${build.number}"/>
 					<file ID="5" dest="./Readme.txt" 
 							src="${patchpath}Readme.txt" 
-							version="${project.version.num}"/>
+							version="${project.version.num}-b${build.number}"/>
 				</files>
 			</JAppDater>
 		</echoxml>
@@ -196,32 +197,57 @@
  -->	
 	<target name="create_download_snippet">
 		
-		<copy file="${dir.ant}dsag_dl_snippet.html"
+		<copy file="${dir.ant}snippets/dsag_download_page.html"
 				tofile="${release.dir}dsagenesis_downloads.html"
 			/>
-		
+		<!-- version -->
 		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
 				match="@VERSION(.*)"
-				replace="${project.version.num}\1"
+				replace="${project.version.num}-b${build.number}\1"
 				byline="true"
 			/>
 		
+		<!-- changlog -->
+		<loadfile property="cl.lastchanges" srcFile="${dir.ant}lastchanges.txt"/>
+		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
+				match="@LASTCHANGES(.*)"
+				replace="${cl.lastchanges}\1"
+				byline="true"
+			/>
+		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
+				match="@CHANGELOGLINK(.*)"
+				replace="${jappdater.download.server}/${patchpath}Changelog.txt\1"
+				byline="true"
+			/>
+		
+		<!-- package size -->
+		<length file="${release.dir}${release.archive}" property="archive.bytes" />
+		<math result="archive.mb" operand1="${archive.bytes}" operation="/" operand2="1048576" datatype="float"/>
+		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
+				match="@PACKAGESIZE(.*)"
+				replace="${archive.mb} MB\1"
+				byline="true"
+			/>
+		
+		<!-- download -->
 		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
 				match="@DOWNLOADLINK(.*)"
 				replace="${jappdater.download.server}/${release.archive}\1"
 				byline="true"
 			/>
 				
+		<!-- date -->
 		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
 				match="@BULDDATE(.*)"
 				replace="${tsNow}\1"
 				byline="true"
 			/>
 		
-		<checksum file="${release.dir}/${release.archive}" property="zipmd5" />
+		<!-- checksum -->
+		<checksum file="${release.dir}/${release.archive}" property="archive.md5" />
 		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
 				match="@CHECKSUM(.*)"
-				replace="${zipmd5}\1"
+				replace="${archive.md5}\1"
 				byline="true"
 			/>
 	</target>

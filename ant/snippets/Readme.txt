@@ -66,6 +66,9 @@ Ant-Contrib:
 	http://ant-contrib.sourceforge.net/
 	Ant-Contrib Apache License
 
+XMLTask:
+	http://www.oopsconsultancy.com/software/xmltask/index.html
+	XMLTask Apache License
 	
 --------------------------------------------------------------------------------
 	Mindestvorraussetzung:
