@@ -62,6 +62,9 @@
 	<target name="init_properties" 
 			description="initializes the remaining properties.">
 		
+		<delete dir="${dir.build}logs"/>
+		<delete file="${dir.build}config/user.conf" />		
+				
 		<!-- needs to be done since the auto increment from buildfx already updated the number for the next build -->
 		<math result="lastbuild.number" operand1="${build.number}" operation="-" operand2="1" datatype="int"/>
 		<loadproperties srcfile="${dir.ant}release.properties"/>
@@ -151,7 +154,6 @@
 					<exclude name="*.BAT"/>
 					<exclude name="*.MD5"/>
 					<exclude name="DSAGenesis.jar"/>
-					<exclude name="*.log"/>
 					<!-- this is done sepparate -->
 					<exclude name="**/jappdater/index.xml"/>
 				</fileset>

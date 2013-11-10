@@ -423,7 +423,7 @@
 		<echo message="build finished. cleaning up ..."/>
 		
 		<delete dir="${dir.build}logs"/>
-		<delete file="${dir.build}config/user.conf"></delete>		
+		<delete file="${dir.build}config/user.conf" />		
 		<copy todir="${dir.build}config" file="${dir.src}config/system.conf"/>
 		
 		<delete>
