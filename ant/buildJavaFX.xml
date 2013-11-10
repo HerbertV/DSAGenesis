@@ -16,15 +16,12 @@
 -->
 	<loadproperties srcfile="DSAGenesis/ant/build.properties"/>
 			
-	
-<!-- 
+<!--
+	=========================================================================== 
+		TASK DEFINITIONS
 	===========================================================================
-		Private Properties
-	===========================================================================
-	Do not touch!
-	At least until you know what you are doing ;)
- -->
-		
+-->	
+
 	<!-- add ant-contrib lib -->
 	<!-- http://ant-contrib.sourceforge.net/ -->
 	<!-- Version 1.0b3 -->
@@ -38,7 +35,15 @@
 			resource="com/sun/javafx/tools/ant/antlib.xml"      
 	    	uri="javafx:com.sun.javafx.tools.ant"
 	    	classpath="${dir.javafx.ant}ant-javafx.jar"
-	    />      
+	    />    
+
+<!-- 
+	===========================================================================
+		Private Properties
+	===========================================================================
+	Do not touch!
+	At least until you know what you are doing ;)
+ -->
 	
 	<property name="project.jar" value="${project.name.short}.jar"/>
 		
@@ -63,7 +68,6 @@
 		
 	<!-- increment build -->
 	<buildnumber file="${dir.ant}buildproject.num" />
-					
 
 <!-- 
 	===========================================================================
@@ -273,8 +277,7 @@
 	===========================================================================
  -->	
 	<target name="create_exe"
-			description="creates an exe with launch4j"
-		>
+			description="creates an exe with launch4j">
 		
 		<if>
 			<and>
@@ -319,8 +322,8 @@
 	===========================================================================
  -->	
 	<target name="process"
-			depends="copy_help_files, copy_libs, compile_readme, compile_changelog, create_exe, upload_xsd"
-		>
+			depends="copy_help_files, copy_libs, compile_readme, compile_changelog, create_exe, upload_xsd">
+		
 		<echo message="DSA Genesis building ... "/>
 		<echo message="${ant.version}"/>
 		<echo message="${tsNow}"/>
@@ -427,7 +430,7 @@
 			<fileset dir="${dir.build}" includes="*.jnlp"/>
 			<fileset dir="${dir.build}" includes="*.html"/>
 		</delete>
-		<echo message="done."/>
+		<echo message="Done."/>
 				
 	</target>
 

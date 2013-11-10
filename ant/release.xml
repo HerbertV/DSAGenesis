@@ -9,7 +9,6 @@
     	packs a release archive and uploads the update files.
     </description>
 	
-	
 <!--
 	=========================================================================== 
 		Public Properties
@@ -18,16 +17,12 @@
 -->
 	<loadproperties srcfile="DSAGenesis/ant/build.properties"/>
 	<loadproperties srcfile="${dir.ant}buildproject.num"/>
-	<loadproperties srcfile="${dir.ant}release.properties"/>
 	
-<!-- 
+<!--
+	=========================================================================== 
+		TASK DEFINITIONS
 	===========================================================================
-		Private Properties
-	===========================================================================
-	Do not touch!
-	At least until you know what you are doing ;)
- -->
-		
+-->
 	<!-- add ant-contrib lib -->
 	<!-- http://ant-contrib.sourceforge.net/ -->
 	<!-- Version 1.0b3 -->
@@ -36,11 +31,18 @@
 			<pathelement location="${dir.ant}ant-contrib/ant-contrib-1.0b3.jar"/>
 		</classpath>
 	</taskdef>
-	
-	<!-- add xmltask lib -->
+		
+	<!-- define xmltask lib -->
 	<!-- http://www.oopsconsultancy.com/software/xmltask/index.html -->
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
-	
+		
+<!-- 
+	===========================================================================
+		Private Properties
+	===========================================================================
+	Do not touch!
+	At least until you know what you are doing ;)
+ -->
 	<!-- timestamp for release -->
 	<tstamp>
 		<format property="tsNow" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -49,9 +51,24 @@
 	<tstamp>
 		<format property="tsYear" pattern="yyyy"/>
 	</tstamp>	
+
 	
-	<property name="patchpath" value="${jappdater.patch.remote.dir}${project.version.num}-b${build.number}/"/>						
-			
+<!-- 
+	===========================================================================
+		Target init_properties
+	===========================================================================
+ -->
+	
+	<target name="init_properties" 
+			description="initializes the remaining properties.">
+		
+		<!-- needs to be done since the auto increment from buildfx already updated the number for the next build -->
+		<math result="lastbuild.number" operand1="${build.number}" operation="-" operand2="1" datatype="int"/>
+		<loadproperties srcfile="${dir.ant}release.properties"/>
+		<property name="patchpath" value="${jappdater.patch.remote.dir}${project.version.num}-b${lastbuild.number}/"/>						
+
+	</target>
+	
 <!-- 
 	===========================================================================
 		Target copy_data
@@ -92,7 +109,6 @@
 			description="creates a new index.xml for jappdater">
 		
 		<delete file="${dir.build}data/jappdater/index.xml"/>
-<!-- TODO add buildnumber to version-->		
 		<!-- create the base -->
 		<echoxml file="${dir.build}data/jappdater/index.xml">
 			<JAppDater version="1.0.0">
@@ -100,24 +116,24 @@
 				<application index="/index.xml" 
 						name="DSA Genesis" 
 						server="${jappdater.download.server}"
-						version="${project.version.num}-b${build.number}"/>
+						version="${project.version.num}-b${lastbuild.number}"/>
 				
 				<files>
 					<file ID="1" dest="./${project.name.short}.jar" 
 							src="${patchpath}${project.name.short}.jar" 
-							version="${project.version.num}-b${build.number}"/>
+							version="${project.version.num}-b${lastbuild.number}"/>
 					<file ID="2" dest="./${project.name.short}.exe" 
 							src="${patchpath}${project.name.short}.exe" 
-							version="${project.version.num}-b${build.number}"/>
+							version="${project.version.num}-b${lastbuild.number}"/>
 					<file ID="3" dest="./${project.name.short}.jar.MD5" 
 							src="${patchpath}${project.name.short}.jar.MD5" 
-							version="${project.version.num}-b${build.number}"/>
+							version="${project.version.num}-b${lastbuild.number}"/>
 					<file ID="4" dest="./Changelog.txt" 
 							src="${patchpath}Changelog.txt" 
-							version="${project.version.num}-b${build.number}"/>
+							version="${project.version.num}-b${lastbuild.number}"/>
 					<file ID="5" dest="./Readme.txt" 
 							src="${patchpath}Readme.txt" 
-							version="${project.version.num}-b${build.number}"/>
+							version="${project.version.num}-b${lastbuild.number}"/>
 				</files>
 			</JAppDater>
 		</echoxml>
@@ -195,7 +211,8 @@
 		Target create_download_snippet
 	===========================================================================
  -->	
-	<target name="create_download_snippet">
+	<target name="create_download_snippet" 
+			description="creates a html snippet for the webpage that is injected with ajax.">
 		
 		<copy file="${dir.ant}snippets/dsag_download_page.html"
 				tofile="${release.dir}dsagenesis_downloads.html"
@@ -203,7 +220,7 @@
 		<!-- version -->
 		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
 				match="@VERSION(.*)"
-				replace="${project.version.num}-b${build.number}\1"
+				replace="${project.version.num}-b${lastbuild.number}\1"
 				byline="true"
 			/>
 		
@@ -211,7 +228,7 @@
 		<loadfile property="cl.lastchanges" srcFile="${dir.ant}lastchanges.txt"/>
 		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
 				match="@LASTCHANGES(.*)"
-				replace="${cl.lastchanges}\1"
+				replace="Last Changes:${line.separator}${cl.lastchanges}\1"
 				byline="true"
 			/>
 		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
@@ -220,9 +237,24 @@
 				byline="true"
 			/>
 		
-		<!-- package size -->
+		<!-- package size trunc to 3 decimals -->
 		<length file="${release.dir}${release.archive}" property="archive.bytes" />
-		<math result="archive.mb" operand1="${archive.bytes}" operation="/" operand2="1048576" datatype="float"/>
+		<math result="archive.mb">
+			<op op="/" datatype="float">	
+				<op op="*" datatype="int">
+					<op op="*" datatype="float">
+						<op op="/" datatype="float">
+							<num value="${archive.bytes}" datatype="float"/>
+							<num value="1048576" datatype="float"/>
+						</op>
+						<num value="1000" datatype="float"/>
+					</op>
+					<num value="1"/>
+				</op>
+				<num value="1000"/>
+			</op>
+		</math>
+		
 		<replaceregexp file="${release.dir}dsagenesis_downloads.html"
 				match="@PACKAGESIZE(.*)"
 				replace="${archive.mb} MB\1"
@@ -258,7 +290,9 @@
 		Target upload
 	===========================================================================
  -->			
-	<target name="upload">
+	<target name="upload" 
+			description="Uploads patch files and archive of the release to the server.">
+		
 		<echo message="Uploading Zip ..."/>
 		<echo message="--> ${jappdater.root.dir}" />
 						
@@ -357,7 +391,7 @@
 	===========================================================================
  -->	
 	<target name="process"
-			depends="copy_data,create_index"
+			depends="init_properties,copy_data,create_index"
 		>
 		<echo message="DSA Genesis release ... "/>
 		<echo message="${ant.version}"/>
@@ -383,8 +417,16 @@
 			>
 			<fileset dir="${dir.build}"/>
 		</copy>	
-			
-		<antcall target="upload" />
+		
+		<!-- just for dry runs -->
+		<input message="Upload to Server? (y/default n)" addProperty="arg.uploadToServer"/>
+		<if>
+			<equals arg1="${arg.uploadToServer}" arg2="y"/>
+			<then>
+				<antcall target="upload" />
+			</then>
+		</if>
+		<echo message="Done."/>
 		
 	</target>
 
