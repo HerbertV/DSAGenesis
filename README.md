@@ -1,4 +1,4 @@
-![DSA Genesis Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/DSAGenesisLogo.png)
+![DSA Genesis Logo](http://dsagenesis.veitengruber.com/images/DSAGenesisLogo.png)
 
 -----------------------------------
 
@@ -63,7 +63,7 @@ THE SOFTWARE.
 
 ## Disclaimer:
 
-![DSA Fan Project Logo](https://raw.github.com/HerbertV/DSAGenesis/master/docs/images/FanProjectLogo.png)
+![DSA Fan Project Logo](http://dsagenesis.veitengruber.com/images/FanProjectLogo.png)
 
 *„DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA und RIESLAND sind eingetragene Marken der Significant Fantasy Medienrechte GbR. 
 Ohne vorherige schriftliche Genehmigung der Ulisses Medien und Spiel Distribution GmbH ist eine Verwendung der genannten Markenzeichen nicht gestattet.“*
