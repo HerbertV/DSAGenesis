@@ -2,6 +2,9 @@
 # - build.properties
 # - buildproject.num
 
+# jappdater xsd version
+jappdater.xsd.version=1.1.0
+
 #release full package
 release.archive=${project.name.short}_${project.version.num}-b${lastbuild.number}.zip
 release.dir=${dir.workspace}DSAGenesis_Release\\

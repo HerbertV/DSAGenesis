@@ -1,2 +1,3 @@
+- JAppDater update to 1.1.0
 - Core Data Manager (WIP)
 - Download Modul Integration

@@ -6,7 +6,7 @@
 		name="DSA Genesis release"
 	>
     <description>
-    	packs a release archive and uploads the update files.
+    	packs a release archive (ZIP) and uploads the full version and the update files.
     </description>
 	
 <!--
@@ -114,7 +114,7 @@
 		<delete file="${dir.build}data/jappdater/index.xml"/>
 		<!-- create the base -->
 		<echoxml file="${dir.build}data/jappdater/index.xml">
-			<JAppDater version="1.0.0">
+			<JAppDater version="${jappdater.xsd.version}">
 				
 				<application index="/index.xml" 
 						name="DSA Genesis" 
@@ -183,7 +183,9 @@
 				
 			</sequential>
 		</for>
-		       
+
+<!-- TODO generate obsolete list -->
+
 		
 		<!-- validate -->
 		<xmlvalidate file="${dir.build}data/jappdater/index.xml" 
