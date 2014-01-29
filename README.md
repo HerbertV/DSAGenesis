@@ -25,7 +25,7 @@ Unterstützt die DSA4.1 Regeln.*
 
 ## Downloads:
 
-[DSA Genesis Downloads](http://herbert.veitengruber.com/en/dsagenesis.html)
+[DSA Genesis Downloads](http://herbert.veitengruber.com/DSAGenesis)
 
 
 ## Licenses:
